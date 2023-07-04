@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_round">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp">
+
+        <TextView
+            android:id="@+id/dateTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/dimen_3dp"
+            android:text="@string/date"
+            android:textSize="@dimen/dimen_18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/dateBorder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1dp"
+            android:layout_below="@id/dateTv"
+            android:background="@color/purple_200" />
+
+        <LinearLayout
+            android:id="@+id/nameLl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dateBorder"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="@string/name_bn"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/nameTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="@string/name_en"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inTotalLl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameLl"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="সর্বমোট"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/inTotalAmountTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="In Total"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/totalLl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/inTotalLl"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="মোট"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalAmountTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_3dp"
+                android:text="Total"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/descriptionLabelTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/totalLl"
+            android:gravity="center"
+            android:padding="@dimen/dimen_3dp"
+            android:text="বিস্তারিত"
+            android:textSize="@dimen/dimen_15sp"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/descriptionBorder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_1dp"
+            android:layout_below="@id/descriptionLabelTv"
+            android:background="@color/purple_200" />
+
+        <TextView
+            android:id="@+id/descriptionTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionBorder"
+            android:gravity="start"
+            android:padding="@dimen/dimen_3dp"
+            android:text="Description"
+            android:textSize="@dimen/dimen_18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/idBtnDismiss"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionTv"
+            android:layout_margin="10dp"
+            android:text="Dismiss"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+
+</LinearLayout>

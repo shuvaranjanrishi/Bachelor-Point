@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_5dp"
+    tools:context=".ui.rent.AddRentFragment">
+
+    <TableRow
+        android:id="@+id/dateRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/table_header"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/dateTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/dimen_10dp"
+            android:gravity="center"
+            android:padding="@dimen/dimen_3dp"
+            android:text="@string/dd_mm_yyyy"
+            android:textSize="@dimen/dimen_18sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/baseline_date_range_24" />
+    </TableRow>
+
+    <View
+        android:id="@+id/dateBorder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_1dp"
+        android:background="@color/purple_200" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        style="@style/SpinnerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/amountEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:background="@drawable/bg_et"
+        android:hint="@string/total_taka_bn"
+        android:inputType="numberDecimal"
+        android:padding="@dimen/dimen_10dp" />
+
+    <EditText
+        android:id="@+id/descriptionEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:background="@drawable/bg_et"
+        android:gravity="start"
+        android:hint="@string/description_en"
+        android:inputType="textMultiLine"
+        android:lines="5"
+        android:maxLines="10"
+        android:minLines="3"
+        android:padding="@dimen/dimen_10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_5dp"
+            android:layout_weight="2"
+            android:hint="@string/total_member"
+            android:padding="@dimen/dimen_10dp"
+            android:textSize="@dimen/dimen_18sp" />
+
+        <EditText
+            android:id="@+id/totalMemberEt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_et"
+            android:gravity="center"
+            android:hint="@string/zero"
+            android:padding="@dimen/dimen_10dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_5dp"
+            android:layout_weight="1"
+            android:hint="@string/jon"
+            android:padding="@dimen/dimen_10dp"
+            android:textSize="@dimen/dimen_18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_5dp"
+            android:layout_weight="1"
+            android:hint="@string/per_head_cost"
+            android:padding="@dimen/dimen_10dp"
+            android:textSize="@dimen/dimen_18sp" />
+
+        <EditText
+            android:id="@+id/perHeadCostEt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_et"
+            android:hint="@string/zero"
+            android:padding="@dimen/dimen_10dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:background="@drawable/bg_btn"
+        android:text="@string/save" />
+</LinearLayout>

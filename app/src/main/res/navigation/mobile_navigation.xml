@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.therishideveloper.bachelorpoint.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_nav_meal"
+            app:destination="@id/nav_member" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_member"
+            app:destination="@id/nav_member" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_add_member"
+            app:destination="@id/nav_add_member" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_meal"
+            app:destination="@id/nav_meal" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_add_meal"
+            app:destination="@id/nav_add_meal" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_rent"
+            app:destination="@id/nav_rent" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_add_rent"
+            app:destination="@id/nav_add_rent" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_expenditure"
+            app:destination="@id/nav_expenditure" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_add_expenditure"
+            app:destination="@id/nav_add_expenditure" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.therishideveloper.bachelorpoint.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.therishideveloper.bachelorpoint.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_member"
+        android:name="com.therishideveloper.bachelorpoint.ui.member.MemberFragment"
+        android:label="@string/menu_member"
+        tools:layout="@layout/fragment_member" >
+        <action
+            android:id="@+id/action_nav_member_to_member_details"
+            app:destination="@id/nav_nav_member_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_member"
+        android:name="com.therishideveloper.bachelorpoint.ui.member.AddMemberFragment"
+        android:label="@string/menu_member"
+        tools:layout="@layout/fragment_add_member" />
+
+    <fragment
+        android:id="@+id/nav_meal"
+        android:name="com.therishideveloper.bachelorpoint.ui.meal.MealFragment"
+        android:label="@string/menu_meal"
+        tools:layout="@layout/fragment_meal" />
+
+    <fragment
+        android:id="@+id/nav_add_meal"
+        android:name="com.therishideveloper.bachelorpoint.ui.meal.AddMealFragment"
+        android:label="@string/menu_add_meal"
+        tools:layout="@layout/fragment_add_meal" />
+
+    <fragment
+        android:id="@+id/nav_rent"
+        android:name="com.therishideveloper.bachelorpoint.ui.rent.RentFragment"
+        android:label="@string/menu_rent"
+        tools:layout="@layout/fragment_rent" />
+
+    <fragment
+        android:id="@+id/nav_add_rent"
+        android:name="com.therishideveloper.bachelorpoint.ui.rent.AddRentFragment"
+        android:label="@string/menu_add_rent"
+        tools:layout="@layout/fragment_add_rent" />
+
+    <fragment
+        android:id="@+id/nav_expenditure"
+        android:name="com.therishideveloper.bachelorpoint.ui.expenditure.ExpenditureFragment"
+        android:label="@string/menu_expenditure"
+        tools:layout="@layout/fragment_expenditure" />
+
+    <fragment
+        android:id="@+id/nav_add_expenditure"
+        android:name="com.therishideveloper.bachelorpoint.ui.expenditure.AddExpenditureFragment"
+        android:label="@string/menu_add_expenditure"
+        tools:layout="@layout/fragment_add_expenditure" />
+    <fragment
+        android:id="@+id/nav_nav_member_details"
+        tools:layout="@layout/fragment_member_details"
+        android:name="com.therishideveloper.bachelorpoint.ui.member.MemberDetailsFragment"
+        android:label="@string/menu_member_details" />
+</navigation>

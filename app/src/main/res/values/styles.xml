@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SpinnerStyle">
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:background">@drawable/bg_sp</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:padding">@dimen/dimen_10dp</item>
+        <item name="android:layout_marginTop">@dimen/dimen_10dp</item>
+        <item name="android:dropDownVerticalOffset">@dimen/dimen_50dp</item>
+        <item name="android:popupBackground">@drawable/bg_sp_popup</item>
+        <item name="android:dropDownHeight">120dp</item>
+        <item name="android:scrollbarAlwaysDrawVerticalTrack">true</item>
+        <item name="android:dropDownSelector">@color/purple_200</item>
+    </style>
+</resources>
