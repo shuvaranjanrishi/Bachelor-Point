@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "137332677222",
+    "project_id": "bachelor-point-f2f71",
+    "storage_bucket": "bachelor-point-f2f71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137332677222:android:bb6ea3a6338670dabb6ba7",
+        "android_client_info": {
+          "package_name": "com.therishideveloper.bachelorpoint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "137332677222-0m6rbqk7on5n8jbkhk1sd8k2i95s8rkv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.therishideveloper.bachelorpoint",
+            "certificate_hash": "4405b5480beed4fa3362074e8557a15d4fb5720e"
+          }
+        },
+        {
+          "client_id": "137332677222-jnsiea0ifk14qrabeihrhkojak8imhhp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjbsfRIHdK8_4EfT72tNN-rJ47qbC4IH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137332677222-jnsiea0ifk14qrabeihrhkojak8imhhp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
