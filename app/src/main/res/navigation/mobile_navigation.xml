@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_nav_sign_up_admin">
 
     <fragment
         android:id="@+id/nav_home"
@@ -102,9 +102,32 @@
         android:name="com.therishideveloper.bachelorpoint.ui.expenditure.AddExpenditureFragment"
         android:label="@string/menu_add_expenditure"
         tools:layout="@layout/fragment_add_expenditure" />
+
     <fragment
         android:id="@+id/nav_nav_member_details"
         tools:layout="@layout/fragment_member_details"
         android:name="com.therishideveloper.bachelorpoint.ui.member.MemberDetailsFragment"
         android:label="@string/menu_member_details" />
+
+    <fragment
+        android:id="@+id/nav_nav_sign_up_admin"
+        tools:layout="@layout/fragment_sign_up_admin"
+        android:name="com.therishideveloper.bachelorpoint.ui.signInSignUp.SignUpAdminFragment"
+        android:label="@string/menu_sign_up_admin" >
+        <action
+            android:id="@+id/action_nav_nav_sign_up_admin_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_nav_sign_up_user"
+        tools:layout="@layout/fragment_sign_up_user"
+        android:name="com.therishideveloper.bachelorpoint.ui.signInSignUp.SignUpUserFragment"
+        android:label="@string/menu_sign_up_user" />
+
+    <fragment
+        android:id="@+id/nav_nav_sign_in"
+        tools:layout="@layout/fragment_sign_in"
+        android:name="com.therishideveloper.bachelorpoint.ui.signInSignUp.SignInFragment"
+        android:label="@string/menu_sign_in" />
 </navigation>
