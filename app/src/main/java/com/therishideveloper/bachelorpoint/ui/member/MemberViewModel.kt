@@ -21,6 +21,7 @@ class MemberViewModel : ViewModel() {
                 "Shuvo",
                 "shuvo@gmail.com",
                 "Shahjadpur",
+                "Shahjadpur",
                 "01738558244",
                 timestamp,
                 timestamp
@@ -29,6 +30,7 @@ class MemberViewModel : ViewModel() {
                 "2",
                 "Shimul",
                 "shimul@gmail.com",
+                "Shahjadpur",
                 "Shahjadpur",
                 "01973775235",
                 timestamp,
@@ -39,6 +41,7 @@ class MemberViewModel : ViewModel() {
                 "Gopal",
                 "gopal@gmail.com",
                 "Shahjadpur",
+                "Shahjadpur",
                 "01734895431",
                 timestamp,
                 timestamp
@@ -47,6 +50,7 @@ class MemberViewModel : ViewModel() {
                 "4",
                 "Sajib",
                 "sajib@gmail.com",
+                "Shahjadpur",
                 "Shahjadpur",
                 "01860231340",
                 timestamp,
@@ -57,6 +61,7 @@ class MemberViewModel : ViewModel() {
                 "Bollov",
                 "bollob@gmail.com",
                 "Shahjadpur",
+                "Shahjadpur",
                 "01765678044",
                 timestamp,
                 timestamp
@@ -65,6 +70,7 @@ class MemberViewModel : ViewModel() {
                 "6",
                 "Choyon",
                 "choyon@gmail.com",
+                "Shahjadpur",
                 "Shahjadpur",
                 "01735505058",
                 timestamp,

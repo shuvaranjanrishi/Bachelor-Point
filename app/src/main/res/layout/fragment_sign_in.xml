@@ -5,30 +5,24 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.signInSignUp.SignUpUserFragment">
+    tools:context=".ui.signInSignUp.SignInFragment">
 
     <EditText
+        android:id="@+id/emailEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email" />
 
     <EditText
+        android:id="@+id/passwordEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password" />
 
     <Button
-        android:id="@+id/signUpBtn"
+        android:id="@+id/signInBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up" />
-
-    <TextView
-        android:id="@+id/signUpHereTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Up Here"
-        android:textSize="@dimen/dimen_18sp"
-        android:textStyle="bold" />
+        android:text="Sign In" />
 
 </LinearLayout>

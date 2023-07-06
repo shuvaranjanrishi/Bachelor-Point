@@ -1,6 +1,7 @@
 package com.therishideveloper.bachelorpoint.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.therishideveloper.bachelorpoint.Utils.MyCalender
 import com.therishideveloper.bachelorpoint.adapter.ModuleAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentHomeBinding
 import com.therishideveloper.bachelorpoint.listener.MyDate
+import com.therishideveloper.bachelorpoint.session.SessionManager
 
 class HomeFragment : Fragment() {
 
@@ -22,6 +24,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var session:SessionManager
 
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -74,6 +77,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        session = context?.let { SessionManager(it) }!!
+
         binding.fab.setOnClickListener {
             setVisibility(clicked)
             setAnimation(clicked)
@@ -117,13 +122,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun setVisibility(clicked: Boolean) {
+        Log.d("sussssssss: ",session.getUserType().toString())
         if (!clicked) {
             binding.addMemberBtn.visibility = View.VISIBLE
             binding.addMealBtn.visibility = View.VISIBLE
             binding.addRentBtn.visibility = View.VISIBLE
             binding.addExpenditureBtn.visibility = View.VISIBLE
         } else {
-            binding.addMemberBtn.visibility = View.GONE
+            if(session.getUserType().equals("Admin")) binding.addMemberBtn.visibility = View.GONE
             binding.addMealBtn.visibility = View.GONE
             binding.addRentBtn.visibility = View.GONE
             binding.addExpenditureBtn.visibility = View.GONE

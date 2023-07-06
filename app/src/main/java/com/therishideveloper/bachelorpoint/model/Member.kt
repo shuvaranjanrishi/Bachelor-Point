@@ -4,6 +4,7 @@ data class Member(
     var id: String,
     var name: String,
     var email: String,
+    var password: String,
     var address: String,
     var phone: String,
     var createdAt: String,

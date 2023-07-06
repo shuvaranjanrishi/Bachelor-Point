@@ -76,7 +76,7 @@
         android:padding="@dimen/dimen_10dp" />
 
     <Button
-        android:id="@+id/saveBtn"
+        android:id="@+id/create_member_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
