@@ -1,5 +1,7 @@
 package com.therishideveloper.bachelorpoint.ui.home
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,24 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.Utils.MyCalender
 import com.therishideveloper.bachelorpoint.adapter.ModuleAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentHomeBinding
-import com.therishideveloper.bachelorpoint.listener.MyDate
-import com.therishideveloper.bachelorpoint.session.SessionManager
 
 class HomeFragment : Fragment() {
+
+    private val TAG = "HomeFragment"
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var session:SessionManager
+    private lateinit var session: SharedPreferences
+    private lateinit var userType: String
+    private lateinit var userId: String
+    private lateinit var accountId: String
 
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -71,13 +74,17 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        userId = session.getString("USER_ID", "").toString()
+        userType = session.getString("USER_TYPE", "").toString()
+        accountId = session.getString("ACCOUNT_ID", "").toString()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        session = context?.let { SessionManager(it) }!!
 
         binding.fab.setOnClickListener {
             setVisibility(clicked)
@@ -122,14 +129,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun setVisibility(clicked: Boolean) {
-        Log.d("sussssssss: ",session.getUserType().toString())
+        Log.e(TAG, "USER_TYPE: $userType")
+        Log.e(TAG, "ACCOUNT_ID: $accountId")
+
         if (!clicked) {
-            binding.addMemberBtn.visibility = View.VISIBLE
+            if (userType == "Admin") binding.addMemberBtn.visibility = View.VISIBLE
             binding.addMealBtn.visibility = View.VISIBLE
             binding.addRentBtn.visibility = View.VISIBLE
             binding.addExpenditureBtn.visibility = View.VISIBLE
         } else {
-            if(session.getUserType().equals("Admin")) binding.addMemberBtn.visibility = View.GONE
+            if (userType == "Admin") binding.addMemberBtn.visibility = View.GONE
             binding.addMealBtn.visibility = View.GONE
             binding.addRentBtn.visibility = View.GONE
             binding.addExpenditureBtn.visibility = View.GONE

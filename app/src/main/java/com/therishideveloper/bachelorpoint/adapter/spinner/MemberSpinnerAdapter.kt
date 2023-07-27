@@ -8,9 +8,10 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.model.Member
+import com.therishideveloper.bachelorpoint.model.User
 
-class MemberSpinnerAdapter(context: Context, memberList: List<Member>) :
-    ArrayAdapter<Member>(context, 0, memberList) {
+class MemberSpinnerAdapter(context: Context, memberList: List<User>) :
+    ArrayAdapter<User>(context, 0, memberList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return initView(position, convertView, parent)

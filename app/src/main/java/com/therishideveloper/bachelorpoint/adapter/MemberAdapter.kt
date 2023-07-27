@@ -12,9 +12,10 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.model.Member
+import com.therishideveloper.bachelorpoint.model.User
 import kotlin.coroutines.coroutineContext
 
-class MemberAdapter(private val navController: NavController, private val memberList: List<Member>) :
+class MemberAdapter(private val navController: NavController, private val memberList: List<User>) :
     RecyclerView.Adapter<MemberAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -2,6 +2,7 @@ package com.therishideveloper.bachelorpoint.session
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
 /**
  * Created by Shuva Ranjan Rishi on 06,July,2023
@@ -10,23 +11,24 @@ import android.content.SharedPreferences
 
 class SessionManager(context: Context) {
 
+    private val TAG = "UserSession"
+
     private val sharedPref: SharedPreferences
     private val editor: SharedPreferences.Editor
     private val context: Context
 
-    companion object {
-        private const val PREFERENCE_NAME = "SessionManager"
-        private const val KEY_IS_LOGGED_IN = "isLoggedIn"
-        const val KEY_NAME = "name"
-        const val KEY_ID = "id"
-        const val KEY_USER_ID = "userId"
-        const val KEY_USER_NAME = "username"
-        const val KEY_EMAIL = "email"
-        const val KEY_USER_TYPE = "userType"
-        const val KEY_PHONE = "phone"
-        const val KEY_ADDRESS = "address"
-        const val KEY_APK_VERSION = "apk_version"
-    }
+    private val PREFERENCE_NAME = "SessionManager"
+    private val KEY_IS_LOGGED_IN = "isLoggedIn"
+    private val KEY_NAME = "name"
+    private val KEY_ID = "id"
+    private val KEY_USER_ID = "userId"
+    private val KEY_USER_NAME = "username"
+    private val KEY_EMAIL = "email"
+    private val KEY_USER_TYPE = "userType"
+    private val KEY_ACCOUNT_ID = "accountId"
+    val KEY_PHONE = "phone"
+    private val KEY_ADDRESS = "address"
+    private val KEY_APK_VERSION = "apk_version"
 
     init {
         this.context = context
@@ -38,12 +40,35 @@ class SessionManager(context: Context) {
         return sharedPref.getString(KEY_USER_ID, "0")
     }
 
+    fun setUserId(value: String?) {
+        editor.putString(KEY_USER_ID, value)
+        editor.commit()
+    }
+
     fun getUserType(): String? {
         return sharedPref.getString(KEY_USER_TYPE, "0")
     }
 
     fun setUserType(userType: String?) {
         editor.putString(KEY_USER_TYPE, userType)
+        editor.commit()
+    }
+
+    fun getId(): String? {
+        return sharedPref.getString(KEY_ID, "0")
+    }
+
+    fun setId(value: String?) {
+        editor.putString(KEY_ID, value)
+        editor.commit()
+    }
+
+    fun getAccountId(): String? {
+        return sharedPref.getString(KEY_ACCOUNT_ID, "0")
+    }
+
+    fun setAccountId(accountId: String?) {
+        editor.putString(KEY_ACCOUNT_ID, accountId)
         editor.commit()
     }
 
@@ -84,7 +109,7 @@ class SessionManager(context: Context) {
 
     fun deleteSession() {
         editor.clear()
-        editor.commit()
+        editor.apply()
     }
 
     fun logoutUser() {

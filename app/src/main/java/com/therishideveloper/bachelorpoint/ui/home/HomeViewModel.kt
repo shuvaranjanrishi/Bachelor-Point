@@ -17,6 +17,7 @@ class HomeViewModel : ViewModel() {
             Module(R.drawable.baseline_person_24, "মিল"),
             Module(R.drawable.baseline_person_24, "ভাড়া ও বিল"),
             Module(R.drawable.baseline_person_24, "মেম্বার্স"),
+            Module(R.drawable.baseline_person_24, "logout"),
         )
 
         value = moduleList

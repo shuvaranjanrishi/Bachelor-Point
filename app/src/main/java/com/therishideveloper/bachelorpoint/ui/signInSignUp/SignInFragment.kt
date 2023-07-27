@@ -1,5 +1,7 @@
 package com.therishideveloper.bachelorpoint.ui.signInSignUp
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,13 +21,13 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.adapter.ModuleAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
-import com.therishideveloper.bachelorpoint.session.SessionManager
 import com.therishideveloper.bachelorpoint.ui.home.HomeViewModel
 
 class SignInFragment : Fragment() {
+
+    private val TAG = "SignInFragment"
 
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
@@ -33,20 +35,24 @@ class SignInFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+    private lateinit var session: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.app_name))
+        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        editor = session.edit()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
 
         binding.signInBtn.setOnClickListener {
 
@@ -59,7 +65,7 @@ class SignInFragment : Fragment() {
                         val userid = auth.currentUser!!.uid
                         getUserInfo(userid)
                     } else {
-                        Log.e("addOnCompleteListener", "" + it.exception)
+                        Log.e(TAG, "addOnCompleteListener" + it.exception)
                     }
                 }
                 .addOnFailureListener {
@@ -71,32 +77,42 @@ class SignInFragment : Fragment() {
                 }
         }
 
-        homeViewModel.data.observe(viewLifecycleOwner) {
-            val adapter = ModuleAdapter(findNavController(), it)
-//            binding.recyclerView.adapter = adapter
+        binding.createNewTv.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_sign_in_to_nav_sign_up)
         }
 
     }
 
-    private fun getUserInfo(userid: String) {
-        database.child(userid).child("Members").orderByChild("userId").equalTo(userid)
+    private fun getUserInfo(uid: String) {
+        database.child("Users").orderByChild("uid").equalTo(uid)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (ds in dataSnapshot.children) {
                             val user: User? = ds.getValue<User>()
-                            val name: String = "" + ds.child("name")
-                            val email: String = "" + ds.child("email")
-                            val id: String = "" + ds.child("id")
-                            val userId: String = "" + ds.child("userId")
-                            val usertype: String = "" + ds.child("usertype")
-                            Log.d("LoginUser: ", user.toString())
-                            saveUserInfo(name, email, id, userId, usertype)
+
+                            if (user != null) {
+                                Log.e(TAG, "LoginUser: $user")
+                                saveUserInfo(
+                                    user.name!!,
+                                    user.email!!,
+                                    user.id!!,
+                                    user.uid!!,
+                                    user.accountId!!,
+                                    user.usertype!!
+                                )
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "User Info not Found!",
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.w("CheckUserType", "Failed to read value.", error.toException())
+                        Log.e(TAG, "getUserInfo" + error.toException())
                     }
                 }
             )
@@ -106,13 +122,16 @@ class SignInFragment : Fragment() {
         name: String,
         email: String,
         id: String,
-        userId: String,
+        uid: String,
+        accountId: String,
         usertype: String
     ) {
-        val session = context?.let { SessionManager(it) }!!
-        session.setName(name)
-        session.setEmail(email)
-        session.setUserType(usertype)
+
+        editor.putString("USER_ID", "" + uid);
+        editor.putString("USER_TYPE", "" + usertype)
+        editor.putString("ACCOUNT_ID", "" + accountId)
+        editor.apply()
+
         Toast.makeText(
             context,
             "Sign In Successful",

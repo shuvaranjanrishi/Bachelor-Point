@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_add_expenditure"
             app:destination="@id/nav_add_expenditure" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_sign_in"
+            app:destination="@id/nav_sign_in" />
     </fragment>
 
     <fragment
@@ -115,7 +118,7 @@
         android:name="com.therishideveloper.bachelorpoint.ui.signInSignUp.SignUpAdminFragment"
         android:label="@string/menu_sign_up_admin" >
         <action
-            android:id="@+id/action_nav_nav_sign_up_admin_to_nav_sign_in"
+            android:id="@+id/action_nav_sign_up_admin_to_nav_sign_in"
             app:destination="@id/nav_sign_in" />
     </fragment>
 
@@ -133,5 +136,8 @@
         <action
             android:id="@+id/action_nav_sign_in_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_sign_in_to_nav_sign_up"
+            app:destination="@id/nav_sign_up_admin" />
     </fragment>
 </navigation>

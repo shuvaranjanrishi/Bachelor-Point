@@ -1,84 +1,47 @@
 package com.therishideveloper.bachelorpoint.ui.member
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.model.Member
-import com.therishideveloper.bachelorpoint.model.Module
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.model.User
 
 class MemberViewModel : ViewModel() {
 
-    var memberList: List<Member>
+    private val TAG = "MemberViewModel"
 
-    private val _data = MutableLiveData<List<Member>>().apply {
+    private var auth: FirebaseAuth = Firebase.auth
+    private var database: DatabaseReference = Firebase.database.reference.child("Bachelor Point")
 
-        val timestamp: String = "" + System.currentTimeMillis();
+    private val _data = MutableLiveData<List<User>>().apply {
 
-        memberList = listOf(
-            Member(
-                "1",
-                "Shuvo",
-                "shuvo@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01738558244",
-                timestamp,
-                timestamp
-            ),
-            Member(
-                "2",
-                "Shimul",
-                "shimul@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01973775235",
-                timestamp,
-                timestamp
-            ),
-            Member(
-                "3",
-                "Gopal",
-                "gopal@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01734895431",
-                timestamp,
-                timestamp
-            ),
-            Member(
-                "4",
-                "Sajib",
-                "sajib@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01860231340",
-                timestamp,
-                timestamp
-            ),
-            Member(
-                "5",
-                "Bollov",
-                "bollob@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01765678044",
-                timestamp,
-                timestamp
-            ),
-            Member(
-                "6",
-                "Choyon",
-                "choyon@gmail.com",
-                "Shahjadpur",
-                "Shahjadpur",
-                "01735505058",
-                timestamp,
-                timestamp
-            ),
-        )
+        val accountId: String = auth.uid!!
+        database.child("Users").child(accountId).child("Members")
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val memberList: MutableList<User> = mutableListOf()
+                        for (ds in dataSnapshot.children) {
+                            val user: User? = ds.getValue(User::class.java)
+                            memberList.add(user!!)
+                        }
+                        value = memberList
+                    }
 
-        value = memberList
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
+
     }
-    val data: LiveData<List<Member>> = _data
+    val data: LiveData<List<User>> = _data
 }
