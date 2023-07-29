@@ -31,7 +31,7 @@ class ExpenditureAdapter(
         val expenditure = expenditureList[position]
 
         holder.dateTv.text = expenditure.date
-        holder.nameTv.text = expenditure.name
+        holder.nameTv.text = expenditure.memberName
         holder.amountTv.text = expenditure.totalCost
 
         listener.onChangeExpenditure(expenditureList)
@@ -39,7 +39,7 @@ class ExpenditureAdapter(
         if (expenditureList.isNotEmpty()) {
             var totalCost = 0
             if (expenditure in expenditureList) {
-                totalCost += expenditure.totalCost.toInt();
+                totalCost += expenditure.totalCost!!.toInt();
             }
             Log.d("TAG", "totalCost: $totalCost")
         }
@@ -52,13 +52,13 @@ class ExpenditureAdapter(
             if (expenditureList.isNotEmpty()) {
                 for (expenditure in expenditureList) {
                     if (expenditure.memberId == memberId) {
-                        totalCost += expenditure.totalCost.toInt();
+                        totalCost += expenditure.totalCost!!.toInt();
                     }
                 }
             }
 
             val dialog = BottomSheetDialog(context, R.style.BottomSheetDialogTheme)
-            val nullParent: ViewGroup? = null;
+            val nullParent: ViewGroup? = null
             val view = LayoutInflater.from(context)
                 .inflate(R.layout.bottom_sheet_dialog, nullParent)
 
@@ -66,12 +66,14 @@ class ExpenditureAdapter(
             val nameTv = view.findViewById<TextView>(R.id.nameTv)
             val inTotalAmountTv = view.findViewById<TextView>(R.id.inTotalAmountTv)
             val totalAmountTv = view.findViewById<TextView>(R.id.totalAmountTv)
+            val descriptionTv = view.findViewById<TextView>(R.id.descriptionTv)
             val btnClose = view.findViewById<Button>(R.id.idBtnDismiss)
 
             dateTv.text = expenditure.date
-            nameTv.text = expenditure.name
+            nameTv.text = expenditure.memberName
             inTotalAmountTv.text = totalCost.toString()
             totalAmountTv.text = expenditure.totalCost
+            descriptionTv.text = expenditure.descripiton
 
             btnClose.setOnClickListener {
                 dialog.dismiss()

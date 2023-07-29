@@ -58,7 +58,7 @@
         android:layout_marginBottom="@dimen/dimen_5dp"
         android:background="@drawable/bg_et"
         android:hint="@string/total_taka_bn"
-        android:inputType="textEmailAddress"
+        android:inputType="numberDecimal"
         android:padding="@dimen/dimen_10dp" />
 
     <EditText
@@ -76,7 +76,7 @@
         android:padding="@dimen/dimen_10dp" />
 
     <Button
-        android:id="@+id/create_member_btn"
+        android:id="@+id/saveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

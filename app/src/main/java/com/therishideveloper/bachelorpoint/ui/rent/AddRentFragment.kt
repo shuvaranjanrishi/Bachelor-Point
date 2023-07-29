@@ -1,7 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.rent
 
 import android.os.Bundle
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.therishideveloper.bachelorpoint.Utils.MyCalender
-import com.therishideveloper.bachelorpoint.adapter.AddMealAdapter
-import com.therishideveloper.bachelorpoint.databinding.FragmentAddMealBinding
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddRentBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.model.Meal

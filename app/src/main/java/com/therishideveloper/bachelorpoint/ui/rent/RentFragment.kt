@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.therishideveloper.bachelorpoint.Utils.MyCalender
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 import com.therishideveloper.bachelorpoint.adapter.RentAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentRentBinding
 import com.therishideveloper.bachelorpoint.listener.MyDate

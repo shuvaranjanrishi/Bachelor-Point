@@ -47,7 +47,7 @@ class ExpenditureFragment : Fragment(),ExpenditureListener {
         if (expenditureList.isNotEmpty()) {
             var totalCost = 0
             for (expenditure in expenditureList) {
-                totalCost += expenditure.totalCost.toInt();
+                totalCost += expenditure.totalCost!!.toInt();
             }
             binding.totalAmountTv.text = totalCost.toString()
         }

@@ -1,11 +1,14 @@
 package com.therishideveloper.bachelorpoint.model
 
 data class Expenditure(
-    var id: String,
-    var date: String,
-    var memberId: String,
-    var name: String,
-    var totalCost: String,
-    var createdAt: String,
-    var updatedAt: String
+    var id: String? = null,
+    var uid: String? = null,
+    var date: String? = null,
+    var memberId: String? = null,
+    var memberName: String? = null,
+    var itemName: String? = null,
+    var totalCost: String? = null,
+    var descripiton: String? = null,
+    var createdAt: String? = null,
+    var updatedAt: String? = null
 )

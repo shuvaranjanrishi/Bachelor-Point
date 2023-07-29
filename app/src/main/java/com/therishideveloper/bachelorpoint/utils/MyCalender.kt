@@ -1,4 +1,4 @@
-package com.therishideveloper.bachelorpoint.Utils
+package com.therishideveloper.bachelorpoint.utils
 
 import android.app.Activity
 import android.app.DatePickerDialog

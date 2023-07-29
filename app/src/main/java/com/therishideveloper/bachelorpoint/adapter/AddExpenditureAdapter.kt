@@ -28,7 +28,7 @@ class AddExpenditureAdapter(private var listener: ExpenditureListener, private v
         val expenditure = expenditureList[position]
 
         holder.dateTv.text = expenditure.date
-        holder.nameTv.text = expenditure.name
+        holder.nameTv.text = expenditure.memberName
         holder.amountTv.text = expenditure.totalCost
 
         listener.onChangeExpenditure(expenditureList)
