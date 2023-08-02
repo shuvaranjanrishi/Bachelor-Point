@@ -16,7 +16,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpinnerAdapter
+import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenditureBinding
 import com.therishideveloper.bachelorpoint.model.Expenditure
 import com.therishideveloper.bachelorpoint.model.User
@@ -38,7 +38,6 @@ class AddExpenditureFragment : Fragment() {
     private lateinit var selectedUid: String
     private lateinit var selectedId: String
     private lateinit var selectedName: String
-    private lateinit var itemName: String
     private lateinit var amount: String
     private lateinit var description: String
 
@@ -113,7 +112,7 @@ class AddExpenditureFragment : Fragment() {
     private fun setupSpinner() {
         memberViewModel.data.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                val adapter = MemberSpinnerAdapter(requireContext(), it)
+                val adapter = MemberSpAdapter(requireContext(), it)
                 binding.spinner.adapter = adapter
 
                 binding.spinner.onItemSelectedListener =

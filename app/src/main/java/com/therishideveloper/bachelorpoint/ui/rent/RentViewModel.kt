@@ -19,35 +19,40 @@ class RentViewModel : ViewModel() {
             Rent(
                 "1",
                 "House Rent",
-                "14000",
+                "",
+                "",
                 timestamp,
                 timestamp
             ),
             Rent(
-                "1",
+                "2",
                 "Electricity Bill",
-                "1000",
+                "",
+                "",
                 timestamp,
                 timestamp
             ),
             Rent(
-                "1",
+                "3",
                 "Service Charge",
-                "500",
+                "",
+                "",
                 timestamp,
                 timestamp
             ),
             Rent(
-                "1",
+                "4",
                 "Water Bill",
-                "500",
+                "",
+                "",
                 timestamp,
                 timestamp
             ),
             Rent(
-                "1",
+                "5",
                 "Khala Bill",
-                "3600",
+                "",
+                "",
                 timestamp,
                 timestamp
             ),

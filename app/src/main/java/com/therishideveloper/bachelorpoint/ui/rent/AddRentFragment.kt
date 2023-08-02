@@ -1,25 +1,46 @@
 package com.therishideveloper.bachelorpoint.ui.rent
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.adapter.spinner.RentTypeSpAdapter
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddRentBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
+import com.therishideveloper.bachelorpoint.model.Expenditure
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.model.Rent
+import com.therishideveloper.bachelorpoint.model.User
 
 class AddRentFragment : Fragment(), MealListener {
 
     private var _binding: FragmentAddRentBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: RentViewModel by viewModels()
+    private val rentViewModel: RentViewModel by viewModels()
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
+    private lateinit var session: SharedPreferences
+    private lateinit var selectedUid: String
+    private lateinit var selectedId: String
+    private lateinit var selectedName: String
+    private lateinit var amount: String
+    private lateinit var description: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,11 +48,18 @@ class AddRentFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddRentBinding.inflate(inflater, container, false)
+
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupSpinner()
 
         binding.dateTv.text = (MyCalender.dayToday +" "+ MyCalender.currentDate)
 
@@ -44,28 +72,46 @@ class AddRentFragment : Fragment(), MealListener {
             },
         )
 
-//        val name: String = binding.nameEt.text.toString().trim()
-//        val email: String = binding.emailEt.text.toString().trim()
-//        val address: String = binding.addressEt.text.toString().trim()
-//        val phone: String = binding.phoneEt.text.toString().trim()
-//
-//        binding.saveBtn.setOnClickListener {
-//            val timestamp: String = "" + System.currentTimeMillis();
-//            val member = Member("1", name, email, address, phone, timestamp, timestamp)
-//            Log.d("AddMember", "Member: $member")
-//        }
-        val listener = this
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-//                val adapter = AddRentAdapter(listener, it)
-//                binding.recyclerView.adapter = adapter
-//                binding.progressBar.isVisible = false
-//                binding.mainLl.isVisible = true
-            } else {
-                Toast.makeText(context, "No Data Found", Toast.LENGTH_LONG).show()
-            }
+
+        binding.saveBtn.setOnClickListener {
+
+            amount = binding.amountEt.text.toString().trim()
+            description = binding.descriptionEt.text.toString().trim()
+
+            addRentAndBill(
+                selectedId,
+                selectedName,
+                amount,
+                description
+            )
 
         }
+    }
+
+    private fun addRentAndBill(
+        id: String,
+        name: String,
+        amount: String,
+        description: String,
+    ) {
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        val timestamp = "" + System.currentTimeMillis()
+        val rent =
+            Rent(
+                id,
+                name,
+                amount,
+                description,
+                timestamp,
+                timestamp
+            )
+        database.child(accountId).child("RentAndBill").child(timestamp)
+            .setValue(rent)
+        Toast.makeText(
+            context,
+            "Rent And Bill Added Successful",
+            Toast.LENGTH_SHORT,
+        ).show()
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
@@ -86,6 +132,43 @@ class AddRentFragment : Fragment(), MealListener {
 //                binding.totalThirdMealTv.text = totalThirdMeal.toString()
 //                binding.totalMealTv.text = totalMeal.toString()
             }
+        }
+    }
+
+    private fun setupSpinner() {
+        rentViewModel.data.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                val adapter = RentTypeSpAdapter(requireContext(), it)
+                binding.spinner.adapter = adapter
+
+                binding.spinner.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                        }
+
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            val selectedItem: Rent = parent?.getItemAtPosition(position) as Rent
+                            selectedId = selectedItem.id.toString()
+                            selectedName = selectedItem.name.toString()
+                            Toast.makeText(
+                                context,
+                                "" + selectedItem.name + " Id: " + selectedItem.id,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                    }
+
+            } else {
+                Toast.makeText(context, "No Data Found", Toast.LENGTH_LONG).show()
+            }
+
         }
     }
 
