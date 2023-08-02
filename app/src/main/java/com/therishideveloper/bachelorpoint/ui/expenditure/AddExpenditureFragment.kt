@@ -21,6 +21,7 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenditureBin
 import com.therishideveloper.bachelorpoint.model.Expenditure
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 
 
 class AddExpenditureFragment : Fragment() {
@@ -58,7 +59,7 @@ class AddExpenditureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
 
         setupSpinner()
 
@@ -92,8 +93,7 @@ class AddExpenditureFragment : Fragment() {
             Expenditure(
                 timestamp,
                 uid,
-                uid,
-//                MyCalender.currentDate,
+                MyCalender.currentDate,
                 id,
                 name,
                 amount,
