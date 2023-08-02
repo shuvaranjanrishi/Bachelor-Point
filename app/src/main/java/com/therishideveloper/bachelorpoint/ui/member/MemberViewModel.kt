@@ -19,12 +19,13 @@ class MemberViewModel : ViewModel() {
     private val TAG = "MemberViewModel"
 
     private var auth: FirebaseAuth = Firebase.auth
-    private var database: DatabaseReference = Firebase.database.reference.child("Bachelor Point")
+    private var database: DatabaseReference =
+        Firebase.database.reference.child("Bachelor Point").child("Users")
 
     private val _data = MutableLiveData<List<User>>().apply {
 
         val accountId: String = auth.uid!!
-        database.child("Users").child(accountId).child("Members")
+        database.child(accountId).child("Members")
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -44,4 +45,35 @@ class MemberViewModel : ViewModel() {
 
     }
     val data: LiveData<List<User>> = _data
+
+    private val _member = MutableLiveData<User>().apply {
+
+        val accountId: String = auth.uid!!
+        database.orderByChild("uid").equalTo(accountId)
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        var member: User? = null
+                        for (ds in dataSnapshot.children) {
+                            member = ds.getValue(User::class.java)!!
+                            Log.d(TAG, "onDataChange: $member")
+                        }
+                        value = member
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
+
+    }
+    val member: LiveData<User> = _member
+
+    private val _currentScrambledWord = MutableLiveData<String>()
+    val currentScrambledWord: LiveData<String>
+        get() = _currentScrambledWord
+
+    private fun getNextWord() {
+    }
 }

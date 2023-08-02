@@ -45,6 +45,8 @@ class MemberFragment : Fragment() {
             val adapter = MemberAdapter(findNavController(),it)
             binding.recyclerView.adapter = adapter
         }
+
+
     }
 
     override fun onDestroyView() {

@@ -47,6 +47,9 @@ class AddExpenditureFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddExpenditureBinding.inflate(inflater, container, false)
+
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
         return binding.root
@@ -58,9 +61,6 @@ class AddExpenditureFragment : Fragment() {
 //        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
 
         setupSpinner()
-
-        auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
 
         binding.saveBtn.setOnClickListener {
 
@@ -106,7 +106,6 @@ class AddExpenditureFragment : Fragment() {
                 timestamp
             )
         database.child(accountId).child("Expenditure").child(timestamp)
-//        Reference.databaseRef.child(accountId).child("Expenditure").child(uid)
             .setValue(expenditure)
         Toast.makeText(
             context,

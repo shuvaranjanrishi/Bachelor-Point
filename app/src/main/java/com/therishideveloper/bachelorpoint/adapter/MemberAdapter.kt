@@ -1,19 +1,14 @@
 package com.therishideveloper.bachelorpoint.adapter
 
-import android.graphics.Color
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.model.Member
 import com.therishideveloper.bachelorpoint.model.User
-import kotlin.coroutines.coroutineContext
 
 class MemberAdapter(private val navController: NavController, private val memberList: List<User>) :
     RecyclerView.Adapter<MemberAdapter.ViewHolder>() {
@@ -32,7 +27,9 @@ class MemberAdapter(private val navController: NavController, private val member
         holder.phoneTv.text = member.phone
 
         holder.itemView.setOnClickListener {
-            navController.navigate(R.id.action_nav_member_to_member_details)
+            val bundle = Bundle()
+            bundle.putSerializable("UID", member.uid) // Serializable Object
+            navController.navigate(R.id.action_nav_member_to_member_details, bundle)
         }
 
     }
