@@ -37,19 +37,9 @@
     <Spinner
         android:id="@+id/spinner"
         style="@style/SpinnerStyle"
+        android:layout_marginBottom="@dimen/dimen_5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/nameEt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_5dp"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:background="@drawable/bg_et"
-        android:hint="@string/name_bn"
-        android:inputType="text"
-        android:padding="@dimen/dimen_10dp" />
 
     <EditText
         android:id="@+id/amountEt"

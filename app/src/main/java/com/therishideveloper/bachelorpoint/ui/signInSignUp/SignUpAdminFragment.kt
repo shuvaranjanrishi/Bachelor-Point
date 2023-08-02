@@ -71,12 +71,6 @@ class SignUpAdminFragment : Fragment() {
                     ).show()
                 }
         }
-
-        homeViewModel.data.observe(viewLifecycleOwner) {
-            val adapter = ModuleAdapter(findNavController(), it)
-//            binding.recyclerView.adapter = adapter
-        }
-
     }
 
     private fun createAdminAccount(
@@ -103,16 +97,19 @@ class SignUpAdminFragment : Fragment() {
             )
         database.child("Users").child(uid).setValue(user)
             .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(
-                        context,
-                        "Sign Up Successful",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    findNavController().navigate(R.id.action_nav_sign_up_admin_to_nav_sign_in)
-                } else {
-                    Log.e("addOnCompleteListener", "" + it.exception)
-                }
+                database.child("Users").child(uid).child("Members").child(uid).setValue(user)
+                    .addOnCompleteListener{
+                        if (it.isSuccessful) {
+                            Toast.makeText(
+                                context,
+                                "Sign Up Successful",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                            findNavController().navigate(R.id.action_nav_sign_up_admin_to_nav_sign_in)
+                        } else {
+                            Log.e("addOnCompleteListener", "" + it.exception)
+                        }
+                    }
             }
     }
 

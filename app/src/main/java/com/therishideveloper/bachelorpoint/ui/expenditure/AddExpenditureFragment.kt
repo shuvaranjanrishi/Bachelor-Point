@@ -64,7 +64,6 @@ class AddExpenditureFragment : Fragment() {
 
         binding.saveBtn.setOnClickListener {
 
-            itemName = binding.nameEt.text.toString().trim()
             amount = binding.amountEt.text.toString().trim()
             description = binding.descriptionEt.text.toString().trim()
 
@@ -72,7 +71,6 @@ class AddExpenditureFragment : Fragment() {
                 selectedUid,
                 selectedId,
                 selectedName,
-                itemName,
                 amount,
                 description
             )
@@ -85,7 +83,6 @@ class AddExpenditureFragment : Fragment() {
         id: String,
         uid: String,
         name: String,
-        itemName: String,
         amount: String,
         description: String,
     ) {
@@ -99,7 +96,6 @@ class AddExpenditureFragment : Fragment() {
 //                MyCalender.currentDate,
                 id,
                 name,
-                itemName,
                 amount,
                 description,
                 timestamp,
