@@ -86,6 +86,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (userType != "Admin"){
+            binding.fab.visibility = View.GONE
+        }
         binding.fab.setOnClickListener {
             setVisibility(clicked)
             setAnimation(clicked)
@@ -133,12 +136,12 @@ class HomeFragment : Fragment() {
         Log.e(TAG, "ACCOUNT_ID: $accountId")
 
         if (!clicked) {
-            if (userType == "Admin") binding.addMemberBtn.visibility = View.VISIBLE
+            binding.addMemberBtn.visibility = View.VISIBLE
             binding.addMealBtn.visibility = View.VISIBLE
             binding.addRentBtn.visibility = View.VISIBLE
             binding.addExpenditureBtn.visibility = View.VISIBLE
         } else {
-            if (userType == "Admin") binding.addMemberBtn.visibility = View.GONE
+            binding.addMemberBtn.visibility = View.GONE
             binding.addMealBtn.visibility = View.GONE
             binding.addRentBtn.visibility = View.GONE
             binding.addExpenditureBtn.visibility = View.GONE
