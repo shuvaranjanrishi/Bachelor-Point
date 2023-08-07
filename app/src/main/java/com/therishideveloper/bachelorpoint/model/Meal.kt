@@ -1,13 +1,14 @@
 package com.therishideveloper.bachelorpoint.model
 
 data class Meal(
-    var id: String,
-    var memberId: String,
-    var name: String,
-    var firstMeal: String,
-    var secondMeal: String,
-    var thirdMeal: String,
-    var subTotalMeal: String,
-    var createdAt: String,
-    var updatedAt: String
+    var id: String? = null,
+    var memberId: String? = null,
+    var name: String? = null,
+    var firstMeal: String? = null,
+    var secondMeal: String? = null,
+    var thirdMeal: String? = null,
+    var subTotalMeal: String? = null,
+    var date: String? = null,
+    var createdAt: String? = null,
+    var updatedAt: String? = null
 )

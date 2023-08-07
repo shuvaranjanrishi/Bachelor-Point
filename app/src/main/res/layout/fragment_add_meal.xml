@@ -126,7 +126,7 @@
             android:id="@+id/bottomLl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/create_member_btn"
+            android:layout_above="@id/saveBtn"
             android:orientation="vertical">
 
             <View
@@ -199,7 +199,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/create_member_btn"
+            android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
 
 class MemberViewModel : ViewModel() {
@@ -46,34 +47,65 @@ class MemberViewModel : ViewModel() {
     }
     val data: LiveData<List<User>> = _data
 
-    private val _member = MutableLiveData<User>().apply {
+//    private val _member = MutableLiveData<User>().apply {
+//
+//        val accountId: String = auth.uid!!
+//        database.orderByChild("uid").equalTo(accountId)
+//            .addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                        var member: User? = null
+//                        for (ds in dataSnapshot.children) {
+//                            member = ds.getValue(User::class.java)!!
+//                            Log.d(TAG, "onDataChange: $member")
+//                        }
+//                        value = member
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        Log.e(TAG, "DatabaseError", error.toException())
+//                    }
+//                }
+//            )
+//
+//    }
+//    val member: LiveData<User> = _member
 
-        val accountId: String = auth.uid!!
-        database.orderByChild("uid").equalTo(accountId)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        var member: User? = null
-                        for (ds in dataSnapshot.children) {
-                            member = ds.getValue(User::class.java)!!
-                            Log.d(TAG, "onDataChange: $member")
-                        }
-                        value = member
-                    }
+//    private val _mealList = MutableLiveData<List<Meal>>().apply {
+//
+//        val accountId: String = auth.uid!!
+//        database.orderByChild("uid").equalTo(accountId)
+//            .addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                        val mealList: MutableList<Meal> = mutableListOf()
+//                        for (ds in dataSnapshot.children) {
+//                            val user: User? = ds.getValue(User::class.java)
+//                            user!!
+//                            val meal = Meal(
+//                                ""+System.currentTimeMillis(),
+//                                ""+ user.id,
+//                                ""+ user.name,
+//                                "0",
+//                                "0",
+//                                "0",
+//                                "0",
+//                                ""+System.currentTimeMillis(),
+//                                ""+System.currentTimeMillis()
+//                            )
+//                            mealList.add(meal)
+//                            Log.d(TAG, "onDataChange: mealList: $mealList")
+//                        }
+//                        value = mealList
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        Log.e(TAG, "DatabaseError", error.toException())
+//                    }
+//                }
+//            )
+//
+//    }
+//    val mealList: LiveData<List<Meal>> = _mealList
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
-                }
-            )
-
-    }
-    val member: LiveData<User> = _member
-
-    private val _currentScrambledWord = MutableLiveData<String>()
-    val currentScrambledWord: LiveData<String>
-        get() = _currentScrambledWord
-
-    private fun getNextWord() {
-    }
 }

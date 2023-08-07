@@ -1,5 +1,7 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,17 +10,34 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddMealAdapter
+import com.therishideveloper.bachelorpoint.adapter.MealAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMealBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 
 class AddMealFragment : Fragment(), MealListener {
+
+    private val TAG = "AddMealFragment"
 
     private var _binding: FragmentAddMealBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: MealViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by viewModels()
+    private lateinit var mealList: List<Meal>
+    private lateinit var database: DatabaseReference
+    private lateinit var session: SharedPreferences
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,48 +45,104 @@ class AddMealFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddMealBinding.inflate(inflater, container, false)
+
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val name: String = binding.nameEt.text.toString().trim()
-//        val email: String = binding.emailEt.text.toString().trim()
-//        val address: String = binding.addressEt.text.toString().trim()
-//        val phone: String = binding.phoneEt.text.toString().trim()
-//
-//        binding.saveBtn.setOnClickListener {
-//            val timestamp: String = "" + System.currentTimeMillis();
-//            val member = Member("1", name, email, address, phone, timestamp, timestamp)
-//            Log.d("AddMember", "Member: $member")
-//        }
         val listener = this
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                val adapter = AddMealAdapter(listener, it)
-                binding.recyclerView.adapter = adapter
-//                binding.progressBar.isVisible = false
-//                binding.mainLl.isVisible = true
-            } else {
-                Toast.makeText(context, "No Data Found", Toast.LENGTH_LONG).show()
-            }
 
+        memberViewModel.data.observe(viewLifecycleOwner) {
+            Log.d("TAG", "mealList.size: " +it.size.toString())
+            val mealList: MutableList<Meal> = mutableListOf()
+            for (user in it) {
+                val meal = Meal(
+                    ""+System.currentTimeMillis(),
+                    ""+ user.id,
+                    ""+ user.name,
+                    "0",
+                    "0",
+                    "0",
+                    "0",
+                    ""+System.currentTimeMillis(),
+                    ""+System.currentTimeMillis()
+                )
+                mealList.add(meal)
+                Log.d(TAG, "onDataChange: mealList: $mealList")
+            }
+            val adapter = AddMealAdapter(listener,mealList)
+            binding.recyclerView.adapter = adapter
         }
+
+        binding.saveBtn.setOnClickListener {
+
+            if (mealList.isNotEmpty()) {
+                Log.d(TAG, "onViewCreated: "+mealList.size)
+                for (meal in mealList) {
+                    addMeals(
+                        meal.firstMeal!!,
+                        meal.secondMeal!!,
+                        meal.thirdMeal!!,
+                        meal.subTotalMeal!!,
+                        meal.memberId!!,
+                        meal.name!!
+                    )
+                }
+            }
+        }
+
+    }
+
+    private fun addMeals(
+        firstMeal: String,
+        secondMeal: String,
+        thirdMeal: String,
+        subTotalMeal: String,
+        memberId: String,
+        name: String,
+    ) {
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        val timestamp = "" + System.currentTimeMillis()
+        val meal =
+            Meal(
+                timestamp,
+                memberId,
+                name,
+                firstMeal,
+                secondMeal,
+                thirdMeal,
+                subTotalMeal,
+                MyCalender.currentDate,
+                timestamp,
+                timestamp
+            )
+        database.child(accountId).child("Meal").child(timestamp).setValue(meal)
+        Toast.makeText(
+            context,
+            "Meal Added Successful",
+            Toast.LENGTH_SHORT,
+        ).show()
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
         Log.d("TAG", "mealList.size: " + mealList.size.toString())
+        this.mealList = mealList
         if (mealList.isNotEmpty()) {
             var totalMeal = 0
             var totalFirstMeal = 0
             var totalSecondMeal = 0
             var totalThirdMeal = 0
             for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal.toInt();
-                totalSecondMeal += meal.secondMeal.toInt();
-                totalThirdMeal += meal.thirdMeal.toInt();
-                totalMeal += meal.subTotalMeal.toInt();
+                totalFirstMeal += meal.firstMeal!!.toInt();
+                totalSecondMeal += meal.secondMeal!!.toInt();
+                totalThirdMeal += meal.thirdMeal!!.toInt();
+                totalMeal += meal.subTotalMeal!!.toInt();
 
                 binding.totalFirstMealTv.text = totalFirstMeal.toString()
                 binding.totalSecondMealTv.text = totalSecondMeal.toString()
