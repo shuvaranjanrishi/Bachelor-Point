@@ -16,7 +16,8 @@
 
         <ImageView
             android:id="@+id/iconIv"
-            android:layout_width="match_parent"
+            android:layout_width="80dp"
+            android:padding="@dimen/dimen_10dp"
             android:layout_height="80dp"
             android:scaleType="fitCenter"
             android:src="@drawable/baseline_person_24" />
