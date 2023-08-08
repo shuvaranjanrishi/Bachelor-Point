@@ -11,9 +11,6 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_nav_home_to_nav_nav_meal"
-            app:destination="@id/nav_member" />
-        <action
             android:id="@+id/action_nav_home_to_nav_member"
             app:destination="@id/nav_member" />
         <action
@@ -39,6 +36,9 @@
             app:destination="@id/nav_add_expenditure" />
         <action
             android:id="@+id/action_nav_home_to_nav_sign_in"
+            app:destination="@id/nav_sign_in" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_monthly"
             app:destination="@id/nav_sign_in" />
     </fragment>
 
@@ -105,6 +105,12 @@
         android:name="com.therishideveloper.bachelorpoint.ui.expenditure.AddExpenditureFragment"
         android:label="@string/menu_add_expenditure"
         tools:layout="@layout/fragment_add_expenditure" />
+
+    <fragment
+        android:id="@+id/nav_monthly"
+        tools:layout="@layout/fragment_monthly"
+        android:name="com.therishideveloper.bachelorpoint.ui.monthly.MonthlyFragment"
+        android:label="@string/menu_monthly_account" />
 
     <fragment
         android:id="@+id/nav_nav_member_details"

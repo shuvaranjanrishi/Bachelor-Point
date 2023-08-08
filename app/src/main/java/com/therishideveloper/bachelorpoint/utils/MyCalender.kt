@@ -27,6 +27,8 @@ object MyCalender {
         get() = android.text.format.DateFormat.format("EEEE", Date()).toString()
     val currentDate: String
         get() = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
+    val thisMonth: String
+        get() = SimpleDateFormat("yyyy", Locale.US).format(Date())
     val previousDate: String
         get() {
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)

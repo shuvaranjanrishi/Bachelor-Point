@@ -1,4 +1,4 @@
-package com.therishideveloper.bachelorpoint.ui.meal
+package com.therishideveloper.bachelorpoint.ui.monthly
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -20,9 +20,10 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentMealBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
-class MealFragment : Fragment(),MealListener {
+class MonthlyFragment : Fragment(),MealListener {
 
     private val TAG = "MealFragment"
 
@@ -33,7 +34,6 @@ class MealFragment : Fragment(),MealListener {
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +42,7 @@ class MealFragment : Fragment(),MealListener {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database = Firebase.database.reference.child("Bachelor Point").child("Users")
+
         return binding.root
     }
 
@@ -51,10 +52,10 @@ class MealFragment : Fragment(),MealListener {
         binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
 
         binding.dateTv.setOnClickListener {
-            MyCalender.pickDateAndDay(activity, object : MyDateAndDay {
+            MyCalender.pickDateAndDay(activity, object : MyDateAndDay{
                 override fun onPickDateAndDay(date: String?, day: String?) {
-                    binding.dateTv.text = (day + " " + date)
                     if (date != null) {
+                        binding.dateTv.text = (day+" "+date)
                         getMealList(date)
                     }
                 }
