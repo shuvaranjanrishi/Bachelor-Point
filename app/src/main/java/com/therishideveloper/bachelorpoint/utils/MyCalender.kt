@@ -3,13 +3,17 @@ package com.therishideveloper.bachelorpoint.utils
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import com.therishideveloper.bachelorpoint.listener.MyDate
 import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -27,8 +31,31 @@ object MyCalender {
         get() = android.text.format.DateFormat.format("EEEE", Date()).toString()
     val currentDate: String
         get() = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
-    val thisMonth: String
+    val currentDayAndDate: String
+        get() = android.text.format.DateFormat.format("EEEE", Date())
+            .toString() + " " + SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
+    val currentMonth: String
+        get() = SimpleDateFormat("MMMM", Locale.US).format(myCalendar.time);
+    val currentYear: String
         get() = SimpleDateFormat("yyyy", Locale.US).format(Date())
+    val currentMonthYear: String
+        get() = SimpleDateFormat(
+            "MMMM",
+            Locale.US
+        ).format(myCalendar.time) + " " + SimpleDateFormat("yyyy", Locale.US).format(Date())
+
+    //
+//    val calendar = Calendar.getInstance()
+////
+//@RequiresApi(Build.VERSION_CODES.O)
+//val current = LocalDateTime.of(
+//        calendar.get(Calendar.YEAR),
+//        calendar.get(Calendar.MONTH),
+//        calendar.get(Calendar.DAY_OF_MONTH),
+//        calendar.get(Calendar.HOUR_OF_DAY),
+//        calendar.get(Calendar.MINUTE),
+//        calendar.get(Calendar.SECOND)
+//    )
     val previousDate: String
         get() {
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)
@@ -100,6 +127,20 @@ object MyCalender {
         val dateFormat: DateFormat = SimpleDateFormat("d'$dayNumberSuffix' MMMM yyyy KK:mm a")
         return dateFormat.format(cal.time)
     }
+
+    val firstDateOfMonth: String
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() {
+            return LocalDate.now().withDayOfMonth(1)
+                .format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        }
+
+    val lastDateOfMonth: String
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() {
+            return LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+                .format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        }
 
     private fun getDayNumberSuffix(day: Int): String {
         return if (day >= 11 && day <= 13) {

@@ -2,11 +2,13 @@ package com.therishideveloper.bachelorpoint.ui.meal
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
@@ -22,7 +24,8 @@ import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
-class MealFragment : Fragment(),MealListener {
+
+class MealFragment : Fragment(), MealListener {
 
     private val TAG = "MealFragment"
 
@@ -53,8 +56,8 @@ class MealFragment : Fragment(),MealListener {
         binding.dateTv.setOnClickListener {
             MyCalender.pickDateAndDay(activity, object : MyDateAndDay {
                 override fun onPickDateAndDay(date: String?, day: String?) {
-                    binding.dateTv.text = (day + " " + date)
                     if (date != null) {
+                        binding.dateTv.text = (day + " " + date)
                         getMealList(date)
                     }
                 }
@@ -71,7 +74,7 @@ class MealFragment : Fragment(),MealListener {
         Log.d(TAG, "onDataChange: accountId: $accountId")
 
         val listener = this
-        database.child(accountId).child("Meal").orderByChild("date").equalTo(date)
+        database.child(accountId).child("Meal").child(date)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {

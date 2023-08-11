@@ -1,5 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -18,11 +18,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddMealAdapter
-import com.therishideveloper.bachelorpoint.adapter.MealAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMealBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.model.Meal
-import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
@@ -38,6 +36,7 @@ class AddMealFragment : Fragment(), MealListener {
     private lateinit var database: DatabaseReference
     private lateinit var session: SharedPreferences
     private lateinit var auth: FirebaseAuth
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,40 +49,49 @@ class AddMealFragment : Fragment(), MealListener {
         database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
+
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val listener = this
+        binding.dateTv.text = MyCalender.currentDayAndDate
+        progressDialog = ProgressDialog(context)
+        progressDialog.setTitle("Please Wait")
+        progressDialog.setMessage("Adding Meals ...")
+        progressDialog.setCancelable(false)
 
+        val listener = this
         memberViewModel.data.observe(viewLifecycleOwner) {
-            Log.d("TAG", "mealList.size: " +it.size.toString())
+            Log.d("TAG", "mealList.size: " + it.size.toString())
             val mealList: MutableList<Meal> = mutableListOf()
             for (user in it) {
                 val meal = Meal(
-                    ""+System.currentTimeMillis(),
-                    ""+ user.id,
-                    ""+ user.name,
+                    "" + System.currentTimeMillis(),
+                    "" + user.id,
+                    "" + user.name,
                     "0",
                     "0",
                     "0",
                     "0",
-                    ""+System.currentTimeMillis(),
-                    ""+System.currentTimeMillis()
+                    "" + System.currentTimeMillis(),
+                    "" + System.currentTimeMillis()
                 )
                 mealList.add(meal)
                 Log.d(TAG, "onDataChange: mealList: $mealList")
             }
+            this.mealList = mealList
             val adapter = AddMealAdapter(listener,mealList)
             binding.recyclerView.adapter = adapter
         }
 
         binding.saveBtn.setOnClickListener {
+            progressDialog.show()
 
             if (mealList.isNotEmpty()) {
-                Log.d(TAG, "onViewCreated: "+mealList.size)
+                Log.d(TAG, "onViewCreated: " + mealList.size)
                 for (meal in mealList) {
                     addMeals(
                         meal.firstMeal!!,
@@ -94,6 +102,12 @@ class AddMealFragment : Fragment(), MealListener {
                         meal.name!!
                     )
                 }
+                progressDialog.dismiss()
+                Toast.makeText(
+                    context,
+                    "Meal Added Successful",
+                    Toast.LENGTH_SHORT,
+                ).show()
             }
         }
 
@@ -122,12 +136,9 @@ class AddMealFragment : Fragment(), MealListener {
                 timestamp,
                 timestamp
             )
-        database.child(accountId).child("Meal").child(timestamp).setValue(meal)
-        Toast.makeText(
-            context,
-            "Meal Added Successful",
-            Toast.LENGTH_SHORT,
-        ).show()
+        database.child(accountId).child("Meal").child(MyCalender.currentDate).child(memberId)
+            .setValue(meal)
+//        database.child(accountId).child("Meal").child(memberId).child(MyCalender.currentDate).setValue(meal)
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {

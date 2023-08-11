@@ -130,6 +130,7 @@ class SignInFragment : Fragment() {
         editor.putString("USER_ID", "" + uid);
         editor.putString("USER_TYPE", "" + usertype)
         editor.putString("ACCOUNT_ID", "" + accountId)
+        editor.putString("MEMBER_ID", "" + id)
         editor.apply()
 
         Toast.makeText(
