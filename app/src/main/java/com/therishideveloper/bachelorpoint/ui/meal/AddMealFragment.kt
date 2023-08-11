@@ -91,23 +91,32 @@ class AddMealFragment : Fragment(), MealListener {
             progressDialog.show()
 
             if (mealList.isNotEmpty()) {
-                Log.d(TAG, "onViewCreated: " + mealList.size)
-                for (meal in mealList) {
-                    addMeals(
-                        meal.firstMeal!!,
-                        meal.secondMeal!!,
-                        meal.thirdMeal!!,
-                        meal.subTotalMeal!!,
-                        meal.memberId!!,
-                        meal.name!!
-                    )
+                if (binding.totalMealTv.text.equals("0")) {
+                    Toast.makeText(
+                        context,
+                        "Zero Meal will not Added",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    progressDialog.dismiss()
+                } else {
+                    for (meal in mealList) {
+                        addMeals(
+                            meal.firstMeal!!,
+                            meal.secondMeal!!,
+                            meal.thirdMeal!!,
+                            meal.subTotalMeal!!,
+                            meal.memberId!!,
+                            meal.name!!
+                        )
+                    }
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        context,
+                        "Meal Added Successful",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
-                progressDialog.dismiss()
-                Toast.makeText(
-                    context,
-                    "Meal Added Successful",
-                    Toast.LENGTH_SHORT,
-                ).show()
+
             }
         }
 

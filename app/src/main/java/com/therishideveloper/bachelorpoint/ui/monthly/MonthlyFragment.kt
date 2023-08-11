@@ -81,33 +81,34 @@ class MonthlyFragment : Fragment(),MealListener {
                         val mealList: MutableList<Meal> = mutableListOf()
                         for (ds in dataSnapshot.children) {
                             val meal: Meal? = ds.getValue(Meal::class.java)
-                            if (meal != null) {
-                                val fMeal = meal.firstMeal!!.toInt() + meal.firstMeal!!.toInt()
-                                val sMeal =
-                                    meal.secondMeal!!.toInt() + meal.secondMeal!!.toInt()
-                                val tMeal = meal.thirdMeal!!.toInt() + meal.thirdMeal!!.toInt()
-                                val stMeal =
-                                    meal.subTotalMeal!!.toInt() + meal.subTotalMeal!!.toInt()
-                                mealList.add(
-                                    Meal(
-                                        meal.id,
-                                        meal.memberId,
-                                        meal.name,
-                                        fMeal.toString(),
-                                        sMeal.toString(),
-                                        tMeal.toString(),
-                                        stMeal.toString(),
-                                        meal.date,
-                                        meal.createdAt,
-                                        meal.updatedAt
-                                    )
-                                )
-                            }
-                            if (mealList.contains(meal)) {
-                                mealList.remove(meal)
-                            }
+                            mealList.add(meal!!)
+//                            if (meal != null) {
+//                                val fMeal = meal.firstMeal!!.toInt() + meal.firstMeal!!.toInt()
+//                                val sMeal =
+//                                    meal.secondMeal!!.toInt() + meal.secondMeal!!.toInt()
+//                                val tMeal = meal.thirdMeal!!.toInt() + meal.thirdMeal!!.toInt()
+//                                val stMeal =
+//                                    meal.subTotalMeal!!.toInt() + meal.subTotalMeal!!.toInt()
+//                                mealList.add(
+//                                    Meal(
+//                                        meal.id,
+//                                        meal.memberId,
+//                                        meal.name,
+//                                        fMeal.toString(),
+//                                        sMeal.toString(),
+//                                        tMeal.toString(),
+//                                        stMeal.toString(),
+//                                        meal.date,
+//                                        meal.createdAt,
+//                                        meal.updatedAt
+//                                    )
+//                                )
+//                            }
+//                            if (mealList.contains(meal)) {
+//                                mealList.remove(meal)
+//                            }
                         }
-                        Log.d(TAG, "onDataChange: mealList: $mealList")
+                        Log.d(TAG, "onDataChange: size: ${mealList.size} mealList: $mealList")
                         val adapter = MealAdapter(listener, mealList)
                         binding.recyclerView.adapter = adapter
                     }
