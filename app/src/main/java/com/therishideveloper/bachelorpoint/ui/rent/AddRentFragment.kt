@@ -19,27 +19,31 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.spinner.RentTypeSpAdapter
-import com.therishideveloper.bachelorpoint.utils.MyCalender
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddRentBinding
-import com.therishideveloper.bachelorpoint.listener.MealListener
-import com.therishideveloper.bachelorpoint.model.Expenditure
-import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Rent
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 
-class AddRentFragment : Fragment(), MealListener {
+class AddRentFragment : Fragment() {
+
+    private val TAG = "AddRentFragment"
 
     private var _binding: FragmentAddRentBinding? = null
     private val binding get() = _binding!!
 
+    private val memberViewModel: MemberViewModel by viewModels()
     private val rentViewModel: RentViewModel by viewModels()
+    private var memberList: List<User> = mutableListOf()
+
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var session: SharedPreferences
-    private lateinit var selectedUid: String
     private lateinit var selectedId: String
     private lateinit var selectedName: String
     private lateinit var amount: String
+    private lateinit var date: String
     private lateinit var description: String
 
     override fun onCreateView(
@@ -61,17 +65,39 @@ class AddRentFragment : Fragment(), MealListener {
 
         setupSpinner()
 
-        binding.dateTv.text = (MyCalender.dayToday +" "+ MyCalender.currentDate)
+        binding.dateTv.text = MyCalender.currentMonthYear
+        date = MyCalender.currentMonthYear
+        binding.dateTv.setOnClickListener {
+            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
+                override fun onPickMonthAndYear(selectedDate: String?) {
+                    binding.dateTv.text = selectedDate
+                    if (selectedDate != null) {
+                        date = selectedDate
+                    }
+                    Log.d(TAG, "onPickDate: $selectedDate")
+                }
+            })
+        }
+
+        memberViewModel.data.observe(viewLifecycleOwner) {
+            memberList = it
+            binding.totalMemberTv.text = memberList.size.toString()
+        }
 
         binding.amountEt.addTextChangedListener(
-            onTextChanged = { s, _, _, _ ->
-//               val inputs = binding.amountEt.text.toString().trim().isEmpty() ? "0" : binding.amountEt.text.toString()
-//                if (inputs!=null){
-//
-//                }
-            },
+            onTextChanged = { _, _, _, _ ->
+                try {
+                    val inputs = binding.amountEt.text.toString().trim().toInt()
+                    val totalMember = binding.totalMemberTv.text.toString().trim().toInt()
+                    if (inputs != 0 && totalMember != 0) {
+                        val costPerHead = (inputs) / (totalMember)
+                        binding.perHeadCostTv.text = costPerHead.toString()
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception: ${e.message}")
+                }
+            }
         )
-
 
         binding.saveBtn.setOnClickListener {
 
@@ -82,6 +108,7 @@ class AddRentFragment : Fragment(), MealListener {
                 selectedId,
                 selectedName,
                 amount,
+                date,
                 description
             )
 
@@ -92,6 +119,7 @@ class AddRentFragment : Fragment(), MealListener {
         id: String,
         name: String,
         amount: String,
+        date: String,
         description: String,
     ) {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
@@ -101,6 +129,7 @@ class AddRentFragment : Fragment(), MealListener {
                 id,
                 name,
                 amount,
+                date,
                 description,
                 timestamp,
                 timestamp
@@ -112,27 +141,6 @@ class AddRentFragment : Fragment(), MealListener {
             "Rent And Bill Added Successful",
             Toast.LENGTH_SHORT,
         ).show()
-    }
-
-    override fun onChangeMeal(mealList: List<Meal>) {
-        Log.d("TAG", "mealList.size: " + mealList.size.toString())
-        if (mealList.isNotEmpty()) {
-            var totalMeal = 0
-            var totalFirstMeal = 0
-            var totalSecondMeal = 0
-            var totalThirdMeal = 0
-            for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toInt();
-                totalSecondMeal += meal.secondMeal!!.toInt();
-                totalThirdMeal += meal.thirdMeal!!.toInt();
-                totalMeal += meal.subTotalMeal!!.toInt();
-
-//                binding.totalFirstMealTv.text = totalFirstMeal.toString()
-//                binding.totalSecondMealTv.text = totalSecondMeal.toString()
-//                binding.totalThirdMealTv.text = totalThirdMeal.toString()
-//                binding.totalMealTv.text = totalMeal.toString()
-            }
-        }
     }
 
     private fun setupSpinner() {

@@ -42,6 +42,7 @@
 
     <EditText
         android:id="@+id/amountEt"
+        android:maxLength="10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_5dp"
@@ -81,8 +82,8 @@
             android:padding="@dimen/dimen_10dp"
             android:textSize="@dimen/dimen_18sp" />
 
-        <EditText
-            android:id="@+id/totalMemberEt"
+        <TextView
+            android:id="@+id/total_member_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -116,8 +117,8 @@
             android:padding="@dimen/dimen_10dp"
             android:textSize="@dimen/dimen_18sp" />
 
-        <EditText
-            android:id="@+id/perHeadCostEt"
+        <TextView
+            android:id="@+id/per_head_cost_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

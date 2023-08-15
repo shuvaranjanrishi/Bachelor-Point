@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import com.therishideveloper.bachelorpoint.listener.MyDate
 import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
+import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -44,18 +45,6 @@ object MyCalender {
             Locale.US
         ).format(myCalendar.time) + " " + SimpleDateFormat("yyyy", Locale.US).format(Date())
 
-    //
-//    val calendar = Calendar.getInstance()
-////
-//@RequiresApi(Build.VERSION_CODES.O)
-//val current = LocalDateTime.of(
-//        calendar.get(Calendar.YEAR),
-//        calendar.get(Calendar.MONTH),
-//        calendar.get(Calendar.DAY_OF_MONTH),
-//        calendar.get(Calendar.HOUR_OF_DAY),
-//        calendar.get(Calendar.MINUTE),
-//        calendar.get(Calendar.SECOND)
-//    )
     val previousDate: String
         get() {
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)
@@ -160,6 +149,23 @@ object MyCalender {
                 myCalendar[Calendar.MONTH] = monthOfYear
                 myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                 dateListener.onPickDate(simpleDateFormat.format(myCalendar.time))
+            }
+        DatePickerDialog(
+            activity!!,
+            endDateListener,
+            myCalendar[Calendar.YEAR],
+            myCalendar[Calendar.MONTH],
+            myCalendar[Calendar.DAY_OF_MONTH]
+        ).show()
+    }
+
+    fun pickMonthAndYear(activity: Activity?, dateListener: MyMonthAndYear) {
+        val endDateListener =
+            OnDateSetListener { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                myCalendar[Calendar.YEAR] = year
+                myCalendar[Calendar.MONTH] = monthOfYear
+                myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
+                dateListener.onPickMonthAndYear(currentMonthYear)
             }
         DatePickerDialog(
             activity!!,

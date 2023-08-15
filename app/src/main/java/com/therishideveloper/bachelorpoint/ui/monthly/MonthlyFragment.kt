@@ -38,7 +38,7 @@ class MonthlyFragment : Fragment(),MealListener {
     private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
-    var memberList: List<User> = mutableListOf()
+    private var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,

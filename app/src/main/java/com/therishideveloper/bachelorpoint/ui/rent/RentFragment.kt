@@ -1,5 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.rent
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
@@ -17,10 +19,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.adapter.RentAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentRentBinding
-import com.therishideveloper.bachelorpoint.listener.MyDate
+import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.listener.RentListener
 import com.therishideveloper.bachelorpoint.model.Rent
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+
 
 class RentFragment : Fragment(), RentListener {
 
@@ -46,20 +49,28 @@ class RentFragment : Fragment(), RentListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.dateTv.text = MyCalender.currentMonthYear
+        getRentAndBill(MyCalender.currentMonthYear)
         binding.dateTv.setOnClickListener {
-            MyCalender.pickDate(activity, object : MyDate {
-                override fun onPickDate(date: String?) {
+            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
+                override fun onPickMonthAndYear(date: String?) {
                     binding.dateTv.text = date
+                    getRentAndBill(date)
+                    Log.d(TAG, "onPickDate: $date")
                 }
             })
         }
+    }
 
+    private fun getRentAndBill(date: String?) {
         val database: DatabaseReference =
             Firebase.database.reference.child("Bachelor Point").child("Users")
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         val listener = this
 
         database.child(accountId).child("RentAndBill")
+            .orderByChild("date")
+            .equalTo(date)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
