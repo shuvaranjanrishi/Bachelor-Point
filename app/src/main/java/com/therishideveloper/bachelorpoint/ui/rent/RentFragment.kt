@@ -80,15 +80,13 @@ class RentFragment : Fragment(), RentListener {
     }
 
     override fun onChangeRent(rentList: List<Rent>) {
-        Log.d(TAG, "mealList.size: " + rentList.size.toString())
         if (rentList.isNotEmpty()) {
             var totalAmount = 0
             val totalMember = 6
-            var costPerHead = 0
-            for (meal in rentList) {
-                totalAmount += meal.amount!!.toInt();
+            for (rent in rentList) {
+                totalAmount += rent.amount!!.toInt()
             }
-            costPerHead = totalAmount / totalMember
+            val costPerHead: Int = totalAmount / totalMember
             binding.totalAmountTv.text = totalAmount.toString()
             binding.totalMemberTv.text = totalMember.toString()
             binding.costPerHeadTv.text = costPerHead.toString()

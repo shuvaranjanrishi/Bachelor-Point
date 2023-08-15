@@ -21,19 +21,24 @@ import com.therishideveloper.bachelorpoint.adapter.MealAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentMonthlyBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
+import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+
 
 class MonthlyFragment : Fragment(),MealListener {
 
-    private val TAG = "MealFragment"
+    private val TAG = "MonthlyFragment"
 
     private var _binding: FragmentMonthlyBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: MealViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by viewModels()
+    private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
+    var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,62 +60,29 @@ class MonthlyFragment : Fragment(),MealListener {
         binding.firstDateTv.text = MyCalender.firstDateOfMonth
         binding.lastDateTv.text = MyCalender.currentDate
 
-        Log.d(
-            TAG,
-            "firstDateOfMonth: ${MyCalender.firstDateOfMonth} lastDateOfMonth ${MyCalender.lastDateOfMonth}"
-        )
+        memberViewModel.data.observe(viewLifecycleOwner) {
+            memberList = it
+        }
 
         getMealListOfThisMonth()
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getMealListOfThisMonth() {
-
+        val mealList: MutableList<Meal> = mutableListOf()
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        val userId = session.getString("MEMBER_ID", "").toString()
-        Log.d(TAG, "onDataChange: accountId: $accountId userId: $userId")
 
-        val listener = this
-        database.child(accountId).child("Meal").orderByChild("date")
-            .startAt(MyCalender.firstDateOfMonth)
-            .endAt(MyCalender.lastDateOfMonth)
+        database.child(accountId).child("Meal")
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val mealList: MutableList<Meal> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val meal: Meal? = ds.getValue(Meal::class.java)
-                            mealList.add(meal!!)
-//                            if (meal != null) {
-//                                val fMeal = meal.firstMeal!!.toInt() + meal.firstMeal!!.toInt()
-//                                val sMeal =
-//                                    meal.secondMeal!!.toInt() + meal.secondMeal!!.toInt()
-//                                val tMeal = meal.thirdMeal!!.toInt() + meal.thirdMeal!!.toInt()
-//                                val stMeal =
-//                                    meal.subTotalMeal!!.toInt() + meal.subTotalMeal!!.toInt()
-//                                mealList.add(
-//                                    Meal(
-//                                        meal.id,
-//                                        meal.memberId,
-//                                        meal.name,
-//                                        fMeal.toString(),
-//                                        sMeal.toString(),
-//                                        tMeal.toString(),
-//                                        stMeal.toString(),
-//                                        meal.date,
-//                                        meal.createdAt,
-//                                        meal.updatedAt
-//                                    )
-//                                )
-//                            }
-//                            if (mealList.contains(meal)) {
-//                                mealList.remove(meal)
-//                            }
+                        for (dateValue in dataSnapshot.children) {
+                            for (mealValue in dateValue.children) {
+                                val meal: Meal? = mealValue.getValue(Meal::class.java)
+                                mealList.add(meal!!)
+                            }
                         }
-                        Log.d(TAG, "onDataChange: size: ${mealList.size} mealList: $mealList")
-                        val adapter = MealAdapter(listener, mealList)
-                        binding.recyclerView.adapter = adapter
+                        sumIndividualMeals(mealList)
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -120,8 +92,54 @@ class MonthlyFragment : Fragment(),MealListener {
             )
     }
 
+    private fun sumIndividualMeals(mealList: MutableList<Meal>) {
+
+        val listener = this
+        val newList: MutableList<Meal> = ArrayList()
+        for (i in memberList.indices) {
+            var id = ""
+            var name = ""
+            var createdAt = ""
+            var date = ""
+            var updatedAt = ""
+            var firstMeal = 0
+            var secondMeal = 0
+            var thirdMeal = 0
+            var subTotalMeal = 0
+            for (j in mealList.indices) {
+                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
+                    id = mealList[j].memberId.toString()
+                    name = mealList[j].name.toString()
+                    date = mealList[j].date.toString()
+                    createdAt = mealList[j].createdAt.toString()
+                    updatedAt = mealList[j].updatedAt.toString()
+                    firstMeal += mealList[j].firstMeal!!.toInt()
+                    secondMeal += mealList[j].secondMeal!!.toInt()
+                    thirdMeal += mealList[j].thirdMeal!!.toInt()
+                    subTotalMeal += mealList[j].subTotalMeal!!.toInt()
+                }
+            }
+            newList.add(
+                Meal(
+                    "" + id,
+                    "" + id,
+                    "" + name,
+                    "" + firstMeal,
+                    "" + secondMeal,
+                    "" + thirdMeal,
+                    "" + subTotalMeal,
+                    "" + date,
+                    ""+createdAt,
+                    ""+updatedAt
+                )
+            )
+        }
+
+        val adapter = MealAdapter(listener, newList.sortedBy { it.name })
+        binding.recyclerView.adapter = adapter
+    }
+
     override fun onChangeMeal(mealList: List<Meal>) {
-        Log.d("TAG", "mealList.size: " + mealList.size.toString())
         if (mealList.isNotEmpty()) {
             var totalMeal = 0
             var totalFirstMeal = 0

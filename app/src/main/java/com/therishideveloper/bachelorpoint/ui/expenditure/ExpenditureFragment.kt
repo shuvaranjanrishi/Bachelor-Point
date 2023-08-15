@@ -15,6 +15,7 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentMealBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
 import com.therishideveloper.bachelorpoint.model.Expenditure
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.utils.MyCalender
 
 class ExpenditureFragment : Fragment(),ExpenditureListener {
 
@@ -34,6 +35,8 @@ class ExpenditureFragment : Fragment(),ExpenditureListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.dateTv.text = MyCalender.currentMonthYear
 
         val listener = this
         memberViewModel.data.observe(viewLifecycleOwner) {

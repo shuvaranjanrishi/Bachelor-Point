@@ -2,13 +2,11 @@ package com.therishideveloper.bachelorpoint.ui.meal
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
@@ -84,7 +82,7 @@ class MealFragment : Fragment(), MealListener {
                             mealList.add(meal!!)
                         }
                         Log.d(TAG, "onDataChange: mealList: $mealList")
-                        val adapter = MealAdapter(listener, mealList)
+                        val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
                         binding.recyclerView.adapter = adapter
                     }
 
@@ -96,7 +94,6 @@ class MealFragment : Fragment(), MealListener {
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
-        Log.d("TAG", "mealList.size: " + mealList.size.toString())
         if (mealList.isNotEmpty()) {
             var totalMeal = 0
             var totalFirstMeal = 0
