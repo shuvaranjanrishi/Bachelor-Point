@@ -66,27 +66,7 @@ class AddRentFragment : Fragment() {
 
         setupSpinner()
 
-        binding.dateTv.text = MyCalender.currentMonthYear
-        monthAndYear = MyCalender.currentMonthYear
-        date = MyCalender.currentDate
-        binding.dateTv.setOnClickListener {
-            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
-                override fun onPickMonthAndYear(monthAndYear: String?) {
-                    binding.dateTv.text = monthAndYear
-                    if (monthAndYear != null) {
-                        this@AddRentFragment.monthAndYear = monthAndYear
-                    }
-                    Log.d(TAG, "monthAndYear: $monthAndYear")
-                }
-
-                override fun onPickDate(date: String?) {
-                    if (date != null) {
-                        this@AddRentFragment.date = date
-                    }
-                    Log.d(TAG, "date: $date")
-                }
-            })
-        }
+        setupDatePicker()
 
         memberViewModel.data.observe(viewLifecycleOwner) {
             memberList = it
@@ -112,6 +92,30 @@ class AddRentFragment : Fragment() {
             amount = binding.amountEt.text.toString().trim()
             description = binding.descriptionEt.text.toString().trim()
             addRentAndBill(amount, description)
+        }
+    }
+
+    private fun setupDatePicker() {
+        binding.dateTv.text = MyCalender.currentMonthYear
+        monthAndYear = MyCalender.currentMonthYear
+        date = MyCalender.currentDate
+        binding.dateTv.setOnClickListener {
+            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
+                override fun onPickMonthAndYear(monthAndYear: String?) {
+                    binding.dateTv.text = monthAndYear
+                    if (monthAndYear != null) {
+                        this@AddRentFragment.monthAndYear = monthAndYear
+                    }
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+
+                override fun onPickDate(date: String?) {
+                    if (date != null) {
+                        this@AddRentFragment.date = date
+                    }
+                    Log.d(TAG, "date: $date")
+                }
+            })
         }
     }
 
