@@ -3,8 +3,6 @@ package com.therishideveloper.bachelorpoint.ui.rent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.therishideveloper.bachelorpoint.model.Meal
-import com.therishideveloper.bachelorpoint.model.Member
 import com.therishideveloper.bachelorpoint.model.Rent
 
 class RentViewModel : ViewModel() {
@@ -34,7 +32,7 @@ class RentViewModel : ViewModel() {
             ),
             Rent(
                 "3",
-                "Service Charge",
+                "Gas Bill",
                 "",
                 "",
                 timestamp,
@@ -42,7 +40,7 @@ class RentViewModel : ViewModel() {
             ),
             Rent(
                 "4",
-                "Water Bill",
+                "Internet Bill",
                 "",
                 "",
                 timestamp,
@@ -50,7 +48,31 @@ class RentViewModel : ViewModel() {
             ),
             Rent(
                 "5",
+                "Service Charge",
+                "",
+                "",
+                timestamp,
+                timestamp
+            ),
+            Rent(
+                "6",
+                "Water Bill",
+                "",
+                "",
+                timestamp,
+                timestamp
+            ),
+            Rent(
+                "7",
                 "Khala Bill",
+                "",
+                "",
+                timestamp,
+                timestamp
+            ),
+            Rent(
+                "8",
+                "Others",
                 "",
                 "",
                 timestamp,

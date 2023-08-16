@@ -43,7 +43,7 @@ object MyCalender {
         get() = SimpleDateFormat(
             "MMMM",
             Locale.US
-        ).format(myCalendar.time) + " " + SimpleDateFormat("yyyy", Locale.US).format(Date())
+        ).format(myCalendar.time) + " " + SimpleDateFormat("yyyy", Locale.US).format(myCalendar.time)
 
     val previousDate: String
         get() {
@@ -162,10 +162,12 @@ object MyCalender {
     fun pickMonthAndYear(activity: Activity?, dateListener: MyMonthAndYear) {
         val endDateListener =
             OnDateSetListener { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                myCalendar
                 myCalendar[Calendar.YEAR] = year
                 myCalendar[Calendar.MONTH] = monthOfYear
                 myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                 dateListener.onPickMonthAndYear(currentMonthYear)
+                dateListener.onPickDate(simpleDateFormat.format(myCalendar.time))
             }
         DatePickerDialog(
             activity!!,

@@ -79,7 +79,7 @@ class RentFragment : Fragment(), RentListener {
                             val rent: Rent? = ds.getValue(Rent::class.java)
                             rentList.add(rent!!)
                         }
-                        val adapter = RentAdapter(listener, rentList)
+                        val adapter = RentAdapter(listener, rentList.sortedBy { it.amount!!.toInt() })
                         binding.recyclerView.adapter = adapter
                     }
 

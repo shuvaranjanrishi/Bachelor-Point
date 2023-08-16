@@ -4,6 +4,7 @@ data class Rent(
     var id: String? = null,
     var name: String? = null,
     var amount: String? = null,
+    var monthAndYear: String? = null,
     var date: String? = null,
     var descripiton: String? = null,
     var createdAt: String? = null,

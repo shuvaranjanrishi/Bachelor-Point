@@ -43,6 +43,7 @@ class AddRentFragment : Fragment() {
     private lateinit var selectedId: String
     private lateinit var selectedName: String
     private lateinit var amount: String
+    private lateinit var monthAndYear: String
     private lateinit var date: String
     private lateinit var description: String
 
@@ -66,15 +67,23 @@ class AddRentFragment : Fragment() {
         setupSpinner()
 
         binding.dateTv.text = MyCalender.currentMonthYear
-        date = MyCalender.currentMonthYear
+        monthAndYear = MyCalender.currentMonthYear
+        date = MyCalender.currentDate
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
-                override fun onPickMonthAndYear(selectedDate: String?) {
-                    binding.dateTv.text = selectedDate
-                    if (selectedDate != null) {
-                        date = selectedDate
+                override fun onPickMonthAndYear(monthAndYear: String?) {
+                    binding.dateTv.text = monthAndYear
+                    if (monthAndYear != null) {
+                        this@AddRentFragment.monthAndYear = monthAndYear
                     }
-                    Log.d(TAG, "onPickDate: $selectedDate")
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+
+                override fun onPickDate(date: String?) {
+                    if (date != null) {
+                        this@AddRentFragment.date = date
+                    }
+                    Log.d(TAG, "date: $date")
                 }
             })
         }
@@ -100,35 +109,21 @@ class AddRentFragment : Fragment() {
         )
 
         binding.saveBtn.setOnClickListener {
-
             amount = binding.amountEt.text.toString().trim()
             description = binding.descriptionEt.text.toString().trim()
-
-            addRentAndBill(
-                selectedId,
-                selectedName,
-                amount,
-                date,
-                description
-            )
-
+            addRentAndBill(amount, description)
         }
     }
 
-    private fun addRentAndBill(
-        id: String,
-        name: String,
-        amount: String,
-        date: String,
-        description: String,
-    ) {
+    private fun addRentAndBill(amount: String, description: String) {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val rent =
             Rent(
-                id,
-                name,
+                selectedId,
+                selectedName,
                 amount,
+                monthAndYear,
                 date,
                 description,
                 timestamp,
