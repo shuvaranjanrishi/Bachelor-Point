@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.ExpenseClosingListener
 import com.therishideveloper.bachelorpoint.model.MealClosing
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class ExpenseClosingAdapter(
     private var listener: ExpenseClosingListener,
@@ -25,6 +27,8 @@ class ExpenseClosingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.DOWN
 
         val member = mealList[position]
         holder.nameTv.text = member.name
@@ -33,14 +37,14 @@ class ExpenseClosingAdapter(
             val result = (member.totalExpense!!.toInt() - totalCostOfMeal)
             m += totalCostOfMeal
             e += result
-            holder.totalMealTv.text = totalCostOfMeal.toString()
-            holder.totalExpenditureTv.text = result.toString()
+            holder.totalMealTv.text = df.format(totalCostOfMeal).toString()
+            holder.totalExpenditureTv.text = df.format(result).toString()
 
         } catch (e: Exception) {
             Log.e("onBindViewHolder", "" + e.localizedMessage)
         }
 
-        listener.onChangeExpense(m.toString(), e.toString())
+        listener.onChangeExpense(df.format(m).toString(), df.format(e).toString())
 
     }
 

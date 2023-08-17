@@ -20,6 +20,7 @@ import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddMealAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMealBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
+import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
@@ -37,6 +38,9 @@ class AddMealFragment : Fragment(), MealListener {
     private lateinit var session: SharedPreferences
     private lateinit var auth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var dayName: String
+    private lateinit var monthAndYear: String
+    private lateinit var date: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +59,8 @@ class AddMealFragment : Fragment(), MealListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.dateTv.text = MyCalender.currentDayAndDate
+        setupDatePicker()
+
         progressDialog = ProgressDialog(context)
         progressDialog.setTitle("Please Wait")
         progressDialog.setMessage("Adding Meals ...")
@@ -120,6 +125,28 @@ class AddMealFragment : Fragment(), MealListener {
 
     }
 
+    private fun setupDatePicker() {
+        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        monthAndYear = MyCalender.currentMonthYear
+        date = MyCalender.currentDate
+        binding.dateTv.setOnClickListener {
+            MyCalender.pickDayMonthYear(activity, object : MyDayMonthYear {
+                override fun onPickDayMonthYear(dayName: String?,monthYear: String?,date: String?) {
+                    if (dayName != null) {
+                        this@AddMealFragment.dayName = dayName
+                        this@AddMealFragment.monthAndYear = monthAndYear
+                        if (date != null) {
+                            this@AddMealFragment.date = date
+                        }
+                        binding.dateTv.text = dayName + " " + date
+                    }
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+            }
+            )
+        }
+    }
+
     private fun addMeals(
         firstMeal: String,
         secondMeal: String,
@@ -139,13 +166,12 @@ class AddMealFragment : Fragment(), MealListener {
                 secondMeal,
                 thirdMeal,
                 subTotalMeal,
-                MyCalender.currentDate,
+                date,
                 timestamp,
                 timestamp
             )
-        database.child(accountId).child("Meal").child(MyCalender.currentDate).child(memberId)
+        database.child(accountId).child("Meal").child(date).child(memberId)
             .setValue(meal)
-//        database.child(accountId).child("Meal").child(memberId).child(MyCalender.currentDate).setValue(meal)
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {

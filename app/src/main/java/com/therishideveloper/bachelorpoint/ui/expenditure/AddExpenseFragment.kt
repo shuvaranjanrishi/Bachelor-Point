@@ -3,6 +3,7 @@ package com.therishideveloper.bachelorpoint.ui.expenditure
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +19,14 @@ import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenditureBinding
+import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
 
-class AddExpenditureFragment : Fragment() {
+class AddExpenseFragment : Fragment() {
 
     private val TAG = "AddExpenditureFragment"
 
@@ -40,6 +42,9 @@ class AddExpenditureFragment : Fragment() {
     private lateinit var selectedName: String
     private lateinit var amount: String
     private lateinit var description: String
+    private lateinit var dayName: String
+    private lateinit var monthAndYear: String
+    private lateinit var date: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +63,7 @@ class AddExpenditureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        setupDatePicker()
 
         setupSpinner()
 
@@ -76,6 +81,32 @@ class AddExpenditureFragment : Fragment() {
 
     }
 
+    private fun setupDatePicker() {
+        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        monthAndYear = MyCalender.currentMonthYear
+        date = MyCalender.currentDate
+        binding.dateTv.setOnClickListener {
+            MyCalender.pickDayMonthYear(activity, object : MyDayMonthYear {
+                override fun onPickDayMonthYear(
+                    dayName: String?,
+                    monthYear: String?,
+                    date: String?
+                ) {
+                    if (dayName != null) {
+                        this@AddExpenseFragment.dayName = dayName
+                        this@AddExpenseFragment.monthAndYear = monthAndYear
+                        if (date != null) {
+                            this@AddExpenseFragment.date = date
+                        }
+                        binding.dateTv.text = dayName + " " + date
+                    }
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+            }
+            )
+        }
+    }
+
     private fun addExpenditureAccount(
         amount: String,
         description: String,
@@ -86,8 +117,8 @@ class AddExpenditureFragment : Fragment() {
             Expense(
                 timestamp,
                 selectedUid,
-                MyCalender.currentDate,
-                MyCalender.currentMonthYear,
+                date,
+                monthAndYear,
                 selectedId,
                 selectedName,
                 amount,

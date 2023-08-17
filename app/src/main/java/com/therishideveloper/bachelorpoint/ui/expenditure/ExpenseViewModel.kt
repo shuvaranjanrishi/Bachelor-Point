@@ -14,7 +14,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.model.Expense
 
-class ExpenditureViewModel : ViewModel() {
+class ExpenseViewModel : ViewModel() {
 
     private val TAG = "ExpenditureViewModel"
 

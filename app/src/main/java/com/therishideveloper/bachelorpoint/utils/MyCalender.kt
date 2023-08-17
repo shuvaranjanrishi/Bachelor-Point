@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import com.therishideveloper.bachelorpoint.listener.MyDate
 import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
+import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import java.text.DateFormat
 import java.text.ParseException
@@ -168,6 +169,24 @@ object MyCalender {
                 myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                 dateListener.onPickMonthAndYear(currentMonthYear)
                 dateListener.onPickDate(simpleDateFormat.format(myCalendar.time))
+            }
+        DatePickerDialog(
+            activity!!,
+            endDateListener,
+            myCalendar[Calendar.YEAR],
+            myCalendar[Calendar.MONTH],
+            myCalendar[Calendar.DAY_OF_MONTH]
+        ).show()
+    }
+
+    fun pickDayMonthYear(activity: Activity?, dateListener: MyDayMonthYear) {
+        val endDateListener =
+            OnDateSetListener { view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                myCalendar
+                myCalendar[Calendar.YEAR] = year
+                myCalendar[Calendar.MONTH] = monthOfYear
+                myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
+                dateListener.onPickDayMonthYear(dayToday, currentMonthYear,simpleDateFormat.format(myCalendar.time))
             }
         DatePickerDialog(
             activity!!,

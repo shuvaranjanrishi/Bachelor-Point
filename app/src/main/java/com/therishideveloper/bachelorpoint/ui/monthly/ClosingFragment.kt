@@ -30,6 +30,8 @@ import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
@@ -43,7 +45,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
-    private lateinit var mealRate: String
     private var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
@@ -201,14 +202,15 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                     )
                 }
 
-                mealRate = (totalExpense.toDouble() / totalMeal.toDouble()).toString()
-
-                binding.totalMealTv.text = totalMeal.toString()
-                binding.totalExpenseTv.text = totalExpense.toString()
-                binding.mealRateTv.text = mealRate
+                val mealRate = (totalExpense.toDouble() / totalMeal.toDouble())
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.DOWN
+                binding.totalMealTv.text = df.format(totalMeal).toString()
+                binding.totalExpenseTv.text = df.format(totalExpense).toString()
+                binding.mealRateTv.text = df.format(mealRate).toString()
 
                 val adapter =
-                    ExpenseClosingAdapter(listener, mealRate, mealList.sortedBy { it.name })
+                    ExpenseClosingAdapter(listener, mealRate.toString(), mealList.sortedBy { it.name })
                 binding.recyclerView2.adapter = adapter
 
             }
@@ -218,17 +220,8 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     override fun onChangeExpense(totalCostOfMeal: String, totalResult: String) {
-//        if (mealList.isNotEmpty()) {
-//            var totalMeal = 0
-//            var totalExpenditure = 0
-//            for (meal in mealList) {
-//                totalMeal += meal.totalMeal!!.toInt()
-//                totalExpenditure += meal.totalExpense!!.toInt();
-//            }
-
         binding.totalExpenseOfMealTv.text = totalCostOfMeal
         binding.totalResultTv.text = totalResult
-//        }
     }
 
     override fun onDestroyView() {

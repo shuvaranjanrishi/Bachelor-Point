@@ -21,7 +21,7 @@ import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
-class ExpenditureFragment : Fragment(),ExpenditureListener {
+class ExpenseFragment : Fragment(),ExpenditureListener {
 
     private val TAG = "ExpenditureFragment"
 
