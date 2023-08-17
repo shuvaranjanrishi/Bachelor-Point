@@ -13,10 +13,11 @@ class HomeViewModel : ViewModel() {
     private val _data = MutableLiveData<List<Module>>().apply {
 
         moduleList = listOf(
-            Module(R.drawable.shopping, "বাজার"),
             Module(R.drawable.meal, "মিল"),
+            Module(R.drawable.shopping, "বাজার"),
+            Module(R.drawable.account, "মাসিক মিল"),
             Module(R.drawable.rent_and_bill, "ভাড়া ও বিল"),
-            Module(R.drawable.account, "মাসিক হিসাব"),
+            Module(R.drawable.monthly_closing, "মাসিক হিসাব"),
             Module(R.drawable.members, "মেম্বার্স"),
             Module(R.drawable.logout, "লগ আউট"),
         )

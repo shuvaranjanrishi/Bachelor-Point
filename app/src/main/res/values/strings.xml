@@ -18,6 +18,7 @@
     <string name="menu_expenditure">Expenditure</string>
     <string name="menu_add_expenditure">Add Expenditure</string>
     <string name="menu_member_details">Member Details</string>
+    <string name="menu_monthly_Meals">Monthly Meals</string>
     <string name="menu_monthly_account">Monthly Accounts</string>
     <string name="menu_sign_up_admin">Sign Up Admin</string>
     <string name="menu_sign_up_user">Sign Up User</string>

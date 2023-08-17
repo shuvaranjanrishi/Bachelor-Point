@@ -39,7 +39,10 @@
             app:destination="@id/nav_sign_in" />
         <action
             android:id="@+id/action_nav_home_to_nav_monthly"
-            app:destination="@id/nav_sign_in" />
+            app:destination="@id/nav_monthly" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_closing"
+            app:destination="@id/nav_closing" />
     </fragment>
 
     <fragment
@@ -110,6 +113,12 @@
         android:id="@+id/nav_monthly"
         tools:layout="@layout/fragment_monthly"
         android:name="com.therishideveloper.bachelorpoint.ui.monthly.MonthlyFragment"
+        android:label="@string/menu_monthly_Meals" />
+
+    <fragment
+        android:id="@+id/nav_closing"
+        tools:layout="@layout/fragment_closing"
+        android:name="com.therishideveloper.bachelorpoint.ui.monthly.ClosingFragment"
         android:label="@string/menu_monthly_account" />
 
     <fragment
