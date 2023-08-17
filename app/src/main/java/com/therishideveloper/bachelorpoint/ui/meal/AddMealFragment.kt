@@ -49,8 +49,6 @@ class AddMealFragment : Fragment(), MealListener {
         database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
-
-
         return binding.root
     }
 

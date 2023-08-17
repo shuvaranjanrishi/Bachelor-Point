@@ -24,12 +24,9 @@ class ExpenditureViewModel : ViewModel() {
 
     private var auth: FirebaseAuth = Firebase.auth
     private var database: DatabaseReference = Firebase.database.reference.child("Bachelor Point").child("Users")
-//    private var session: SharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-
 
     private val _data = MutableLiveData<List<Expenditure>>().apply {
 
-//        val accountId: String = "N8NevFOQ3kUnC0VyZdk90rrMaV82";
         val accountId: String = auth.uid!!
         database.child(accountId).child("Expenditure")
             .addListenerForSingleValueEvent(

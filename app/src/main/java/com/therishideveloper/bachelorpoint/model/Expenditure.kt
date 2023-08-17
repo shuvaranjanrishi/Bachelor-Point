@@ -4,6 +4,7 @@ data class Expenditure(
     var id: String? = null,
     var uid: String? = null,
     var date: String? = null,
+    var monthAndYear: String? = null,
     var memberId: String? = null,
     var memberName: String? = null,
     var totalCost: String? = null,

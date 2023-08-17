@@ -58,7 +58,9 @@ class RentFragment : Fragment(), RentListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.dateTv.text = monthAndYear
-                    getRentAndBill(monthAndYear)
+                    if (monthAndYear != null) {
+                        getRentAndBill(monthAndYear)
+                    }
                     Log.d(TAG, "monthAndYear: $monthAndYear")
                 }
 

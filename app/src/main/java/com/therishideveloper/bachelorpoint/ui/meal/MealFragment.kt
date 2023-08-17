@@ -30,10 +30,8 @@ class MealFragment : Fragment(), MealListener {
     private var _binding: FragmentMealBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

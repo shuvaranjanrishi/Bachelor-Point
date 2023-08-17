@@ -68,9 +68,6 @@ class AddExpenditureFragment : Fragment() {
             description = binding.descriptionEt.text.toString().trim()
 
             addExpenditureAccount(
-                selectedUid,
-                selectedId,
-                selectedName,
                 amount,
                 description
             )
@@ -80,9 +77,6 @@ class AddExpenditureFragment : Fragment() {
     }
 
     private fun addExpenditureAccount(
-        id: String,
-        uid: String,
-        name: String,
         amount: String,
         description: String,
     ) {
@@ -91,10 +85,11 @@ class AddExpenditureFragment : Fragment() {
         val expenditure =
             Expenditure(
                 timestamp,
-                uid,
+                selectedUid,
                 MyCalender.currentDate,
-                id,
-                name,
+                MyCalender.currentMonthYear,
+                selectedId,
+                selectedName,
                 amount,
                 description,
                 timestamp,
