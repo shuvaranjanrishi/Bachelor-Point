@@ -3,18 +3,13 @@ package com.therishideveloper.bachelorpoint.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
-import com.therishideveloper.bachelorpoint.listener.MealListener
-import com.therishideveloper.bachelorpoint.model.Expenditure
-import com.therishideveloper.bachelorpoint.model.Meal
-import kotlin.coroutines.coroutineContext
+import com.therishideveloper.bachelorpoint.model.Expense
 
-class AddExpenditureAdapter(private var listener: ExpenditureListener, private val expenditureList: List<Expenditure>) :
+class AddExpenditureAdapter(private var listener: ExpenditureListener, private val expenditureList: List<Expense>) :
     RecyclerView.Adapter<AddExpenditureAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

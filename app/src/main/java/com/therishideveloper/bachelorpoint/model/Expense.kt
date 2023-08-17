@@ -1,6 +1,6 @@
 package com.therishideveloper.bachelorpoint.model
 
-data class Expenditure(
+data class Expense(
     var id: String? = null,
     var uid: String? = null,
     var date: String? = null,

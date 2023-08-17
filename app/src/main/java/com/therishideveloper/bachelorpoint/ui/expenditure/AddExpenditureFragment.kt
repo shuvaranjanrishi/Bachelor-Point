@@ -18,7 +18,7 @@ import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenditureBinding
-import com.therishideveloper.bachelorpoint.model.Expenditure
+import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
@@ -83,7 +83,7 @@ class AddExpenditureFragment : Fragment() {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val expenditure =
-            Expenditure(
+            Expense(
                 timestamp,
                 selectedUid,
                 MyCalender.currentDate,

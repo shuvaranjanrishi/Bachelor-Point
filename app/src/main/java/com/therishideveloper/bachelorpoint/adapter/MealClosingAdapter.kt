@@ -7,8 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.MealClosingListener
-import com.therishideveloper.bachelorpoint.listener.MealListener
-import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 
 class MealClosingAdapter(private var listener: MealClosingListener, private val mealList: List<MealClosing>) :
@@ -27,8 +25,8 @@ class MealClosingAdapter(private var listener: MealClosingListener, private val 
         holder.nameTv.text = member.name
 //        holder.firstMealTv.text = member.firstMeal
 //        holder.secondMealTv.text = member.secondMeal
-        holder.totalMealTv.text = member.subTotalMeal
-        holder.totalExpenditureTv.text = member.totalExpenditure
+        holder.totalMealTv.text = member.totalMeal
+        holder.totalExpenditureTv.text = member.totalExpense
 
         listener.onChangeMeal(mealList)
 

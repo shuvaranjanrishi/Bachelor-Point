@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
-import com.therishideveloper.bachelorpoint.model.Expenditure
-import kotlin.math.exp
+import com.therishideveloper.bachelorpoint.model.Expense
 
 class ExpenditureAdapter(
     private var listener: ExpenditureListener,
-    private val expenditureList: List<Expenditure>
+    private val expenditureList: List<Expense>
 ) :
     RecyclerView.Adapter<ExpenditureAdapter.ViewHolder>() {
 

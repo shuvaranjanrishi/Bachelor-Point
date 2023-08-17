@@ -1,7 +1,8 @@
 package com.therishideveloper.bachelorpoint.listener
 
 import com.therishideveloper.bachelorpoint.model.ExpenseClosing
+import com.therishideveloper.bachelorpoint.model.MealClosing
 
 interface ExpenseClosingListener {
-    fun onChangeExpense(mealList: List<ExpenseClosing>)
+    fun onChangeExpense(totalCostOfMeal:String,totalResult:String)
 }

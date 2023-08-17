@@ -17,15 +17,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.adapter.ExpenditureAdapter
-import com.therishideveloper.bachelorpoint.adapter.MealAdapter
+import com.therishideveloper.bachelorpoint.adapter.ExpenseClosingAdapter
 import com.therishideveloper.bachelorpoint.adapter.MealClosingAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentClosingBinding
-import com.therishideveloper.bachelorpoint.databinding.FragmentMonthlyBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenseClosingListener
 import com.therishideveloper.bachelorpoint.listener.MealClosingListener
-import com.therishideveloper.bachelorpoint.listener.MealListener
-import com.therishideveloper.bachelorpoint.model.Expenditure
+import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
@@ -46,6 +43,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
+    private lateinit var mealRate: String
     private var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
@@ -83,9 +81,9 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataList: MutableList<Expenditure> = mutableListOf()
+                        val dataList: MutableList<Expense> = mutableListOf()
                         for (ds in dataSnapshot.children) {
-                            val expenditure: Expenditure? = ds.getValue(Expenditure::class.java)
+                            val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
                         }
                         sumIndividualMeals(mealList,dataList)
@@ -122,7 +120,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             )
     }
 
-    private fun sumIndividualMeals(mealList: MutableList<Meal>, expenditureList: MutableList<Expenditure>) {
+    private fun sumIndividualMeals(mealList: MutableList<Meal>, expenseList: MutableList<Expense>) {
 
         val listener = this
         val newList: MutableList<MealClosing> = ArrayList()
@@ -132,10 +130,9 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             var createdAt = ""
             var date = ""
             var updatedAt = ""
-            var firstMeal = 0
-            var secondMeal = 0
-            var thirdMeal = 0
             var subTotalMeal = 0
+            var totalExpense = 0
+
             for (j in mealList.indices) {
                 if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
                     id = mealList[j].memberId.toString()
@@ -143,19 +140,15 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                     date = mealList[j].date.toString()
                     createdAt = mealList[j].createdAt.toString()
                     updatedAt = mealList[j].updatedAt.toString()
-                    firstMeal += mealList[j].firstMeal!!.toInt()
-                    secondMeal += mealList[j].secondMeal!!.toInt()
-                    thirdMeal += mealList[j].thirdMeal!!.toInt()
                     subTotalMeal += mealList[j].subTotalMeal!!.toInt()
                 }
             }
 
             //sum expense
-            var totalExpenditure = 0
-            if (expenditureList.isNotEmpty()) {
-                for (expenditure in expenditureList) {
+            if (expenseList.isNotEmpty()) {
+                for (expenditure in expenseList) {
                     if (expenditure.memberId == memberList.toTypedArray()[i].id) {
-                        totalExpenditure += expenditure.totalCost!!.toInt();
+                        totalExpense += expenditure.totalCost!!.toInt();
                     }
                 }
             }
@@ -164,14 +157,11 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                     "" + id,
                     "" + id,
                     "" + name,
-                    "" + firstMeal,
-                    "" + secondMeal,
-                    "" + thirdMeal,
                     "" + subTotalMeal,
-                    ""+totalExpenditure,
+                    "" + totalExpense,
                     "" + date,
-                    ""+createdAt,
-                    ""+updatedAt
+                    "" + createdAt,
+                    "" + updatedAt
                 )
             )
         }
@@ -181,34 +171,64 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     override fun onChangeMeal(mealList: List<MealClosing>) {
-        if (mealList.isNotEmpty()) {
-            var totalMeal = 0
-            var totalFirstMeal = 0
-            var totalSecondMeal = 0
-            var totalExpenditure = 0
-            for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toInt();
-                totalSecondMeal += meal.secondMeal!!.toInt();
-                totalMeal += meal.subTotalMeal!!.toInt();
-                totalExpenditure += meal.totalExpenditure!!.toInt();
+        val newList: MutableList<ExpenseClosing> = ArrayList()
+        val listener = this
+
+        try {
+            if (mealList.isNotEmpty()) {
+                var id = "0"
+                var memberId = "0"
+                var name = "0"
+                var totalMeal = 0
+                var totalExpense = 0
+                for (meal in mealList) {
+                    id = meal.id.toString()
+                    memberId = meal.memberId.toString()
+                    name = meal.name.toString()
+                    totalMeal += meal.totalMeal!!.toInt()
+                    totalExpense += meal.totalExpense!!.toInt()
+
+                    newList.add(
+                        ExpenseClosing(
+                            "" + id,
+                            "" + memberId,
+                            "" + name,
+                            "" + totalMeal,
+                            "" + totalExpense,
+                            "" + id,
+                            "" + id
+                        )
+                    )
+                }
+
+                mealRate = (totalExpense.toDouble() / totalMeal.toDouble()).toString()
 
                 binding.totalMealTv.text = totalMeal.toString()
-                binding.totalExpenseTv.text = totalExpenditure.toString()
+                binding.totalExpenseTv.text = totalExpense.toString()
+                binding.mealRateTv.text = mealRate
+
+                val adapter =
+                    ExpenseClosingAdapter(listener, mealRate, mealList.sortedBy { it.name })
+                binding.recyclerView2.adapter = adapter
+
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "${e.message}")
         }
     }
-    override fun onChangeExpense(mealList: List<ExpenseClosing>) {
-        if (mealList.isNotEmpty()) {
-            var totalMeal = 0
-            var totalExpenditure = 0
-            for (meal in mealList) {
-                totalMeal += meal.totalMeal!!.toInt();
-                totalExpenditure += meal.totalExpense!!.toInt();
 
-                binding.totalMealTv.text = totalMeal.toString()
-                binding.totalExpenseTv.text = totalExpenditure.toString()
-            }
-        }
+    override fun onChangeExpense(totalCostOfMeal: String, totalResult: String) {
+//        if (mealList.isNotEmpty()) {
+//            var totalMeal = 0
+//            var totalExpenditure = 0
+//            for (meal in mealList) {
+//                totalMeal += meal.totalMeal!!.toInt()
+//                totalExpenditure += meal.totalExpense!!.toInt();
+//            }
+
+        binding.totalExpenseOfMealTv.text = totalCostOfMeal
+        binding.totalResultTv.text = totalResult
+//        }
     }
 
     override fun onDestroyView() {

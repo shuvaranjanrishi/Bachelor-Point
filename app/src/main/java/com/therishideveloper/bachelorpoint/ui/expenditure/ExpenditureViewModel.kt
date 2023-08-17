@@ -1,9 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.expenditure
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,8 +12,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.model.Expenditure
-import kotlin.coroutines.coroutineContext
+import com.therishideveloper.bachelorpoint.model.Expense
 
 class ExpenditureViewModel : ViewModel() {
 
@@ -25,16 +21,16 @@ class ExpenditureViewModel : ViewModel() {
     private var auth: FirebaseAuth = Firebase.auth
     private var database: DatabaseReference = Firebase.database.reference.child("Bachelor Point").child("Users")
 
-    private val _data = MutableLiveData<List<Expenditure>>().apply {
+    private val _data = MutableLiveData<List<Expense>>().apply {
 
         val accountId: String = auth.uid!!
         database.child(accountId).child("Expenditure")
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataList: MutableList<Expenditure> = mutableListOf()
+                        val dataList: MutableList<Expense> = mutableListOf()
                         for (ds in dataSnapshot.children) {
-                            val expenditure: Expenditure? = ds.getValue(Expenditure::class.java)
+                            val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
                         }
                         value = dataList
@@ -46,5 +42,5 @@ class ExpenditureViewModel : ViewModel() {
                 }
             )
     }
-    val data: LiveData<List<Expenditure>> = _data
+    val data: LiveData<List<Expense>> = _data
 }

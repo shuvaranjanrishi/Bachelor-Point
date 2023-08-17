@@ -18,7 +18,7 @@ import com.therishideveloper.bachelorpoint.adapter.ExpenditureAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentExpenditureBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
-import com.therishideveloper.bachelorpoint.model.Expenditure
+import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
 class ExpenditureFragment : Fragment(),ExpenditureListener {
@@ -74,9 +74,9 @@ class ExpenditureFragment : Fragment(),ExpenditureListener {
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataList: MutableList<Expenditure> = mutableListOf()
+                        val dataList: MutableList<Expense> = mutableListOf()
                         for (ds in dataSnapshot.children) {
-                            val expenditure: Expenditure? = ds.getValue(Expenditure::class.java)
+                            val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
                         }
                         val adapter = ExpenditureAdapter(listener, dataList)
@@ -90,7 +90,7 @@ class ExpenditureFragment : Fragment(),ExpenditureListener {
             )
     }
 
-    override fun onChangeExpenditure(expenditureList: List<Expenditure>) {
+    override fun onChangeExpenditure(expenditureList: List<Expense>) {
         Log.d("TAG", "mealList.size: " + expenditureList.size.toString())
         if (expenditureList.isNotEmpty()) {
             var totalCost = 0

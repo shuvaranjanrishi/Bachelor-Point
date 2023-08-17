@@ -1,7 +1,7 @@
 package com.therishideveloper.bachelorpoint.listener
 
-import com.therishideveloper.bachelorpoint.model.Expenditure
+import com.therishideveloper.bachelorpoint.model.Expense
 
 interface ExpenditureListener {
-    fun onChangeExpenditure(expenditureList: List<Expenditure>)
+    fun onChangeExpenditure(expenditureList: List<Expense>)
 }
