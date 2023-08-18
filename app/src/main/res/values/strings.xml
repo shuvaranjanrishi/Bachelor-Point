@@ -50,4 +50,6 @@
     <string name="create_member">Create Member</string>
     <string name="create_new_bachelor_point">Create New Bachelor Point</string>
     <string name="sign_in">Sign In</string>
+    <string name="day_dd_mm_yyyy">Day DD-MM-YYYY</string>
+    <string name="month_yyyy">Month YYYY</string>
 </resources>

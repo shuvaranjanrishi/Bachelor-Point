@@ -15,11 +15,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.childEvents
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.adapter.MealAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentMonthlyBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
+import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
@@ -35,7 +37,6 @@ class MonthlyFragment : Fragment(),MealListener {
     private val binding get() = _binding!!
 
     private val memberViewModel: MemberViewModel by viewModels()
-    private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
     private var memberList: List<User> = mutableListOf()
@@ -48,7 +49,6 @@ class MonthlyFragment : Fragment(),MealListener {
         _binding = FragmentMonthlyBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database = Firebase.database.reference.child("Bachelor Point").child("Users")
-
         return binding.root
     }
 
@@ -56,23 +56,44 @@ class MonthlyFragment : Fragment(),MealListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.monthTv.text = MyCalender.currentMonthYear
-        binding.firstDateTv.text = MyCalender.firstDateOfMonth
-        binding.lastDateTv.text = MyCalender.currentDate
-
         memberViewModel.data.observe(viewLifecycleOwner) {
             memberList = it
         }
 
-        getMealListOfThisMonth()
+        setupDatePicker()
 
     }
 
-    private fun getMealListOfThisMonth() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupDatePicker() {
+        binding.monthTv.text = MyCalender.currentMonthYear
+        binding.firstDateTv.text = MyCalender.firstDateOfMonth
+        binding.lastDateTv.text = MyCalender.currentDate
+        getMealListOfThisMonth(MyCalender.currentMonthYear)
+        binding.monthTv.setOnClickListener {
+            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
+                override fun onPickMonthAndYear(monthAndYear: String?) {
+                    binding.monthTv.text = monthAndYear
+                    if (monthAndYear != null) {
+                        getMealListOfThisMonth(monthAndYear)
+                    }
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+
+                override fun onPickDate(date: String?) {
+                    Log.d(TAG, "date: $date")
+                }
+            })
+        }
+    }
+
+    private fun getMealListOfThisMonth(monthAndYear: String) {
         val mealList: MutableList<Meal> = mutableListOf()
         val accountId = session.getString("ACCOUNT_ID", "").toString()
+        val memberId = session.getString("ID", "").toString()
 
         database.child(accountId).child("Meal")
+            .child(monthAndYear)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {

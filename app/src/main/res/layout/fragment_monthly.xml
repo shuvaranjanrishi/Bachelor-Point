@@ -22,7 +22,7 @@
             android:drawablePadding="@dimen/dimen_10dp"
             android:gravity="center"
             android:padding="@dimen/dimen_3dp"
-            android:text="DD-MM-YYYY"
+            android:text="@string/dd_mm_yyyy"
             android:textSize="@dimen/dimen_18sp"
             android:textStyle="bold"
             app:drawableEndCompat="@drawable/baseline_date_range_24" />

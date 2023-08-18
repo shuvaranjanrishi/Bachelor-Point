@@ -94,7 +94,9 @@ class AddExpenseFragment : Fragment() {
                 ) {
                     if (dayName != null) {
                         this@AddExpenseFragment.dayName = dayName
-                        this@AddExpenseFragment.monthAndYear = monthAndYear
+                        if (monthYear != null) {
+                            this@AddExpenseFragment.monthAndYear = monthYear
+                        }
                         if (date != null) {
                             this@AddExpenseFragment.date = date
                         }

@@ -126,7 +126,7 @@ class AddMealFragment : Fragment(), MealListener {
     }
 
     private fun setupDatePicker() {
-        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        binding.dateTv.text = MyCalender.currentDayAndDate
         monthAndYear = MyCalender.currentMonthYear
         date = MyCalender.currentDate
         binding.dateTv.setOnClickListener {
@@ -159,18 +159,19 @@ class AddMealFragment : Fragment(), MealListener {
         val timestamp = "" + System.currentTimeMillis()
         val meal =
             Meal(
-                timestamp,
-                memberId,
-                name,
-                firstMeal,
-                secondMeal,
-                thirdMeal,
-                subTotalMeal,
-                date,
-                timestamp,
-                timestamp
+                ""+timestamp,
+                ""+memberId,
+                ""+name,
+                ""+firstMeal,
+                ""+secondMeal,
+                ""+thirdMeal,
+                ""+subTotalMeal,
+                ""+monthAndYear,
+                ""+date,
+                ""+timestamp,
+                ""+timestamp
             )
-        database.child(accountId).child("Meal").child(date).child(memberId)
+        database.child(accountId).child("Meal").child(monthAndYear).child(date).child(memberId)
             .setValue(meal)
     }
 

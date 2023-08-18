@@ -45,6 +45,11 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupDatePicker()
+
+    }
+
+    private fun setupDatePicker() {
         binding.dateTv.text = MyCalender.currentMonthYear
         getExpenditures(MyCalender.currentMonthYear)
         binding.dateTv.setOnClickListener {

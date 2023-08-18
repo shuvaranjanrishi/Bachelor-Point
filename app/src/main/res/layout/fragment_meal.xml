@@ -8,10 +8,31 @@
     tools:context=".ui.meal.MealFragment">
 
     <TableRow
-        android:id="@+id/dateRow"
+        android:id="@+id/monthRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_3dp"
+        android:background="@color/table_header"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/monthTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/dimen_10dp"
+            android:gravity="center"
+            android:padding="@dimen/dimen_3dp"
+            android:text="@string/month_yyyy"
+            android:textSize="@dimen/dimen_18sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/baseline_date_range_24" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/dateRow"
+        android:layout_below="@+id/monthRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/table_header"
         android:gravity="center">
 
@@ -22,7 +43,7 @@
             android:drawablePadding="@dimen/dimen_10dp"
             android:gravity="center"
             android:padding="@dimen/dimen_3dp"
-            android:text="@string/dd_mm_yyyy"
+            android:text="@string/day_dd_mm_yyyy"
             android:textSize="@dimen/dimen_18sp"
             android:textStyle="bold"
             app:drawableEndCompat="@drawable/baseline_date_range_24" />
