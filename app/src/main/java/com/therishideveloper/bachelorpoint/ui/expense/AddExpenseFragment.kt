@@ -82,7 +82,7 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun setupDatePicker() {
-        binding.dateTv.text = MyCalender.currentMonthYear
+        binding.dateTv.text = MyCalender.currentDayAndDate
         monthAndYear = MyCalender.currentMonthYear
         date = MyCalender.currentDate
         binding.dateTv.setOnClickListener {

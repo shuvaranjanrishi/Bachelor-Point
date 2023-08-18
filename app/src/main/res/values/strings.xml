@@ -15,8 +15,8 @@
     <string name="menu_rent">Rent &amp; Bill</string>
     <string name="menu_meal">Meal</string>
     <string name="menu_add_meal">Add Meal</string>
-    <string name="menu_expenditure">Expenditure</string>
-    <string name="menu_add_expenditure">Add Expenditure</string>
+    <string name="menu_expense">Expense</string>
+    <string name="menu_add_expense">Add Expense</string>
     <string name="menu_member_details">Member Details</string>
     <string name="menu_monthly_Meals">Monthly Meals</string>
     <string name="menu_monthly_account">Monthly Accounts</string>
