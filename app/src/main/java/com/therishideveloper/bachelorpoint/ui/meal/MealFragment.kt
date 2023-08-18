@@ -148,7 +148,7 @@ class MealFragment : Fragment(), MealListener {
     private fun getMealListOfThisMonth(monthAndYear: String) {
         val mealList: MutableList<Meal> = mutableListOf()
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-
+        val listener = this
         database.child(accountId).child("Meal")
             .child(monthAndYear)
             .addListenerForSingleValueEvent(
@@ -160,7 +160,12 @@ class MealFragment : Fragment(), MealListener {
                                 mealList.add(meal!!)
                             }
                         }
-                        sumIndividualMeals(mealList)
+                        if (mealList.size > 0) {
+                            sumIndividualMeals(mealList)
+                        }else{
+                            val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
+                            binding.recyclerView.adapter = adapter
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
