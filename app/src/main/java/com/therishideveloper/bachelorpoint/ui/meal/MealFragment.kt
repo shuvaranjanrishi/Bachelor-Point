@@ -229,10 +229,10 @@ class MealFragment : Fragment(), MealListener {
             var totalSecondMeal = 0
             var totalThirdMeal = 0
             for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toInt();
-                totalSecondMeal += meal.secondMeal!!.toInt();
-                totalThirdMeal += meal.thirdMeal!!.toInt();
-                totalMeal += meal.subTotalMeal!!.toInt();
+                totalFirstMeal += meal.firstMeal!!.toInt()
+                totalSecondMeal += meal.secondMeal!!.toInt()
+                totalThirdMeal += meal.thirdMeal!!.toInt()
+                totalMeal += meal.subTotalMeal!!.toInt()
 
                 binding.totalFirstMealTv.text = totalFirstMeal.toString()
                 binding.totalSecondMealTv.text = totalSecondMeal.toString()

@@ -76,7 +76,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private fun getExpenditures(monthAndYear: String,mealList: MutableList<Meal>) {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         Log.d(TAG, "onDataChange: accountId: $accountId")
-        database.child(accountId).child("Expenditure")
+        database.child(accountId).child("Expense")
             .orderByChild("monthAndYear")
             .equalTo(monthAndYear)
             .addListenerForSingleValueEvent(
@@ -111,6 +111,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                                 mealList.add(meal!!)
                             }
                         }
+
                         getExpenditures(monthAndYear,mealList)
                     }
 
@@ -166,9 +167,10 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 )
             )
         }
-
-        val adapter = MealClosingAdapter(listener, newList.sortedBy { it.name })
-        binding.recyclerView1.adapter = adapter
+        if (mealList.size > 0) {
+            val adapter = MealClosingAdapter(listener, newList.sortedBy { it.name })
+            binding.recyclerView1.adapter = adapter
+        }
     }
 
     override fun onChangeMeal(mealList: List<MealClosing>) {
@@ -202,17 +204,22 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                     )
                 }
 
-                val mealRate = (totalExpense.toDouble() / totalMeal.toDouble())
-                val df = DecimalFormat("#.##")
-                df.roundingMode = RoundingMode.DOWN
-                binding.totalMealTv.text = df.format(totalMeal).toString()
-                binding.totalExpenseTv.text = df.format(totalExpense).toString()
-                binding.mealRateTv.text = df.format(mealRate).toString()
+                val mealRate: Double
+                if (totalMeal > 0) {
+                    mealRate = (totalExpense.toDouble() / totalMeal.toDouble())
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.DOWN
+                    binding.totalMealTv.text = df.format(totalMeal).toString()
+                    binding.totalExpenseTv.text = df.format(totalExpense).toString()
+                    binding.mealRateTv.text = df.format(mealRate).toString()
 
-                val adapter =
-                    ExpenseClosingAdapter(listener, mealRate.toString(), mealList.sortedBy { it.name })
-                binding.recyclerView2.adapter = adapter
-
+                    val adapter =
+                        ExpenseClosingAdapter(
+                            listener,
+                            mealRate.toString(),
+                            mealList.sortedBy { it.name })
+                    binding.recyclerView2.adapter = adapter
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "${e.message}")
