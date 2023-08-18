@@ -10,14 +10,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
+import com.therishideveloper.bachelorpoint.listener.ExpenseListener
 import com.therishideveloper.bachelorpoint.model.Expense
 
-class ExpenditureAdapter(
-    private var listener: ExpenditureListener,
-    private val expenditureList: List<Expense>
+class ExpenseAdapter(
+    private var listener: ExpenseListener,
+    private val expenseList: List<Expense>
 ) :
-    RecyclerView.Adapter<ExpenditureAdapter.ViewHolder>() {
+    RecyclerView.Adapter<ExpenseAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -27,18 +27,18 @@ class ExpenditureAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val expenditure = expenditureList[position]
+        val expense = expenseList[position]
 
-        holder.dateTv.text = expenditure.date
-        holder.nameTv.text = expenditure.memberName
-        holder.amountTv.text = expenditure.totalCost
+        holder.dateTv.text = expense.date
+        holder.nameTv.text = expense.memberName
+        holder.amountTv.text = expense.totalCost
 
-        listener.onChangeExpenditure(expenditureList)
+        listener.onChangeExpense(expenseList)
 
-        if (expenditureList.isNotEmpty()) {
+        if (expenseList.isNotEmpty()) {
             var totalCost = 0
-            if (expenditure in expenditureList) {
-                totalCost += expenditure.totalCost!!.toInt();
+            if (expense in expenseList) {
+                totalCost += expense.totalCost!!.toInt();
             }
             Log.d("TAG", "totalCost: $totalCost")
         }
@@ -46,10 +46,10 @@ class ExpenditureAdapter(
         val context: Context = holder.itemView.context
         holder.itemView.setOnClickListener {
 
-            val memberId = expenditure.memberId;
+            val memberId = expense.memberId;
             var totalCost = 0
-            if (expenditureList.isNotEmpty()) {
-                for (expenditure in expenditureList) {
+            if (expenseList.isNotEmpty()) {
+                for (expenditure in expenseList) {
                     if (expenditure.memberId == memberId) {
                         totalCost += expenditure.totalCost!!.toInt();
                     }
@@ -68,11 +68,11 @@ class ExpenditureAdapter(
             val descriptionTv = view.findViewById<TextView>(R.id.descriptionTv)
             val btnClose = view.findViewById<Button>(R.id.idBtnDismiss)
 
-            dateTv.text = expenditure.date
-            nameTv.text = expenditure.memberName
+            dateTv.text = expense.date
+            nameTv.text = expense.memberName
             inTotalAmountTv.text = totalCost.toString()
-            totalAmountTv.text = expenditure.totalCost
-            descriptionTv.text = expenditure.descripiton
+            totalAmountTv.text = expense.totalCost
+            descriptionTv.text = expense.descripiton
 
             btnClose.setOnClickListener {
                 dialog.dismiss()
@@ -85,7 +85,7 @@ class ExpenditureAdapter(
     }
 
     override fun getItemCount(): Int {
-        return expenditureList.size
+        return expenseList.size
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {

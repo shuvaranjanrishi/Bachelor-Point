@@ -1,4 +1,4 @@
-package com.therishideveloper.bachelorpoint.ui.expenditure
+package com.therishideveloper.bachelorpoint.ui.expense
 
 import android.util.Log
 import androidx.lifecycle.LiveData

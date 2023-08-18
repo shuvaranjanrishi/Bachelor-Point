@@ -1,4 +1,4 @@
-package com.therishideveloper.bachelorpoint.ui.expenditure
+package com.therishideveloper.bachelorpoint.ui.expense
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,7 +18,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpAdapter
-import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenditureBinding
+import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenseBinding
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.User
@@ -30,7 +30,7 @@ class AddExpenseFragment : Fragment() {
 
     private val TAG = "AddExpenditureFragment"
 
-    private var _binding: FragmentAddExpenditureBinding? = null
+    private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
 
     private val memberViewModel: MemberViewModel by viewModels()
@@ -51,7 +51,7 @@ class AddExpenseFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddExpenditureBinding.inflate(inflater, container, false)
+        _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
 
         auth = Firebase.auth
         database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
@@ -72,7 +72,7 @@ class AddExpenseFragment : Fragment() {
             amount = binding.amountEt.text.toString().trim()
             description = binding.descriptionEt.text.toString().trim()
 
-            addExpenditureAccount(
+            addExpense(
                 amount,
                 description
             )
@@ -82,7 +82,7 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun setupDatePicker() {
-        binding.dateTv.text = (MyCalender.dayToday + " " + MyCalender.currentDate)
+        binding.dateTv.text = MyCalender.currentMonthYear
         monthAndYear = MyCalender.currentMonthYear
         date = MyCalender.currentDate
         binding.dateTv.setOnClickListener {
@@ -109,7 +109,7 @@ class AddExpenseFragment : Fragment() {
         }
     }
 
-    private fun addExpenditureAccount(
+    private fun addExpense(
         amount: String,
         description: String,
     ) {
@@ -128,7 +128,7 @@ class AddExpenseFragment : Fragment() {
                 timestamp,
                 timestamp
             )
-        database.child(accountId).child("Expenditure").child(timestamp)
+        database.child(accountId).child("Expense").child(timestamp)
             .setValue(expenditure)
         Toast.makeText(
             context,

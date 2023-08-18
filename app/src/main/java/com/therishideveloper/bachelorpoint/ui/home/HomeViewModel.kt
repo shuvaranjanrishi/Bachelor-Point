@@ -15,7 +15,6 @@ class HomeViewModel : ViewModel() {
         moduleList = listOf(
             Module(R.drawable.meal, "মিল"),
             Module(R.drawable.shopping, "বাজার"),
-            Module(R.drawable.account, "মাসিক মিল"),
             Module(R.drawable.rent_and_bill, "ভাড়া ও বিল"),
             Module(R.drawable.monthly_closing, "মাসিক হিসাব"),
             Module(R.drawable.members, "মেম্বার্স"),

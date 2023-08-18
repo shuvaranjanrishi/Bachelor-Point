@@ -46,14 +46,12 @@ class ModuleAdapter(
             if (position == 1)
                 navController.navigate(R.id.action_nav_home_to_nav_expenditure)
             if (position == 2)
-                navController.navigate(R.id.action_nav_home_to_nav_monthly)
-            if (position == 3)
                 navController.navigate(R.id.action_nav_home_to_nav_rent)
-            if (position == 4)
+            if (position == 3)
                 navController.navigate(R.id.action_nav_home_to_nav_closing)
-            if (position == 5)
+            if (position == 4)
                 navController.navigate(R.id.action_nav_home_to_nav_member)
-            if(position==6)
+            if(position==5)
                 logout()
         }
     }

@@ -1,4 +1,4 @@
-package com.therishideveloper.bachelorpoint.ui.expenditure
+package com.therishideveloper.bachelorpoint.ui.expense
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -14,18 +14,18 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.adapter.ExpenditureAdapter
-import com.therishideveloper.bachelorpoint.databinding.FragmentExpenditureBinding
-import com.therishideveloper.bachelorpoint.listener.ExpenditureListener
+import com.therishideveloper.bachelorpoint.adapter.ExpenseAdapter
+import com.therishideveloper.bachelorpoint.databinding.FragmentExpenseBinding
+import com.therishideveloper.bachelorpoint.listener.ExpenseListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 
-class ExpenseFragment : Fragment(),ExpenditureListener {
+class ExpenseFragment : Fragment(),ExpenseListener {
 
     private val TAG = "ExpenditureFragment"
 
-    private var _binding: FragmentExpenditureBinding? = null
+    private var _binding: FragmentExpenseBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var session: SharedPreferences
@@ -36,7 +36,7 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentExpenditureBinding.inflate(inflater, container, false)
+        _binding = FragmentExpenseBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database = Firebase.database.reference.child("Bachelor Point").child("Users")
         return binding.root
@@ -51,13 +51,13 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
 
     private fun setupDatePicker() {
         binding.dateTv.text = MyCalender.currentMonthYear
-        getExpenditures(MyCalender.currentMonthYear)
+        getExpenseList(MyCalender.currentMonthYear)
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.dateTv.text = monthAndYear
                     if (monthAndYear != null) {
-                        getExpenditures(monthAndYear)
+                        getExpenseList(monthAndYear)
                     }
                     Log.d(TAG, "monthAndYear: $monthAndYear")
                 }
@@ -69,11 +69,11 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
         }
     }
 
-    private fun getExpenditures(monthAndYear: String) {
+    private fun getExpenseList(monthAndYear: String) {
         val listener = this
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         Log.d(TAG, "onDataChange: accountId: $accountId")
-        database.child(accountId).child("Expenditure")
+        database.child(accountId).child("Expense")
             .orderByChild("monthAndYear")
             .equalTo(monthAndYear)
             .addListenerForSingleValueEvent(
@@ -84,7 +84,7 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
                             val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
                         }
-                        val adapter = ExpenditureAdapter(listener, dataList)
+                        val adapter = ExpenseAdapter(listener, dataList)
                         binding.recyclerView.adapter = adapter
                     }
 
@@ -95,11 +95,11 @@ class ExpenseFragment : Fragment(),ExpenditureListener {
             )
     }
 
-    override fun onChangeExpenditure(expenditureList: List<Expense>) {
-        Log.d("TAG", "mealList.size: " + expenditureList.size.toString())
-        if (expenditureList.isNotEmpty()) {
+    override fun onChangeExpense(expenseList: List<Expense>) {
+        Log.d("TAG", "mealList.size: " + expenseList.size.toString())
+        if (expenseList.isNotEmpty()) {
             var totalCost = 0
-            for (expenditure in expenditureList) {
+            for (expenditure in expenseList) {
                 totalCost += expenditure.totalCost!!.toInt();
             }
             binding.totalAmountTv.text = totalCost.toString()

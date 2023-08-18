@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.expenditure.ExpenseFragment">
+    tools:context=".ui.expense.ExpenseFragment">
 
     <TableRow
         android:id="@+id/dateRow"
