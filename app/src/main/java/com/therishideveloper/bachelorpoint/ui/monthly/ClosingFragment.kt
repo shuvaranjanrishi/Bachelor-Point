@@ -168,7 +168,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             )
         }
         if (mealList.size > 0) {
-            val adapter = MealClosingAdapter(listener, newList.sortedBy { it.name })
+            val adapter = MealClosingAdapter(listener, newList)
             binding.recyclerView1.adapter = adapter
         }
     }
@@ -208,7 +208,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 if (totalMeal > 0) {
                     mealRate = (totalExpense / totalMeal)
                     val df = DecimalFormat("#.##")
-                    df.roundingMode = RoundingMode.DOWN
+                    df.roundingMode = RoundingMode.UP
                     binding.totalMealTv.text = df.format(totalMeal).toString()
                     binding.totalExpenseTv.text = df.format(totalExpense).toString()
                     binding.mealRateTv.text = df.format(mealRate).toString()

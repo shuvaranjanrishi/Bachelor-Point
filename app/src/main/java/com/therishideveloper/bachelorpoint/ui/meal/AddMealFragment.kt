@@ -24,6 +24,8 @@ import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class AddMealFragment : Fragment(), MealListener {
 
@@ -177,22 +179,24 @@ class AddMealFragment : Fragment(), MealListener {
 
     override fun onChangeMeal(mealList: List<Meal>) {
         Log.d("TAG", "mealList.size: " + mealList.size.toString())
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.DOWN
         this.mealList = mealList
         if (mealList.isNotEmpty()) {
-            var totalMeal = 0
-            var totalFirstMeal = 0
-            var totalSecondMeal = 0
-            var totalThirdMeal = 0
+            var totalMeal = 0.0
+            var totalFirstMeal = 0.0
+            var totalSecondMeal = 0.0
+            var totalThirdMeal = 0.0
             for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toInt();
-                totalSecondMeal += meal.secondMeal!!.toInt();
-                totalThirdMeal += meal.thirdMeal!!.toInt();
-                totalMeal += meal.subTotalMeal!!.toInt();
+                totalFirstMeal += meal.firstMeal!!.toDouble();
+                totalSecondMeal += meal.secondMeal!!.toDouble();
+                totalThirdMeal += meal.thirdMeal!!.toDouble();
+                totalMeal += meal.subTotalMeal!!.toDouble();
 
-                binding.totalFirstMealTv.text = totalFirstMeal.toString()
-                binding.totalSecondMealTv.text = totalSecondMeal.toString()
-                binding.totalThirdMealTv.text = totalThirdMeal.toString()
-                binding.totalMealTv.text = totalMeal.toString()
+                binding.totalFirstMealTv.text = df.format(totalFirstMeal).toString()
+                binding.totalSecondMealTv.text = df.format(totalSecondMeal).toString()
+                binding.totalThirdMealTv.text = df.format(totalThirdMeal).toString()
+                binding.totalMealTv.text = df.format(totalMeal).toString()
             }
         }
     }

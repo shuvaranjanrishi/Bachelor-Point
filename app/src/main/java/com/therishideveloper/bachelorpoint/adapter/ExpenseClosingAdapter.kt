@@ -28,7 +28,7 @@ class ExpenseClosingAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.DOWN
+        df.roundingMode = RoundingMode.UP
         mealList.sortedBy { it.name }
 
         val member = mealList[position]
