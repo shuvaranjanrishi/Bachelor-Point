@@ -105,11 +105,19 @@ class AddMealFragment : Fragment(), MealListener {
                     progressDialog.dismiss()
                 } else {
                     for (meal in mealList) {
+                        val firstMeal: Double =
+                            if (binding.checkBox1.isChecked && meal.firstMeal.equals("1")) 0.5 else meal.firstMeal!!.toDouble()
+                        val secondMeal: Double =
+                            if (binding.checkBox2.isChecked && meal.secondMeal.equals("1")) 0.5 else meal.secondMeal!!.toDouble()
+                        val thirdMeal: Double =
+                            if (binding.checkBox3.isChecked && meal.thirdMeal.equals("1")) 0.5 else meal.thirdMeal!!.toDouble()
+                        val subTotalMeal: Double = (firstMeal + secondMeal + thirdMeal)
+
                         addMeals(
-                            meal.firstMeal!!,
-                            meal.secondMeal!!,
-                            meal.thirdMeal!!,
-                            meal.subTotalMeal!!,
+                            firstMeal.toString(),
+                            secondMeal.toString(),
+                            thirdMeal.toString(),
+                            subTotalMeal.toString(),
                             meal.memberId!!,
                             meal.name!!
                         )

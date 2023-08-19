@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.model.Meal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class MealAdapter(private var listener: MealListener, private val mealList: List<Meal>) :
     RecyclerView.Adapter<MealAdapter.ViewHolder>() {
@@ -19,14 +21,17 @@ class MealAdapter(private var listener: MealListener, private val mealList: List
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.UP
+        mealList.sortedBy { it.name }
 
         val member = mealList[position]
 
-        holder.nameTv.text = member.name
-        holder.firstMealTv.text = member.firstMeal
-        holder.secondMealTv.text = member.secondMeal
-        holder.thirdMealTv.text = member.thirdMeal
-        holder.subTotalMealTv.text = member.subTotalMeal
+        holder.nameTv.text = member.name!!
+        holder.firstMealTv.text = df.format(member.firstMeal!!.toDouble()).toString()
+        holder.secondMealTv.text = df.format(member.secondMeal!!.toDouble()).toString()
+        holder.thirdMealTv.text = df.format(member.thirdMeal!!.toDouble()).toString()
+        holder.subTotalMealTv.text = df.format(member.subTotalMeal!!.toDouble()).toString()
 
         listener.onChangeMeal(mealList)
 

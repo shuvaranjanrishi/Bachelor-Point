@@ -27,6 +27,8 @@ import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 class MealFragment : Fragment(), MealListener {
@@ -218,11 +220,15 @@ class MealFragment : Fragment(), MealListener {
             )
         }
 
-        val adapter = MealAdapter(listener, newList.sortedBy { it.name })
+        val adapter = MealAdapter(listener, newList)
         binding.recyclerView.adapter = adapter
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.UP
+        mealList.sortedBy { it.name }
+
         if (mealList.isNotEmpty()) {
             var totalMeal = 0.0
             var totalFirstMeal = 0.0
@@ -234,10 +240,10 @@ class MealFragment : Fragment(), MealListener {
                 totalThirdMeal += meal.thirdMeal!!.toDouble()
                 totalMeal += meal.subTotalMeal!!.toDouble()
 
-                binding.totalFirstMealTv.text = totalFirstMeal.toString()
-                binding.totalSecondMealTv.text = totalSecondMeal.toString()
-                binding.totalThirdMealTv.text = totalThirdMeal.toString()
-                binding.totalMealTv.text = totalMeal.toString()
+                binding.totalFirstMealTv.text = df.format(totalFirstMeal).toString()
+                binding.totalSecondMealTv.text = df.format(totalSecondMeal).toString()
+                binding.totalThirdMealTv.text = df.format(totalThirdMeal).toString()
+                binding.totalMealTv.text = df.format(totalMeal).toString()
             }
         }
     }
