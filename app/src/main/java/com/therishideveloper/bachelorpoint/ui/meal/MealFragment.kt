@@ -187,10 +187,10 @@ class MealFragment : Fragment(), MealListener {
             var createdAt = ""
             var date = ""
             var updatedAt = ""
-            var firstMeal = 0
-            var secondMeal = 0
-            var thirdMeal = 0
-            var subTotalMeal = 0
+            var firstMeal = 0.0
+            var secondMeal = 0.0
+            var thirdMeal = 0.0
+            var subTotalMeal = 0.0
             for (j in mealList.indices) {
                 if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
                     id = mealList[j].memberId.toString()
@@ -198,10 +198,10 @@ class MealFragment : Fragment(), MealListener {
                     date = mealList[j].date.toString()
                     createdAt = mealList[j].createdAt.toString()
                     updatedAt = mealList[j].updatedAt.toString()
-                    firstMeal += mealList[j].firstMeal!!.toInt()
-                    secondMeal += mealList[j].secondMeal!!.toInt()
-                    thirdMeal += mealList[j].thirdMeal!!.toInt()
-                    subTotalMeal += mealList[j].subTotalMeal!!.toInt()
+                    firstMeal += mealList[j].firstMeal!!.toDouble()
+                    secondMeal += mealList[j].secondMeal!!.toDouble()
+                    thirdMeal += mealList[j].thirdMeal!!.toDouble()
+                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
                 }
             }
             newList.add(

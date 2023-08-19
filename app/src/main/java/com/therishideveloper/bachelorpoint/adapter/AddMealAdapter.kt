@@ -23,6 +23,7 @@ class AddMealAdapter(private var listener: MealListener, private val mealList: L
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        mealList.sortedBy { it.name }
 
         val meal = mealList[position]
 
