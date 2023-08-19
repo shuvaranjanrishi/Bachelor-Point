@@ -224,15 +224,15 @@ class MealFragment : Fragment(), MealListener {
 
     override fun onChangeMeal(mealList: List<Meal>) {
         if (mealList.isNotEmpty()) {
-            var totalMeal = 0
-            var totalFirstMeal = 0
-            var totalSecondMeal = 0
-            var totalThirdMeal = 0
+            var totalMeal = 0.0
+            var totalFirstMeal = 0.0
+            var totalSecondMeal = 0.0
+            var totalThirdMeal = 0.0
             for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toInt()
-                totalSecondMeal += meal.secondMeal!!.toInt()
-                totalThirdMeal += meal.thirdMeal!!.toInt()
-                totalMeal += meal.subTotalMeal!!.toInt()
+                totalFirstMeal += meal.firstMeal!!.toDouble()
+                totalSecondMeal += meal.secondMeal!!.toDouble()
+                totalThirdMeal += meal.thirdMeal!!.toDouble()
+                totalMeal += meal.subTotalMeal!!.toDouble()
 
                 binding.totalFirstMealTv.text = totalFirstMeal.toString()
                 binding.totalSecondMealTv.text = totalSecondMeal.toString()

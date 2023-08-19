@@ -29,12 +29,13 @@ class ExpenseClosingAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.DOWN
+        mealList.sortedBy { it.name }
 
         val member = mealList[position]
         holder.nameTv.text = member.name
         try {
-            val totalCostOfMeal = (member.totalMeal!!.toInt() * mealRate.toDouble())
-            val result = (member.totalExpense!!.toInt() - totalCostOfMeal)
+            val totalCostOfMeal = (member.totalMeal!!.toDouble() * mealRate.toDouble())
+            val result = (member.totalExpense!!.toDouble() - totalCostOfMeal)
             m += totalCostOfMeal
             e += result
             holder.totalMealTv.text = df.format(totalCostOfMeal).toString()

@@ -101,7 +101,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         val mealList: MutableList<Meal> = mutableListOf()
         val accountId = session.getString("ACCOUNT_ID", "").toString()
 
-        database.child(accountId).child("Meal")
+        database.child(accountId).child("Meal").child(monthAndYear)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -132,8 +132,8 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             var createdAt = ""
             var date = ""
             var updatedAt = ""
-            var subTotalMeal = 0
-            var totalExpense = 0
+            var subTotalMeal = 0.0
+            var totalExpense = 0.0
 
             for (j in mealList.indices) {
                 if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
@@ -142,7 +142,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                     date = mealList[j].date.toString()
                     createdAt = mealList[j].createdAt.toString()
                     updatedAt = mealList[j].updatedAt.toString()
-                    subTotalMeal += mealList[j].subTotalMeal!!.toInt()
+                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
                 }
             }
 
@@ -150,7 +150,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
             if (expenseList.isNotEmpty()) {
                 for (expenditure in expenseList) {
                     if (expenditure.memberId == memberList.toTypedArray()[i].id) {
-                        totalExpense += expenditure.totalCost!!.toInt();
+                        totalExpense += expenditure.totalCost!!.toDouble();
                     }
                 }
             }
@@ -179,17 +179,17 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
         try {
             if (mealList.isNotEmpty()) {
-                var id = "0"
-                var memberId = "0"
-                var name = "0"
-                var totalMeal = 0
-                var totalExpense = 0
+                var id: String
+                var memberId: String
+                var name: String
+                var totalMeal = 0.0
+                var totalExpense = 0.0
                 for (meal in mealList) {
                     id = meal.id.toString()
                     memberId = meal.memberId.toString()
                     name = meal.name.toString()
-                    totalMeal += meal.totalMeal!!.toInt()
-                    totalExpense += meal.totalExpense!!.toInt()
+                    totalMeal += meal.totalMeal!!.toDouble()
+                    totalExpense += meal.totalExpense!!.toDouble()
 
                     newList.add(
                         ExpenseClosing(
@@ -206,7 +206,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
                 val mealRate: Double
                 if (totalMeal > 0) {
-                    mealRate = (totalExpense.toDouble() / totalMeal.toDouble())
+                    mealRate = (totalExpense / totalMeal)
                     val df = DecimalFormat("#.##")
                     df.roundingMode = RoundingMode.DOWN
                     binding.totalMealTv.text = df.format(totalMeal).toString()
@@ -217,12 +217,13 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                         ExpenseClosingAdapter(
                             listener,
                             mealRate.toString(),
-                            mealList.sortedBy { it.name })
+                            mealList
+                        )
                     binding.recyclerView2.adapter = adapter
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "${e.message}")
+            Log.e(TAG, "Exception: ${e.message}")
         }
     }
 
