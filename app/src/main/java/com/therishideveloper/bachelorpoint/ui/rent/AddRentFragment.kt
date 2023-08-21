@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.CompoundButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -55,6 +53,7 @@ class AddRentFragment : Fragment() , AddRentListener{
     private lateinit var date: String
     private lateinit var description: String
     private lateinit var decimalFormat: DecimalFormat
+    private lateinit var rentList: List<SeparateRent>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -144,8 +143,22 @@ class AddRentFragment : Fragment() , AddRentListener{
                 timestamp,
                 timestamp
             )
-        database.child(accountId).child("RentAndBill").child(timestamp)
+
+        database.child(accountId).child("RentAndBill").child(monthAndYear).child(selectedId)
             .setValue(rent)
+        Log.d(TAG, "rentList: $rentList")
+
+        if (binding.checkBox.isChecked) {
+            if (rentList.isNotEmpty()) {
+                for (separateRent in rentList) {
+                    database.child(accountId).child("RentAndBill").child(monthAndYear)
+                        .child("SeparateRent")
+                        .child(separateRent.id)
+                        .setValue(separateRent)
+                }
+            }
+        }
+
         Toast.makeText(
             context,
             "Rent And Bill Added Successful",
@@ -243,7 +256,7 @@ class AddRentFragment : Fragment() , AddRentListener{
     override fun onChangeRent(rentList: List<SeparateRent>) {
         Log.d(TAG, "rentList.size: " + rentList.size.toString())
         Log.d(TAG, "rentList: $rentList")
-
+        this.rentList = rentList
         if (rentList.isNotEmpty()) {
             var totalRent = 0.0
             for (meal in rentList) {
