@@ -38,6 +38,7 @@
     <string name="total_bn">মোট</string>
     <string name="total_member">মোট মেম্বার</string>
     <string name="per_head_cost">জন প্রতি খরচ</string>
+    <string name="per_head_rent">জন প্রতি আলাদা ভাড়া</string>
     <string name="total_taka_bn">মোট টাকা</string>
     <string name="taka_bn">টাকা</string>
     <string name="description_en">Description</string>

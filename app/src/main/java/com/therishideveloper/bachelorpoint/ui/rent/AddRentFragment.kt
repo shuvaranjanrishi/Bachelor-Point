@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -18,15 +20,21 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.adapter.AddSeparateRentAdapter
 import com.therishideveloper.bachelorpoint.adapter.spinner.RentTypeSpAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddRentBinding
+import com.therishideveloper.bachelorpoint.listener.AddRentListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Rent
+import com.therishideveloper.bachelorpoint.model.SeparateRent
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
-class AddRentFragment : Fragment() {
+
+class AddRentFragment : Fragment() , AddRentListener{
 
     private val TAG = "AddRentFragment"
 
@@ -46,6 +54,7 @@ class AddRentFragment : Fragment() {
     private lateinit var monthAndYear: String
     private lateinit var date: String
     private lateinit var description: String
+    private lateinit var decimalFormat: DecimalFormat
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +66,8 @@ class AddRentFragment : Fragment() {
         auth = Firebase.auth
         database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        decimalFormat = DecimalFormat("#.##")
+        decimalFormat.roundingMode = RoundingMode.UP
 
         return binding.root
     }
@@ -76,11 +87,11 @@ class AddRentFragment : Fragment() {
         binding.amountEt.addTextChangedListener(
             onTextChanged = { _, _, _, _ ->
                 try {
-                    val inputs = binding.amountEt.text.toString().trim().toInt()
-                    val totalMember = binding.totalMemberTv.text.toString().trim().toInt()
-                    if (inputs != 0 && totalMember != 0) {
+                    val inputs = binding.amountEt.text.toString().trim().toDouble()
+                    val totalMember = binding.totalMemberTv.text.toString().trim().toDouble()
+                    if (inputs != 0.0 && totalMember != 0.0) {
                         val costPerHead = (inputs) / (totalMember)
-                        binding.perHeadCostTv.text = costPerHead.toString()
+                        binding.perHeadCostTv.text = decimalFormat.format(costPerHead).toString()
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Exception: ${e.message}")
@@ -163,6 +174,18 @@ class AddRentFragment : Fragment() {
                             val selectedItem: Rent = parent?.getItemAtPosition(position) as Rent
                             selectedId = selectedItem.id.toString()
                             selectedName = selectedItem.name.toString()
+                            if(selectedId=="8"){
+                                binding.descriptionEt.visibility = View.VISIBLE
+                            }else{
+                                binding.descriptionEt.visibility = View.GONE
+                            }
+                            if(selectedId=="1"){
+                                binding.checkBoxLl.visibility = View.VISIBLE
+                                setupCheckbox()
+                            }else{
+                                binding.checkBoxLl.visibility = View.GONE
+                                binding.checkBox.isChecked = false
+                            }
                             Toast.makeText(
                                 context,
                                 "" + selectedItem.name + " Id: " + selectedItem.id,
@@ -179,8 +202,60 @@ class AddRentFragment : Fragment() {
         }
     }
 
+    private fun setupCheckbox() {
+        binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked){
+                binding.separateRentLl.visibility = View.VISIBLE
+                binding.perHeadCostLl.visibility = View.GONE
+                binding.amountEt.isEnabled = false
+                binding.amountEt.setText("0")
+                binding.perHeadCostTv.text = "0"
+                setupSeparateRentInputAdapter()
+            }else{
+                binding.separateRentLl.visibility = View.GONE
+                binding.perHeadCostLl.visibility = View.VISIBLE
+                binding.amountEt.isEnabled = true
+            }
+        }
+    }
+
+    private fun setupSeparateRentInputAdapter() {
+        val listener = this
+        memberViewModel.data.observe(viewLifecycleOwner) {
+            Log.d("TAG", "mealList.size: " + it.size.toString())
+            val rentList: MutableList<SeparateRent> = mutableListOf()
+            for (user in it) {
+                val rent = SeparateRent(
+                    "" + user.id,
+                    "" + user.name,
+                    "0",
+                    "" + System.currentTimeMillis(),
+                    "" + System.currentTimeMillis()
+                )
+                rentList.add(rent)
+                Log.d(TAG, "onDataChange: mealList: $rentList")
+            }
+            val adapter = AddSeparateRentAdapter(listener,rentList)
+            binding.recyclerView.adapter = adapter
+        }
+    }
+
+    override fun onChangeRent(rentList: List<SeparateRent>) {
+        Log.d(TAG, "rentList.size: " + rentList.size.toString())
+        Log.d(TAG, "rentList: $rentList")
+
+        if (rentList.isNotEmpty()) {
+            var totalRent = 0.0
+            for (meal in rentList) {
+                totalRent += meal.separateRent.toDouble();
+                binding.amountEt.setText(decimalFormat.format(totalRent).toString())
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }
