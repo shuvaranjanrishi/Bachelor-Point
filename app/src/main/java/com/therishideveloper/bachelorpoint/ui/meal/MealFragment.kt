@@ -103,7 +103,6 @@ class MealFragment : Fragment(), MealListener {
     private fun getMealListOfADay(monthAndYear: String, date: String) {
 
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        Log.d(TAG, "onDataChange: accountId: $accountId")
 
         val listener = this
         database.child(accountId).child("Meal").child(monthAndYear).child(date)
@@ -115,7 +114,6 @@ class MealFragment : Fragment(), MealListener {
                             val meal: Meal? = ds.getValue(Meal::class.java)
                             mealList.add(meal!!)
                         }
-                        Log.d(TAG, "onDataChange: mealList: $mealList")
                         val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
                         binding.recyclerView.adapter = adapter
                     }
@@ -220,14 +218,13 @@ class MealFragment : Fragment(), MealListener {
             )
         }
 
-        val adapter = MealAdapter(listener, newList)
+        val adapter = MealAdapter(listener, newList.sortedBy { it.name })
         binding.recyclerView.adapter = adapter
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.UP
-        mealList.sortedBy { it.name }
 
         if (mealList.isNotEmpty()) {
             var totalMeal = 0.0

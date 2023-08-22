@@ -23,7 +23,6 @@ class MealAdapter(private var listener: MealListener, private val mealList: List
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.UP
-        mealList.sortedBy { it.name }
 
         val member = mealList[position]
 
@@ -48,6 +47,5 @@ class MealAdapter(private var listener: MealListener, private val mealList: List
         val thirdMealTv: TextView = itemView.findViewById(R.id.thirdMealTv)
         val subTotalMealTv: TextView = itemView.findViewById(R.id.subTotalMealTv)
     }
-
 
 }

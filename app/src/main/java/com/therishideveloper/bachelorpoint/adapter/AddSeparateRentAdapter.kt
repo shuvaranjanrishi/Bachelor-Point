@@ -27,7 +27,6 @@ class AddSeparateRentAdapter(private var listener: AddRentListener, private val 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        rentList.sortedBy { it.name }
 
         val meal = rentList[position]
 

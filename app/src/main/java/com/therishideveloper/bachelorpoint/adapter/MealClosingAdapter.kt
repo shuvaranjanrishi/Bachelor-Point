@@ -23,7 +23,6 @@ class MealClosingAdapter(private var listener: MealClosingListener, private val 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.UP
-        mealList.sortedBy { it.name }
 
         val member = mealList[position]
 
