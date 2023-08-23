@@ -146,14 +146,15 @@ class AddRentFragment : Fragment() , AddRentListener{
 
         database.child(accountId).child("RentAndBill").child(monthAndYear).child(selectedId)
             .setValue(rent)
-        Log.d(TAG, "rentList: $rentList")
 
         if (binding.checkBox.isChecked) {
             if (rentList.isNotEmpty()) {
+                Log.d(TAG, "rentList: $rentList")
+
                 for (separateRent in rentList) {
                     database.child(accountId).child("RentAndBill").child(monthAndYear)
                         .child("SeparateRent")
-                        .child(separateRent.id)
+                        .child(separateRent.id.toString())
                         .setValue(separateRent)
                 }
             }
@@ -254,13 +255,11 @@ class AddRentFragment : Fragment() , AddRentListener{
     }
 
     override fun onChangeRent(rentList: List<SeparateRent>) {
-        Log.d(TAG, "rentList.size: " + rentList.size.toString())
-        Log.d(TAG, "rentList: $rentList")
         this.rentList = rentList
         if (rentList.isNotEmpty()) {
             var totalRent = 0.0
             for (meal in rentList) {
-                totalRent += meal.separateRent.toDouble();
+                totalRent += meal.separateRent!!.toDouble();
                 binding.amountEt.setText(decimalFormat.format(totalRent).toString())
             }
         }
