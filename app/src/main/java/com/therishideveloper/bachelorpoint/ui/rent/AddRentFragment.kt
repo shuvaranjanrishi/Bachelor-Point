@@ -144,21 +144,54 @@ class AddRentFragment : Fragment() , AddRentListener{
                 timestamp
             )
 
-        database.child(accountId).child("RentAndBill").child(monthAndYear).child(selectedId)
-            .setValue(rent)
-
-        if (binding.checkBox.isChecked) {
-            if (rentList.isNotEmpty()) {
-                Log.d(TAG, "rentList: $rentList")
-
-                for (separateRent in rentList) {
-                    database.child(accountId).child("RentAndBill").child(monthAndYear)
-                        .child("SeparateRent")
-                        .child(separateRent.id.toString())
-                        .setValue(separateRent)
+        if (selectedId != "1") {
+            database.child(accountId).child("RentAndBill").child("Bill").child(monthAndYear)
+                .child(selectedId)
+                .setValue(rent)
+        } else {
+            if (binding.checkBox.isChecked) {
+                if (rentList.isNotEmpty()) {
+                    Log.d(TAG, "rentList: $rentList")
+                    for (separateRent in rentList) {
+                        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
+                            .child(separateRent.id.toString())
+                            .setValue(separateRent)
+                    }
+                }
+            } else {
+                if (memberList.isNotEmpty()) {
+                    Log.d(TAG, "rentList: $memberList")
+                    for (separateRent in memberList) {
+                        val amt = amount.toDouble() / memberList.size
+                        val rent1 = SeparateRent(
+                            "" + separateRent.id.toString(),
+                            "" + separateRent.name.toString(),
+                            "" + amt,
+                            "" + timestamp,
+                            "" + timestamp,
+                        )
+                        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
+                            .child(rent1.id.toString())
+                            .setValue(rent1)
+                    }
                 }
             }
+
         }
+
+
+//        if (binding.checkBox.isChecked) {
+//            if (rentList.isNotEmpty()) {
+//                Log.d(TAG, "rentList: $rentList")
+//
+//                for (separateRent in rentList) {
+//                    database.child(accountId).child("Rent").child(monthAndYear)
+//                        .child("SeparateRent")
+//                        .child(separateRent.id.toString())
+//                        .setValue(separateRent)
+//                }
+//            }
+//        }
 
         Toast.makeText(
             context,

@@ -85,21 +85,15 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
         val listener = this
 
         if (monthAndYear != null) {
-            database.child(accountId).child("RentAndBill").child(monthAndYear)
+            database.child(accountId).child("RentAndBill").child("Bill").child(monthAndYear)
                 .addListenerForSingleValueEvent(
                     object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val rentList: MutableList<Rent> = mutableListOf()
                             for (ds in dataSnapshot.children) {
                                 val rent: Rent? = ds.getValue(Rent::class.java)
-                                if (!ds.key.equals("SeparateRent")) {
                                     rentList.add(rent!!)
-                                    Log.d(TAG, "SeparateRent: " + ds.key)
                                 }
-//                                else {
-//                                    getSeparateRentList(accountId, monthAndYear)
-//                                }
-                            }
                             val adapter =
                                 RentAdapter(listener, rentList.sortedBy { it.amount!!.toInt() })
                             binding.recyclerView1.adapter = adapter
@@ -115,8 +109,7 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
 
     private fun getSeparateRentList(accountId: String, perHeadCost: Double) {
         val listener = this
-        database.child(accountId).child("RentAndBill").child(monthAndYear)
-            .child("SeparateRent")
+        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
