@@ -1,6 +1,7 @@
 package com.therishideveloper.bachelorpoint.ui.signInSignUp
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.MainActivity
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
@@ -32,7 +34,6 @@ class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
 
-    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var session: SharedPreferences
@@ -138,7 +139,14 @@ class SignInFragment : Fragment() {
             "Sign In Successful",
             Toast.LENGTH_SHORT,
         ).show()
-        findNavController().navigate(R.id.action_nav_sign_in_to_nav_home)
+        requireContext().startActivity(
+            Intent(
+                context,
+                MainActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        )
+        requireActivity().finish()
     }
 
 }

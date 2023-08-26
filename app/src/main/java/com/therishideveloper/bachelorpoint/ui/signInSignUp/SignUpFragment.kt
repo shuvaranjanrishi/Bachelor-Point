@@ -1,6 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.signInSignUp
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,19 +15,16 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.adapter.ModuleAdapter
-import com.therishideveloper.bachelorpoint.databinding.FragmentSignUpAdminBinding
+import com.therishideveloper.bachelorpoint.databinding.FragmentSignUpBinding
 import com.therishideveloper.bachelorpoint.model.User
-import com.therishideveloper.bachelorpoint.ui.home.HomeViewModel
 
-class SignUpAdminFragment : Fragment() {
+class SignUpFragment : Fragment() {
 
     private val TAG = "SignUpAdminFragment"
 
-    private var _binding: FragmentSignUpAdminBinding? = null
+    private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!
 
-    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     lateinit var session: SharedPreferences
@@ -38,7 +33,7 @@ class SignUpAdminFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSignUpAdminBinding.inflate(inflater, container, false)
+        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
     }
 

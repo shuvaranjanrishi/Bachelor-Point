@@ -1,8 +1,6 @@
 package com.therishideveloper.bachelorpoint
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,8 +19,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.databinding.ActivityMainBinding
 import com.therishideveloper.bachelorpoint.session.SessionManager
-import com.therishideveloper.bachelorpoint.ui.signInSignUp.SignInFragment
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,7 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         val nameTv = view.findViewById<TextView>(R.id.nameTv)
         val emailTv = view.findViewById<TextView>(R.id.emailTv)
-        Log.d("TAG", "" + session.getName().toString() + " (" + session.getUserType() + ")")
         nameTv.text = session.getName().toString() + " (" + session.getUserType() + ")"
         emailTv.text = session.getEmail()
     }

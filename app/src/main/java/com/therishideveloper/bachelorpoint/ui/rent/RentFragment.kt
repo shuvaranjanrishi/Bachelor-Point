@@ -58,8 +58,13 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.dateTv.text = MyCalender.currentMonthYear
         getRentAndBill(MyCalender.currentMonthYear)
+
+        setupDatePiker()
+    }
+
+    private fun setupDatePiker() {
+        binding.dateTv.text = MyCalender.currentMonthYear
         monthAndYear = MyCalender.currentMonthYear
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
@@ -154,14 +159,15 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onChangeSeparateRent(total1: String, total2: String, total3: String) {
         binding.total1Tv.text = total1
         binding.total2Tv.text = total2
         binding.total3Tv.text = total3
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
