@@ -1,5 +1,7 @@
 package com.therishideveloper.bachelorpoint.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +15,10 @@ import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.model.Module
 import com.therishideveloper.bachelorpoint.session.SessionManager
+import com.therishideveloper.bachelorpoint.ui.signInSignUp.AuthActivity
 
 class ModuleAdapter(
+    private val context: Context,
     private val navController: NavController,
     private val memberList: List<Module>
 ) :
@@ -59,7 +63,11 @@ class ModuleAdapter(
     private fun logout() {
         auth.signOut()
         session.deleteSession()
-        navController.navigate(R.id.action_nav_home_to_nav_sign_in)
+        context.startActivity(
+            Intent(context, AuthActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
     }
 
     override fun getItemCount(): Int {

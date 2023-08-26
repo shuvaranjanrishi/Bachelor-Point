@@ -233,11 +233,6 @@ class AddRentFragment : Fragment() , AddRentListener{
                                 binding.checkBoxLl.visibility = View.GONE
                                 binding.checkBox.isChecked = false
                             }
-                            Toast.makeText(
-                                context,
-                                "" + selectedItem.name + " Id: " + selectedItem.id,
-                                Toast.LENGTH_LONG
-                            ).show()
                         }
 
                     }

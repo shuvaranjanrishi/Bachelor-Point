@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.signInSignUp.SignInFragment">
@@ -27,30 +28,52 @@
         android:textSize="25sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:layout_margin="@dimen/dimen_10dp"
-        android:id="@+id/emailEt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/bg_et"
-        android:hint="@string/email"
-        android:padding="@dimen/dimen_10dp"
-        android:text="shuvo@gmail.com" />
+        android:layout_centerInParent="true">
 
-    <EditText
-        android:layout_below="@+id/emailEt"
-        android:id="@+id/passwordEt"
-        android:layout_margin="@dimen/dimen_10dp"
-        android:background="@drawable/bg_et"
-        android:padding="@dimen/dimen_10dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:background="@drawable/bg_et"
+            android:drawablePadding="5dp"
+            android:text="shuvo@gmail.com"
+            android:hint="@string/email"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="123456"
-        android:hint="@string/password" />
+        android:layout_below="@id/emailLl"
+        app:passwordToggleDrawable="@drawable/show_password_selector"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/purple_200"
+        android:drawablePadding="@dimen/dimen_5dp"
+        android:hint="@string/password"
+        android:inputType="textPassword">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEt"
+            android:layout_width="match_parent"
+            android:text="123456"
+            android:inputType="textPassword"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_et"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:imeOptions="actionNext"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:layout_below="@+id/passwordEt"
+        android:layout_below="@+id/passwordLl"
         android:layout_centerHorizontal="true"
         android:id="@+id/signInBtn"
         android:layout_marginTop="@dimen/dimen_20dp"

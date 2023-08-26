@@ -109,7 +109,7 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.data.observe(viewLifecycleOwner) {
-            val adapter = ModuleAdapter(findNavController(), it)
+            val adapter = ModuleAdapter(requireContext(),findNavController(), it)
             binding.recyclerView.adapter = adapter
         }
 

@@ -159,11 +159,6 @@ class AddExpenseFragment : Fragment() {
                             selectedUid = selectedItem.uid.toString()
                             selectedId = selectedItem.id.toString()
                             selectedName = selectedItem.name.toString()
-                            Toast.makeText(
-                                context,
-                                "" + selectedItem.name + " Id: " + selectedItem.id,
-                                Toast.LENGTH_LONG
-                            ).show()
                         }
 
                     }
