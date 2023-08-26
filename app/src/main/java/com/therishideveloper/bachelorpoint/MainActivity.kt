@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
         val view: View = navView.getHeaderView(0)
 
         val nameTv = view.findViewById<TextView>(R.id.nameTv)

@@ -7,27 +7,43 @@
     android:orientation="vertical"
     tools:context=".ui.signInSignUp.SignInFragment">
 
+    <ImageView
+        android:id="@+id/logoIv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_50dp"
+        android:src="@drawable/home" />
+
     <TextView
+        android:layout_below="@id/logoIv"
         android:layout_width="match_parent"
-        android:padding="@dimen/dimen_10dp"
-        android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_20dp"
+        android:gravity="center"
+        android:padding="@dimen/dimen_10dp"
+        android:textColor="@color/purple_200"
         android:text="@string/app_name"
         android:textSize="25sp"
         android:textStyle="bold" />
 
     <EditText
+        android:layout_margin="@dimen/dimen_10dp"
         android:id="@+id/emailEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:background="@drawable/bg_et"
         android:hint="@string/email"
+        android:padding="@dimen/dimen_10dp"
         android:text="shuvo@gmail.com" />
 
     <EditText
         android:layout_below="@+id/emailEt"
         android:id="@+id/passwordEt"
+        android:layout_margin="@dimen/dimen_10dp"
+        android:background="@drawable/bg_et"
+        android:padding="@dimen/dimen_10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="123456"
@@ -37,6 +53,7 @@
         android:layout_below="@+id/passwordEt"
         android:layout_centerHorizontal="true"
         android:id="@+id/signInBtn"
+        android:layout_marginTop="@dimen/dimen_20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_in" />
