@@ -9,15 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
-import com.therishideveloper.bachelorpoint.adapter.MemberAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMemberBinding
 import com.therishideveloper.bachelorpoint.model.User
 
@@ -28,10 +25,15 @@ class AddMemberFragment : Fragment() {
     private var _binding: FragmentAddMemberBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: MemberViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var session: SharedPreferences
+
+    private lateinit var name: String
+    private lateinit var email: String
+    private lateinit var password: String
+    private lateinit var address: String
+    private lateinit var phone: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +42,6 @@ class AddMemberFragment : Fragment() {
     ): View {
         _binding = FragmentAddMemberBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-
         return binding.root
     }
 
@@ -52,49 +53,39 @@ class AddMemberFragment : Fragment() {
 
         binding.createMemberBtn.setOnClickListener {
 
-            val name: String = binding.nameEt.text.toString().trim()
-            val email: String = binding.emailEt.text.toString().trim()
-            val password: String = binding.passwordEt.text.toString().trim()
-            val address: String = binding.addressEt.text.toString().trim()
-            val phone: String = binding.phoneEt.text.toString().trim()
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val userid = auth.currentUser!!.uid
-                        createMemberAccount(
-                            userid,
-                            name,
-                            phone,
-                            address,
-                            email,
-                            password
-                        )
-                    } else {
-                        Log.e("addOnCompleteListener", "" + it.exception)
+            name = binding.nameEt.text.toString().trim()
+            email = binding.emailEt.text.toString().trim()
+            password = binding.passwordEt.text.toString().trim()
+            address = binding.addressEt.text.toString().trim()
+            phone = binding.phoneEt.text.toString().trim()
+
+            if (validate()) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val userid = auth.currentUser!!.uid
+                            createMemberAccount(
+                                userid,
+                            )
+                        } else {
+                            Log.e(TAG,"addOnCompleteListener: "+ it.exception)
+                        }
                     }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(
-                        context,
-                        "" + it.message,
-                        Toast.LENGTH_LONG,
-                    ).show()
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            context,
+                            "" + it.message,
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    }
+            }
         }
 
     }
 
-    private fun createMemberAccount(
-        uid: String,
-        name: String,
-        phone: String,
-        address: String,
-        email: String,
-        password: String,
-    ) {
+    private fun createMemberAccount(uid: String) {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
-        Log.e(TAG, "createMemberAccount: $accountId $uid")
         val user =
             User(
                 timestamp,
@@ -117,6 +108,40 @@ class AddMemberFragment : Fragment() {
             "Member Created Successful",
             Toast.LENGTH_SHORT,
         ).show()
+    }
+
+    private fun validate(): Boolean {
+        if (name.isEmpty()) {
+            binding.nameEt.requestFocus()
+            binding.nameEt.error = "Enter Your Name"
+            return false
+        }
+        if (email.isEmpty()) {
+            binding.emailEt.requestFocus()
+            binding.emailEt.error = "Enter Your Email"
+            return false
+        }
+        if (password.isEmpty()) {
+            binding.passwordEt.requestFocus()
+            binding.passwordEt.error = "Enter a Password"
+            return false
+        }
+        if (password.length > 6) {
+            binding.passwordEt.requestFocus()
+            binding.passwordEt.error = "Password Length At Least 6 Character"
+            return false
+        }
+        if (address.isEmpty()) {
+            binding.addressEt.requestFocus()
+            binding.addressEt.error = "Enter Your Address"
+            return false
+        }
+        if (phone.isEmpty()) {
+            binding.phoneEt.requestFocus()
+            binding.phoneEt.error = "Enter Your Mobile Number"
+            return false
+        }
+        return true
     }
 
     override fun onDestroyView() {
