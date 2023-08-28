@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
@@ -78,10 +81,12 @@ class AddRentFragment : Fragment() , AddRentListener{
 
         setupDatePicker()
 
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            memberList = it
-            binding.totalMemberTv.text = memberList.size.toString()
-        }
+        getMembers()
+
+//        memberViewModel.data.observe(viewLifecycleOwner) {
+//            memberList = it
+//            binding.totalMemberTv.text = memberList.size.toString()
+//        }
 
         binding.amountEt.addTextChangedListener(
             onTextChanged = { _, _, _, _ ->
@@ -103,6 +108,29 @@ class AddRentFragment : Fragment() , AddRentListener{
             description = binding.descriptionEt.text.toString().trim()
             addRentAndBill(amount, description)
         }
+    }
+
+    private fun getMembers() {
+        val session: SharedPreferences =
+            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        database.child(accountId).child("Members")
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val memberList: MutableList<User> = mutableListOf()
+                        for (ds in dataSnapshot.children) {
+                            val user: User? = ds.getValue(User::class.java)
+                            memberList.add(user!!)
+                        }
+                        this@AddRentFragment.memberList = memberList.sortedBy { it.name }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
     }
 
     private fun setupDatePicker() {
@@ -263,10 +291,10 @@ class AddRentFragment : Fragment() , AddRentListener{
 
     private fun setupSeparateRentInputAdapter() {
         val listener = this
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            Log.d("TAG", "mealList.size: " + it.size.toString())
+//        memberViewModel.data.observe(viewLifecycleOwner) {
+//            Log.d("TAG", "mealList.size: " + it.size.toString())
             val rentList: MutableList<SeparateRent> = mutableListOf()
-            for (user in it) {
+            for (user in memberList) {
                 val rent = SeparateRent(
                     "" + user.id,
                     "" + user.name,
@@ -279,7 +307,7 @@ class AddRentFragment : Fragment() , AddRentListener{
             }
             val adapter = AddSeparateRentAdapter(listener,rentList)
             binding.recyclerView.adapter = adapter
-        }
+//        }
     }
 
     override fun onChangeRent(rentList: List<SeparateRent>) {

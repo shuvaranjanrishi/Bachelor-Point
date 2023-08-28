@@ -19,7 +19,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.databinding.ActivityMainBinding
 import com.therishideveloper.bachelorpoint.session.SessionManager
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration

@@ -61,13 +61,38 @@ class MealFragment : Fragment(), MealListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            memberList = it
-        }
+//        memberViewModel.data.observe(viewLifecycleOwner) {
+//            memberList = it
+//        }
+
+        getMembers()
 
         setupDatePicker()
 
         setupMonthPicker()
+    }
+
+    private fun getMembers() {
+        val session: SharedPreferences =
+            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        database.child(accountId).child("Members")
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val memberList: MutableList<User> = mutableListOf()
+                        for (ds in dataSnapshot.children) {
+                            val user: User? = ds.getValue(User::class.java)
+                            memberList.add(user!!)
+                        }
+                        this@MealFragment.memberList = memberList.sortedBy { it.name }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
     }
 
     private fun setupDatePicker() {

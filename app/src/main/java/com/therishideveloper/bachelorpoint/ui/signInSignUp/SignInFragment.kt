@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -25,7 +24,6 @@ import com.therishideveloper.bachelorpoint.MainActivity
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
-import com.therishideveloper.bachelorpoint.ui.home.HomeViewModel
 
 class SignInFragment : Fragment() {
 
@@ -45,7 +43,7 @@ class SignInFragment : Fragment() {
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
+        database = Firebase.database.reference.child("BachelorPoint")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         editor = session.edit()
 
@@ -91,17 +89,9 @@ class SignInFragment : Fragment() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (ds in dataSnapshot.children) {
                             val user: User? = ds.getValue<User>()
-
                             if (user != null) {
                                 Log.e(TAG, "LoginUser: $user")
-                                saveUserInfo(
-                                    user.name!!,
-                                    user.email!!,
-                                    user.id!!,
-                                    user.uid!!,
-                                    user.accountId!!,
-                                    user.usertype!!
-                                )
+                                saveUserInfo(user)
                             } else {
                                 Toast.makeText(
                                     context,
@@ -119,19 +109,11 @@ class SignInFragment : Fragment() {
             )
     }
 
-    private fun saveUserInfo(
-        name: String,
-        email: String,
-        id: String,
-        uid: String,
-        accountId: String,
-        usertype: String
-    ) {
-
-        editor.putString("USER_ID", "" + uid);
-        editor.putString("USER_TYPE", "" + usertype)
-        editor.putString("ACCOUNT_ID", "" + accountId)
-        editor.putString("MEMBER_ID", "" + id)
+    private fun saveUserInfo(user: User) {
+        editor.putString("USER_ID", "" + user.uid);
+        editor.putString("USER_TYPE", "" + user.usertype)
+        editor.putString("ACCOUNT_ID", "" + user.accountId)
+        editor.putString("MEMBER_ID", "" + user.id)
         editor.apply()
 
         Toast.makeText(

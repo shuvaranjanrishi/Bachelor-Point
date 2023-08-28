@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
@@ -65,7 +68,7 @@ class AddExpenseFragment : Fragment() {
 
         setupDatePicker()
 
-        setupSpinner()
+        getMembers()
 
         binding.saveBtn.setOnClickListener {
 
@@ -137,8 +140,8 @@ class AddExpenseFragment : Fragment() {
         ).show()
     }
 
-    private fun setupSpinner() {
-        memberViewModel.data.observe(viewLifecycleOwner) {
+    private fun setupSpinner(it: List<User>) {
+//        memberViewModel.data.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 val adapter = MemberSpAdapter(requireContext(), it)
                 binding.spinner.adapter = adapter
@@ -167,7 +170,30 @@ class AddExpenseFragment : Fragment() {
                 Toast.makeText(context, "No Data Found", Toast.LENGTH_LONG).show()
             }
 
-        }
+//        }
+    }
+
+    private fun getMembers() {
+        val session: SharedPreferences =
+            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        database.child(accountId).child("Members")
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val memberList: MutableList<User> = mutableListOf()
+                        for (ds in dataSnapshot.children) {
+                            val user: User? = ds.getValue(User::class.java)
+                            memberList.add(user!!)
+                        }
+                        setupSpinner(memberList.sortedBy { it.name })
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
     }
 
     override fun onDestroyView() {

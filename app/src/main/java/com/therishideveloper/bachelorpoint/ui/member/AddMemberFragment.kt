@@ -49,7 +49,7 @@ class AddMemberFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
+        database = Firebase.database.reference.child("BachelorPoint")
 
         binding.createMemberBtn.setOnClickListener {
 
@@ -102,7 +102,7 @@ class AddMemberFragment : Fragment() {
                 timestamp
             )
         database.child("Users").child(uid).setValue(user)
-        database.child("Users").child(accountId).child("Members").child(uid).setValue(user)
+        database.child("Accounts").child(accountId).child("Members").child(uid).setValue(user)
         Toast.makeText(
             context,
             "Member Created Successful",

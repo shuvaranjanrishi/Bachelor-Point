@@ -41,7 +41,7 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
+        database = Firebase.database.reference.child("BachelorPoint")
 
         binding.signUpBtn.setOnClickListener {
 
@@ -92,7 +92,7 @@ class SignUpFragment : Fragment() {
             )
         database.child("Users").child(uid).setValue(user)
             .addOnCompleteListener {
-                database.child("Users").child(uid).child("Members").child(uid).setValue(user)
+                database.child("Accounts").child(auth.uid.toString()).child("Members").child(uid).setValue(user)
                     .addOnCompleteListener{
                         if (it.isSuccessful) {
                             Toast.makeText(

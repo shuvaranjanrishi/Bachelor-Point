@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -27,8 +26,6 @@ import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
-import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
-import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -41,8 +38,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private var _binding: FragmentClosingBinding? = null
     private val binding get() = _binding!!
 
-    private val memberViewModel: MemberViewModel by viewModels()
-    private val mealViewModel: MealViewModel by viewModels()
+//    private val memberViewModel: MemberViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
     private var memberList: List<User> = mutableListOf()
@@ -55,7 +51,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database = Firebase.database.reference.child("Bachelor Point").child("Users")
-
         return binding.root
     }
 
@@ -65,15 +60,40 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
         binding.monthTv.text = MyCalender.currentMonthYear
 
-        memberViewModel.data.observe(viewLifecycleOwner) {
-            memberList = it
-        }
+//        val memberViewModel = ViewModelProvider(this)[MemberViewModel(requireContext())::class.java]
+//        memberViewModel.data.observe(viewLifecycleOwner) {
+//            memberList = it
+//        }
+        getMembers()
 
         getMealListOfThisMonth(MyCalender.currentMonthYear)
 
     }
 
-    private fun getExpenditures(monthAndYear: String,mealList: MutableList<Meal>) {
+    private fun getMembers() {
+        val session: SharedPreferences =
+            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        database.child(accountId).child("Members")
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val memberList: MutableList<User> = mutableListOf()
+                        for (ds in dataSnapshot.children) {
+                            val user: User? = ds.getValue(User::class.java)
+                            memberList.add(user!!)
+                        }
+                        this@ClosingFragment.memberList = memberList.sortedBy { it.name }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "DatabaseError", error.toException())
+                    }
+                }
+            )
+    }
+
+    private fun getExpenseList(monthAndYear: String, mealList: MutableList<Meal>) {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         Log.d(TAG, "onDataChange: accountId: $accountId")
         database.child(accountId).child("Expense")
@@ -112,7 +132,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                             }
                         }
 
-                        getExpenditures(monthAndYear,mealList)
+                        getExpenseList(monthAndYear, mealList)
                     }
 
                     override fun onCancelled(error: DatabaseError) {
