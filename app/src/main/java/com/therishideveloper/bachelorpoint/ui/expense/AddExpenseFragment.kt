@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -20,15 +22,18 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.adapter.MemberAdapter
 import com.therishideveloper.bachelorpoint.adapter.spinner.MemberSpAdapter
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenseBinding
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddExpenseFragment : Fragment() {
 
     private val TAG = "AddExpenditureFragment"
@@ -141,7 +146,6 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun setupSpinner(it: List<User>) {
-//        memberViewModel.data.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 val adapter = MemberSpAdapter(requireContext(), it)
                 binding.spinner.adapter = adapter
@@ -169,31 +173,30 @@ class AddExpenseFragment : Fragment() {
             } else {
                 Toast.makeText(context, "No Data Found", Toast.LENGTH_LONG).show()
             }
-
-//        }
     }
 
     private fun getMembers() {
-        val session: SharedPreferences =
-            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        database.child(accountId).child("Members")
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val memberList: MutableList<User> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue(User::class.java)
-                            memberList.add(user!!)
-                        }
-                        setupSpinner(memberList.sortedBy { it.name })
-                    }
+        memberViewModel.getMembers(accountId)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+            binding.mainLl.isVisible = false
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    setupSpinner(it.data!!)
+                    binding.mainLl.isVisible = true
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -201,3 +204,4 @@ class AddExpenseFragment : Fragment() {
         _binding = null
     }
 }
+//202

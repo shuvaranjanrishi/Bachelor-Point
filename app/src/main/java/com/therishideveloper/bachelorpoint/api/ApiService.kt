@@ -12,7 +12,7 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    @GET("BachelorPoint/Accounts/{accountId}/Members.json")
+    @GET("Bachelor Point/Accounts/{accountId}/Members.json")
     suspend fun getMembers(@Path("accountId") accountId: String): Response<JsonObject>
 
 }

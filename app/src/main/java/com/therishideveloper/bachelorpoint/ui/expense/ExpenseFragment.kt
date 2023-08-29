@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.ExpenseAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentExpenseBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenseListener
@@ -38,7 +39,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
     ): View {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child("Bachelor Point").child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         return binding.root
     }
 

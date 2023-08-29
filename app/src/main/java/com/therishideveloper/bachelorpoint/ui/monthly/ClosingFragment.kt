@@ -9,15 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.ExpenseClosingAdapter
 import com.therishideveloper.bachelorpoint.adapter.MealClosingAdapter
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentClosingBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenseClosingListener
 import com.therishideveloper.bachelorpoint.listener.MealClosingListener
@@ -26,11 +30,13 @@ import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-
+@AndroidEntryPoint
 class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
     private val TAG = "ClosingFragment"
@@ -38,7 +44,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private var _binding: FragmentClosingBinding? = null
     private val binding get() = _binding!!
 
-//    private val memberViewModel: MemberViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
     private var memberList: List<User> = mutableListOf()
@@ -50,7 +56,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     ): View {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child("Bachelor Point").child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
         return binding.root
     }
 
@@ -60,10 +66,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
         binding.monthTv.text = MyCalender.currentMonthYear
 
-//        val memberViewModel = ViewModelProvider(this)[MemberViewModel(requireContext())::class.java]
-//        memberViewModel.data.observe(viewLifecycleOwner) {
-//            memberList = it
-//        }
         getMembers()
 
         getMealListOfThisMonth(MyCalender.currentMonthYear)
@@ -71,26 +73,27 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     private fun getMembers() {
-        val session: SharedPreferences =
-            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        database.child(accountId).child("Members")
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val memberList: MutableList<User> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue(User::class.java)
-                            memberList.add(user!!)
-                        }
-                        this@ClosingFragment.memberList = memberList.sortedBy { it.name }
-                    }
+        memberViewModel.getMembers(accountId)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+            binding.mainLl.isVisible = false
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    this@ClosingFragment.memberList = it.data!!
+                    binding.mainLl.isVisible = true
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
     private fun getExpenseList(monthAndYear: String, mealList: MutableList<Meal>) {

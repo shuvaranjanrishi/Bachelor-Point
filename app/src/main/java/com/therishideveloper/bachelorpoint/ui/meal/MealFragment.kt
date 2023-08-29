@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.database.DataSnapshot
@@ -19,6 +20,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.MealAdapter
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentMealBinding
 import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
@@ -27,10 +29,11 @@ import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-
+@AndroidEntryPoint
 class MealFragment : Fragment(), MealListener {
 
     private val TAG = "MealFragment"
@@ -61,10 +64,6 @@ class MealFragment : Fragment(), MealListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        memberViewModel.data.observe(viewLifecycleOwner) {
-//            memberList = it
-//        }
-
         getMembers()
 
         setupDatePicker()
@@ -73,26 +72,27 @@ class MealFragment : Fragment(), MealListener {
     }
 
     private fun getMembers() {
-        val session: SharedPreferences =
-            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        database.child(accountId).child("Members")
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val memberList: MutableList<User> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue(User::class.java)
-                            memberList.add(user!!)
-                        }
-                        this@MealFragment.memberList = memberList.sortedBy { it.name }
-                    }
+        memberViewModel.getMembers(accountId)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+            binding.mainLl.isVisible = false
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    this@MealFragment.memberList = it.data!!
+                    binding.mainLl.isVisible = true
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
     private fun setupDatePicker() {

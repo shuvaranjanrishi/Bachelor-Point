@@ -43,7 +43,7 @@ class SignInFragment : Fragment() {
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = Firebase.database.reference.child("BachelorPoint")
+        database = Firebase.database.reference.child(getString(R.string.app_name))
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         editor = session.edit()
 

@@ -3,7 +3,6 @@ package com.therishideveloper.bachelorpoint.ui.member
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.JsonObject
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.User
@@ -53,7 +52,7 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
                         )
                     )
                 }
-                _memberLiveData.postValue(NetworkResult.Success(memberList))
+                _memberLiveData.postValue(NetworkResult.Success(memberList.sortedBy { it.name }))
 
                 Log.d(TAG, "MemberList $memberList")
             } catch (e: Exception) {

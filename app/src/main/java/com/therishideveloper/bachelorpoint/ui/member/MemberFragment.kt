@@ -44,10 +44,10 @@ class MemberFragment : Fragment() {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
-        bindObserver()
+        getMembers()
     }
 
-    private fun bindObserver() {
+    private fun getMembers() {
         memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {

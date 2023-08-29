@@ -1,147 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.monthly.ClosingFragment">
 
-    <TableRow
-        android:id="@+id/monthRow"
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Large.ThreeBounce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_3dp"
-        android:background="@color/table_header"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/monthTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/dimen_10dp"
-            android:gravity="center"
-            android:padding="@dimen/dimen_3dp"
-            android:text="@string/dd_mm_yyyy"
-            android:textSize="@dimen/dimen_18sp"
-            android:textStyle="bold"
-            app:drawableEndCompat="@drawable/baseline_date_range_24" />
-    </TableRow>
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:layout_height="match_parent"
+        android:id="@+id/mainLl"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:orientation="vertical">
-
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <TableRow
+            android:id="@+id/monthRow"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_3dp"
+            android:background="@color/table_header"
+            android:gravity="center">
 
-            <TableRow
-                android:id="@+id/tableHeaderRow1"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/monthTv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/table_header">
+                android:drawablePadding="@dimen/dimen_10dp"
+                android:gravity="center"
+                android:padding="@dimen/dimen_3dp"
+                android:text="@string/dd_mm_yyyy"
+                android:textSize="@dimen/dimen_18sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/baseline_date_range_24" />
+        </TableRow>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="@string/name_bn"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="মিল"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="বাজার খরচ"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <View
-                android:id="@+id/tableHeaderBorder1"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_1dp"
-                android:layout_below="@+id/tableHeaderRow1"
-                android:background="@color/purple_200" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/bottomLl1"
-                android:layout_below="@+id/tableHeaderBorder1"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_meal_closing" />
-
-            <LinearLayout
-                android:id="@+id/bottomLl1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
-
-                <View
-                    android:id="@+id/border1"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_1dp"
-                    android:background="@color/purple_200" />
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <TableRow
+                    android:id="@+id/tableHeaderRow1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/table_header"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:padding="@dimen/dimen_3dp"
-                        android:text="মোট"
-                        android:textSize="@dimen/dimen_15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/totalMealTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:padding="@dimen/dimen_3dp"
-                        android:text="@string/zero"
-                        android:textSize="@dimen/dimen_15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/totalExpenseTv"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:padding="@dimen/dimen_3dp"
-                        android:text="@string/zero"
-                        android:textSize="@dimen/dimen_15sp"
-                        android:textStyle="bold" />
+                    android:background="@color/table_header">
 
                     <TextView
                         android:layout_width="0dp"
@@ -149,101 +66,133 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:padding="@dimen/dimen_3dp"
-                        android:text="মিল রেট"
+                        android:text="@string/name_bn"
                         android:textSize="@dimen/dimen_15sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/mealRateTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:padding="@dimen/dimen_3dp"
-                        android:text="@string/zero"
+                        android:text="মিল"
+                        android:textSize="@dimen/dimen_15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:padding="@dimen/dimen_3dp"
+                        android:text="বাজার খরচ"
                         android:textSize="@dimen/dimen_15sp"
                         android:textStyle="bold" />
                 </TableRow>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TableRow
-                android:id="@+id/tableHeaderRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/table_header">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="@string/name_bn"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="মিলের খরচ"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="@dimen/dimen_3dp"
-                    android:text="ফলাফল"
-                    android:textSize="@dimen/dimen_15sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <View
-                android:id="@+id/tableHeaderBorder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_1dp"
-                android:layout_below="@+id/tableHeaderRow"
-                android:background="@color/purple_200" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/bottomLl2"
-                android:layout_below="@+id/tableHeaderBorder"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_meal_closing" />
-
-            <LinearLayout
-                android:id="@+id/bottomLl2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
 
                 <View
-                    android:id="@+id/border"
+                    android:id="@+id/tableHeaderBorder1"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
+                    android:layout_below="@+id/tableHeaderRow1"
                     android:background="@color/purple_200" />
 
-                <TableRow
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/bottomLl1"
+                    android:layout_below="@+id/tableHeaderBorder1"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_meal_closing" />
+
+                <LinearLayout
+                    android:id="@+id/bottomLl1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/table_header"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp">
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/border1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_1dp"
+                        android:background="@color/purple_200" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/table_header"
+                        android:paddingTop="@dimen/dimen_10dp"
+                        android:paddingBottom="@dimen/dimen_10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="মোট"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/totalMealTv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="@string/zero"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/totalExpenseTv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="@string/zero"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="মিল রেট"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/mealRateTv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="@string/zero"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+                    </TableRow>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TableRow
+                    android:id="@+id/tableHeaderRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/table_header">
 
                     <TextView
                         android:layout_width="0dp"
@@ -251,34 +200,102 @@
                         android:layout_weight="3"
                         android:gravity="center"
                         android:padding="@dimen/dimen_3dp"
-                        android:text="মোট"
+                        android:text="@string/name_bn"
                         android:textSize="@dimen/dimen_15sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/totalExpenseOfMealTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:padding="@dimen/dimen_3dp"
-                        android:text="@string/zero"
+                        android:text="মিলের খরচ"
                         android:textSize="@dimen/dimen_15sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/totalResultTv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:padding="@dimen/dimen_3dp"
-                        android:text="@string/zero"
+                        android:text="ফলাফল"
                         android:textSize="@dimen/dimen_15sp"
                         android:textStyle="bold" />
                 </TableRow>
-            </LinearLayout>
-        </RelativeLayout>
+
+                <View
+                    android:id="@+id/tableHeaderBorder"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_1dp"
+                    android:layout_below="@+id/tableHeaderRow"
+                    android:background="@color/purple_200" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/bottomLl2"
+                    android:layout_below="@+id/tableHeaderBorder"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_meal_closing" />
+
+                <LinearLayout
+                    android:id="@+id/bottomLl2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/border"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_1dp"
+                        android:background="@color/purple_200" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/table_header"
+                        android:paddingTop="@dimen/dimen_10dp"
+                        android:paddingBottom="@dimen/dimen_10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="মোট"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/totalExpenseOfMealTv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="@string/zero"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/totalResultTv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_3dp"
+                            android:text="@string/zero"
+                            android:textSize="@dimen/dimen_15sp"
+                            android:textStyle="bold" />
+                    </TableRow>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

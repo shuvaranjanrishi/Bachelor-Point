@@ -9,20 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddSeparateRentAdapter
 import com.therishideveloper.bachelorpoint.adapter.spinner.RentTypeSpAdapter
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddRentBinding
 import com.therishideveloper.bachelorpoint.listener.AddRentListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
@@ -31,10 +30,11 @@ import com.therishideveloper.bachelorpoint.model.SeparateRent
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-
+@AndroidEntryPoint
 class AddRentFragment : Fragment() , AddRentListener{
 
     private val TAG = "AddRentFragment"
@@ -83,11 +83,6 @@ class AddRentFragment : Fragment() , AddRentListener{
 
         getMembers()
 
-//        memberViewModel.data.observe(viewLifecycleOwner) {
-//            memberList = it
-//            binding.totalMemberTv.text = memberList.size.toString()
-//        }
-
         binding.amountEt.addTextChangedListener(
             onTextChanged = { _, _, _, _ ->
                 try {
@@ -111,26 +106,28 @@ class AddRentFragment : Fragment() , AddRentListener{
     }
 
     private fun getMembers() {
-        val session: SharedPreferences =
-            requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         val accountId = session.getString("ACCOUNT_ID", "").toString()
-        database.child(accountId).child("Members")
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val memberList: MutableList<User> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue(User::class.java)
-                            memberList.add(user!!)
-                        }
-                        this@AddRentFragment.memberList = memberList.sortedBy { it.name }
-                    }
+        memberViewModel.getMembers(accountId)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+            binding.mainLl.isVisible = false
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    this@AddRentFragment.memberList = it.data!!
+                    binding.mainLl.isVisible = true
+                    binding.totalMemberTv.text = memberList.size.toString()
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
     private fun setupDatePicker() {
