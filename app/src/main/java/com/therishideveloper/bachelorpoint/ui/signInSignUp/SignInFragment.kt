@@ -89,33 +89,6 @@ class SignInFragment : Fragment() {
         }
 
     }
-//
-//    private fun getUserInfo(uid: String) {
-//        database.child("Users").orderByChild("uid").equalTo(uid)
-//            .addListenerForSingleValueEvent(
-//                object : ValueEventListener {
-//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                        for (ds in dataSnapshot.children) {
-//                            val user: User? = ds.getValue<User>()
-//                            if (user != null) {
-//                                Log.e(TAG, "LoginUser: $user")
-//                                saveUserInfo(user)
-//                            } else {
-//                                Toast.makeText(
-//                                    context,
-//                                    "User Info not Found!",
-//                                    Toast.LENGTH_SHORT,
-//                                ).show()
-//                            }
-//                        }
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {
-//                        Log.e(TAG, "getUserInfo" + error.toException())
-//                    }
-//                }
-//            )
-//    }
 
     private fun saveUserInfo(user: User) {
         editor.putString("USER_ID", "" + user.uid);
