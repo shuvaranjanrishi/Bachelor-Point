@@ -4,27 +4,27 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.MainActivity
 import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignInFragment : Fragment() {
 
     private val TAG = "SignInFragment"
@@ -36,6 +36,7 @@ class SignInFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var session: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,6 @@ class SignInFragment : Fragment() {
         database = Firebase.database.reference.child(getString(R.string.app_name))
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         editor = session.edit()
-
         return binding.root
     }
 
@@ -54,60 +54,68 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signInBtn.setOnClickListener {
-
             val email: String = binding.emailEt.text.toString().trim()
             val password: String = binding.passwordEt.text.toString().trim()
 
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val userid = auth.currentUser!!.uid
-                        getUserInfo(userid)
-                    } else {
-                        Log.e(TAG, "addOnCompleteListener" + it.exception)
-                    }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(
-                        context,
-                        "" + it.message,
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
+            binding.signInBtn.isVisible = false
+            authViewModel.signIn(email, password, auth, database)
         }
 
         binding.createNewTv.setOnClickListener {
             findNavController().navigate(R.id.action_nav_sign_in_to_nav_sign_up)
         }
 
+        getSignInResponse()
     }
 
-    private fun getUserInfo(uid: String) {
-        database.child("Users").orderByChild("uid").equalTo(uid)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue<User>()
-                            if (user != null) {
-                                Log.e(TAG, "LoginUser: $user")
-                                saveUserInfo(user)
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "User Info not Found!",
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                        }
-                    }
+    private fun getSignInResponse() {
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "getUserInfo" + error.toException())
-                    }
+        authViewModel.singInResponseLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    saveUserInfo(it.data!!)
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+                    binding.signInBtn.isVisible = true
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
+
     }
+//
+//    private fun getUserInfo(uid: String) {
+//        database.child("Users").orderByChild("uid").equalTo(uid)
+//            .addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                        for (ds in dataSnapshot.children) {
+//                            val user: User? = ds.getValue<User>()
+//                            if (user != null) {
+//                                Log.e(TAG, "LoginUser: $user")
+//                                saveUserInfo(user)
+//                            } else {
+//                                Toast.makeText(
+//                                    context,
+//                                    "User Info not Found!",
+//                                    Toast.LENGTH_SHORT,
+//                                ).show()
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        Log.e(TAG, "getUserInfo" + error.toException())
+//                    }
+//                }
+//            )
+//    }
 
     private fun saveUserInfo(user: User) {
         editor.putString("USER_ID", "" + user.uid);

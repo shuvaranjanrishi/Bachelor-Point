@@ -15,4 +15,7 @@ interface ApiService {
     @GET("Bachelor Point/Accounts/{accountId}/Members.json")
     suspend fun getMembers(@Path("accountId") accountId: String): Response<JsonObject>
 
+
+    @GET("Bachelor Point/Accounts/{accountId}/Members.json")
+    suspend fun signIn(@Path("accountId") accountId: String): Response<JsonObject>
 }

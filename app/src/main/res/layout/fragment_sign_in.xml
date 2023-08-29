@@ -17,14 +17,17 @@
         android:src="@drawable/home" />
 
     <TextView
-        android:layout_below="@id/logoIv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_20dp"
+        android:layout_below="@id/logoIv"
+        android:layout_marginStart="@dimen/dimen_20dp"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:layout_marginBottom="@dimen/dimen_20dp"
         android:gravity="center"
         android:padding="@dimen/dimen_10dp"
-        android:textColor="@color/purple_200"
         android:text="@string/app_name"
+        android:textColor="@color/purple_200"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -80,6 +83,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_in" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Large.ThreeBounce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordLl"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/black" />
 
     <TextView
         android:id="@+id/create_new_tv"
