@@ -1,17 +1,15 @@
 package com.therishideveloper.bachelorpoint.api
 
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
 
 /**
  * Created by Shuva Ranjan Rishi on 28,August,2023
@@ -20,26 +18,36 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class NetworkModule {
+class ApiClient {
 
-    val database: DatabaseReference = Firebase.database.reference
-
-    var gson = GsonBuilder()
+    private var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
+
+    private var client: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val url = chain
+                .request()
+                .url()
+                .newBuilder()
+                .addQueryParameter("auth", Constant.authKey)
+                .build()
+            chain.proceed(chain.request().newBuilder().url(url).build())
+        }.build()
 
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl("https://bachelor-point-f2f71-default-rtdb.firebaseio.com/")
+            .baseUrl(Constant.baseUrl)
+            .client(client)
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideMemberApi(retrofit: Retrofit): MemberApi {
-        return retrofit.create(MemberApi::class.java)
+    fun provideMemberApi(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 }
