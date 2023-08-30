@@ -27,7 +27,13 @@ class SignUpFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
-    lateinit var session: SharedPreferences
+    private lateinit var session: SharedPreferences
+
+    private lateinit var name: String
+    private lateinit var email: String
+    private lateinit var password: String
+    private lateinit var address: String
+    private lateinit var phone: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,50 +51,49 @@ class SignUpFragment : Fragment() {
 
         binding.signUpBtn.setOnClickListener {
 
-            val name: String = binding.nameEt.text.toString().trim()
-            val email: String = binding.emailEt.text.toString().trim()
-            val password: String = binding.passwordEt.text.toString().trim()
+            name = binding.nameEt.text.toString().trim()
+            email = binding.emailEt.text.toString().trim()
+            password = binding.passwordEt.text.toString().trim()
+            address = binding.addressEt.text.toString().trim()
+            phone = binding.phoneEt.text.toString().trim()
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val uid = auth.currentUser!!.uid
-                        createAdminAccount(uid, name, email, password)
-                    } else {
-                        Log.e("addOnCompleteListener", "" + it.exception)
+            if (validate()) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val uid = auth.currentUser!!.uid
+                            createAdminAccount(uid)
+                        } else {
+                            Log.e("addOnCompleteListener", "" + it.exception)
+                        }
                     }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(
-                        context,
-                        "" + it.message,
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            context,
+                            "" + it.message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+            }
         }
     }
 
-    private fun createAdminAccount(
-        uid: String,
-        name: String,
-        email: String,
-        password: String,
-    ) {
+    private fun createAdminAccount(uid: String) {
         val timestamp = "" + System.currentTimeMillis()
         val user =
             User(
-                timestamp,
-                uid,
-                uid,
-                name,
-                "",
-                "",
-                email,
-                password,
+                "" + timestamp,
+                "" + uid,
+                "" + uid,
+                "" + name,
+                "" + phone,
+                "" + address,
+                "" + email,
+                "" + password,
                 "Admin",
                 "true",
-                timestamp,
-                timestamp
+                "" + timestamp,
+                "" + timestamp
             )
         database.child("Users").child(uid).setValue(user)
             .addOnCompleteListener {
@@ -106,6 +111,40 @@ class SignUpFragment : Fragment() {
                         }
                     }
             }
+    }
+
+    private fun validate(): Boolean {
+        if (name.isEmpty()) {
+            binding.nameEt.requestFocus()
+            binding.nameEt.error = "Enter Your Name"
+            return false
+        }
+        if (email.isEmpty()) {
+            binding.emailEt.requestFocus()
+            binding.emailEt.error = "Enter Your Email"
+            return false
+        }
+        if (password.isEmpty()) {
+            binding.passwordEt.requestFocus()
+            binding.passwordEt.error = "Enter a Password"
+            return false
+        }
+        if (password.length > 6) {
+            binding.passwordEt.requestFocus()
+            binding.passwordEt.error = "Password Length At Least 6 Character"
+            return false
+        }
+        if (address.isEmpty()) {
+            binding.addressEt.requestFocus()
+            binding.addressEt.error = "Enter Your Address"
+            return false
+        }
+        if (phone.isEmpty()) {
+            binding.phoneEt.requestFocus()
+            binding.phoneEt.error = "Enter Your Mobile Number"
+            return false
+        }
+        return true
     }
 
     override fun onDestroyView() {

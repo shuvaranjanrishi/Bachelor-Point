@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class AuthRepo @Inject constructor(private val apiService: ApiService) {
 
-    private val TAG = "MemberRepo"
+    private val TAG = "AuthRepo"
 
     private val _singInResponseLiveData = MutableLiveData<NetworkResult<User>>()
     val singInResponseLiveData: LiveData<NetworkResult<User>>
