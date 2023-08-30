@@ -141,6 +141,16 @@ class AddMemberFragment : Fragment() {
             binding.phoneEt.error = "Enter Your Mobile Number"
             return false
         }
+        if (!phone.startsWith("01")) {
+            binding.phoneEt.requestFocus()
+            binding.phoneEt.error = "Enter a Valid Mobile Number"
+            return false
+        }
+        if (phone.length!=11) {
+            binding.phoneEt.requestFocus()
+            binding.phoneEt.error = "Enter a Valid Mobile Number"
+            return false
+        }
         return true
     }
 
