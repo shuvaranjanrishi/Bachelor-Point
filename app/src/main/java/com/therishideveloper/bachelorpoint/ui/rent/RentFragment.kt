@@ -47,7 +47,7 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
     ): View {
         _binding = FragmentRentBinding.inflate(inflater, container, false)
 
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Accounts")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP

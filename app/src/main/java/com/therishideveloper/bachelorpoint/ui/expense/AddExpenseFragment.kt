@@ -62,7 +62,7 @@ class AddExpenseFragment : Fragment() {
         _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Accounts")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
         return binding.root
@@ -140,7 +140,7 @@ class AddExpenseFragment : Fragment() {
             .setValue(expenditure)
         Toast.makeText(
             context,
-            "Expenditure Added Successful",
+            "Expense Added Successful",
             Toast.LENGTH_SHORT,
         ).show()
     }

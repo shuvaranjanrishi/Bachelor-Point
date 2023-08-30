@@ -66,7 +66,7 @@ class AddRentFragment : Fragment() , AddRentListener{
         _binding = FragmentAddRentBinding.inflate(inflater, container, false)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Accounts")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
@@ -201,22 +201,7 @@ class AddRentFragment : Fragment() , AddRentListener{
                     }
                 }
             }
-
         }
-
-
-//        if (binding.checkBox.isChecked) {
-//            if (rentList.isNotEmpty()) {
-//                Log.d(TAG, "rentList: $rentList")
-//
-//                for (separateRent in rentList) {
-//                    database.child(accountId).child("Rent").child(monthAndYear)
-//                        .child("SeparateRent")
-//                        .child(separateRent.id.toString())
-//                        .setValue(separateRent)
-//                }
-//            }
-//        }
 
         Toast.makeText(
             context,

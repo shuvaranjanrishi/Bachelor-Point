@@ -56,7 +56,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     ): View {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Users")
+        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Accounts")
         return binding.root
     }
 

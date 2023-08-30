@@ -79,6 +79,11 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_expenditure" />
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/MyLoaderStyle"
+        android:layout_centerInParent="true" />
+
     <LinearLayout
         android:id="@+id/bottomLl"
         android:layout_width="match_parent"

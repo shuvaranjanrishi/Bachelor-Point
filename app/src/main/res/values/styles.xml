@@ -19,7 +19,17 @@
     <style name="MyDialogTheme" parent="android:Theme.Material.Dialog">
         <item name="android:datePickerStyle">@style/MyDatePicker</item>
     </style>
+
     <style name="MyDatePicker" parent="android:Widget.Material.DatePicker">
         <item name="android:datePickerMode">spinner</item>
+    </style>
+
+    <style name="MyLoaderStyle" parent="@style/SpinKitView.Large.ThreeBounce">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:visibility">gone</item>
+        <item name="SpinKit_Color">@color/purple_200</item>
     </style>
 </resources>
