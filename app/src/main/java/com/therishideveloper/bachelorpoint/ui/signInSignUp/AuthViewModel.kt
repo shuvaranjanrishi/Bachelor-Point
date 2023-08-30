@@ -19,15 +19,31 @@ class AuthViewModel @Inject constructor(private val authRepo: AuthRepo) : ViewMo
 
     val singInResponseLiveData : LiveData<NetworkResult<User>>
         get() = authRepo.singInResponseLiveData
+    val singUpResponseLiveData : LiveData<NetworkResult<User>>
+        get() = authRepo.singUpResponseLiveData
 
     fun signIn(
         email: String,
         password: String,
         auth: FirebaseAuth,
-        database: DatabaseReference,
+        database: DatabaseReference
     ) {
         viewModelScope.launch {
             authRepo.signIn(email, password, auth, database)
+        }
+    }
+
+    fun signUp(
+        name: String,
+        email: String,
+        password: String,
+        address: String,
+        phone: String,
+        auth: FirebaseAuth,
+        database: DatabaseReference
+    ) {
+        viewModelScope.launch {
+            authRepo.signUp(name,email, password,address,phone, auth, database)
         }
     }
 }

@@ -2,12 +2,13 @@ package com.therishideveloper.bachelorpoint.ui.signInSignUp
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -15,9 +16,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignUpBinding
-import com.therishideveloper.bachelorpoint.model.User
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     private val TAG = "SignUpAdminFragment"
@@ -34,20 +37,20 @@ class SignUpFragment : Fragment() {
     private lateinit var password: String
     private lateinit var address: String
     private lateinit var phone: String
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.app_name))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
 
         binding.signUpBtn.setOnClickListener {
 
@@ -58,59 +61,34 @@ class SignUpFragment : Fragment() {
             phone = binding.phoneEt.text.toString().trim()
 
             if (validate()) {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val uid = auth.currentUser!!.uid
-                            createAdminAccount(uid)
-                        } else {
-                            Log.e("addOnCompleteListener", "" + it.exception)
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            context,
-                            "" + it.message,
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    }
+                binding.signUpBtn.isVisible = false
+                authViewModel.signUp(name, email, password, address, phone, auth, database)
             }
         }
+
+        getSignUpResponse()
     }
 
-    private fun createAdminAccount(uid: String) {
-        val timestamp = "" + System.currentTimeMillis()
-        val user =
-            User(
-                "" + timestamp,
-                "" + uid,
-                "" + uid,
-                "" + name,
-                "" + phone,
-                "" + address,
-                "" + email,
-                "" + password,
-                "Admin",
-                "true",
-                "" + timestamp,
-                "" + timestamp
-            )
-        database.child("Users").child(uid).setValue(user)
-            .addOnCompleteListener {
-                database.child("Accounts").child(auth.uid.toString()).child("Members").child(uid).setValue(user)
-                    .addOnCompleteListener{
-                        if (it.isSuccessful) {
-                            Toast.makeText(
-                                context,
-                                "Sign Up Successful",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                            findNavController().navigate(R.id.action_nav_sign_up_admin_to_nav_sign_in)
-                        } else {
-                            Log.e("addOnCompleteListener", "" + it.exception)
-                        }
-                    }
+    private fun getSignUpResponse() {
+
+        authViewModel.singUpResponseLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    findNavController().navigate(R.id.action_nav_sign_up_admin_to_nav_sign_in)
+                }
+
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+                    binding.signUpBtn.isVisible = true
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
             }
+        }
+
     }
 
     private fun validate(): Boolean {

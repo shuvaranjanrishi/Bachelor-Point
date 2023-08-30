@@ -112,4 +112,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Large.ThreeBounce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phoneEt"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/color_sp_popup" />
+
+
 </RelativeLayout>
