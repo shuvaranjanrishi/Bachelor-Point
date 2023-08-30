@@ -45,7 +45,7 @@ class SignUpFragment : Fragment() {
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
+        database = Firebase.database.reference.child(getString(R.string.database_name))
         return binding.root
     }
 

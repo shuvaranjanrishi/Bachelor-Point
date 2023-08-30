@@ -56,7 +56,7 @@ class MealFragment : Fragment(), MealListener {
     ): View {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child("Bachelor Point").child("Accounts")
+        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
         return binding.root
     }
 

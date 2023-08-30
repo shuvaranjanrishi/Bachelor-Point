@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Bachelor Point</string>
+
+    //live
+    <string name="database_name">BachelorPoint</string>
+    //test
+<!--    <string name="database_name">BachelorPointTest</string>-->
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

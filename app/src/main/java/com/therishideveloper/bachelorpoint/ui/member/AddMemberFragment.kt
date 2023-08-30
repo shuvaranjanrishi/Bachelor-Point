@@ -49,7 +49,7 @@ class AddMemberFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name))
+        database = Firebase.database.reference.child(getString(R.string.database_name))
 
         binding.createMemberBtn.setOnClickListener {
 

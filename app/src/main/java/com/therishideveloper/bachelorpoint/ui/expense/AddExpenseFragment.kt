@@ -62,7 +62,7 @@ class AddExpenseFragment : Fragment() {
         _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.app_name)).child("Accounts")
+        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
 
         return binding.root
