@@ -22,7 +22,9 @@ import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Member
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -37,6 +39,7 @@ class SignInFragment : Fragment() {
     private lateinit var session: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private val authViewModel: AuthViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +61,7 @@ class SignInFragment : Fragment() {
             val password: String = binding.passwordEt.text.toString().trim()
 
             binding.signInBtn.isVisible = false
-            authViewModel.signIn(email, password, auth, database)
+            authViewModel.signIn(email, password, auth)
         }
 
         binding.createNewTv.setOnClickListener {
@@ -74,12 +77,33 @@ class SignInFragment : Fragment() {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
-                    saveUserInfo(it.data!!)
+                    memberViewModel.getMember(it.data!!)
+                    getMemberResponse()
                 }
 
                 is NetworkResult.Error -> {
                     Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
                     binding.signInBtn.isVisible = true
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
+
+    }
+
+    private fun getMemberResponse() {
+        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    saveUserInfo(it.data!!)
+                }
+
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
                 }
 
                 is NetworkResult.Loading -> {

@@ -27,8 +27,8 @@ class AuthRepo @Inject constructor(private val apiService: ApiService) {
 
     private val TAG = "AuthRepo"
 
-    private val _singInResponseLiveData = MutableLiveData<NetworkResult<User>>()
-    val singInResponseLiveData: LiveData<NetworkResult<User>>
+    private val _singInResponseLiveData = MutableLiveData<NetworkResult<String>>()
+    val singInResponseLiveData: LiveData<NetworkResult<String>>
         get() = _singInResponseLiveData
 
     private val _singUpResponseLiveData = MutableLiveData<NetworkResult<User>>()
@@ -38,16 +38,14 @@ class AuthRepo @Inject constructor(private val apiService: ApiService) {
     fun signIn(
         email: String,
         password: String,
-        auth: FirebaseAuth,
-        database: DatabaseReference
+        auth: FirebaseAuth
     ) {
         _singInResponseLiveData.postValue(NetworkResult.Loading())
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val userid = auth.currentUser!!.uid
-                    getUserInfo(database,userid)
+                    _singInResponseLiveData.postValue(NetworkResult.Success(auth.currentUser!!.uid))
                 } else {
                     Log.e(TAG, "addOnCompleteListener" + it.exception)
                 }
@@ -55,29 +53,6 @@ class AuthRepo @Inject constructor(private val apiService: ApiService) {
             .addOnFailureListener {
                 _singInResponseLiveData.postValue(NetworkResult.Error(it.message))
             }
-    }
-
-    private fun getUserInfo(database: DatabaseReference, uid: String) {
-        database.child("Users").orderByChild("uid").equalTo(uid)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (ds in dataSnapshot.children) {
-                            val user: User? = ds.getValue<User>()
-                            if (user != null) {
-                                Log.e(TAG, "LoginUser: $user")
-                                _singInResponseLiveData.postValue(NetworkResult.Success(user))
-                            } else {
-                                _singInResponseLiveData.postValue(NetworkResult.Error("User Not Found!"))
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "getUserInfo" + error.toException())
-                    }
-                }
-            )
     }
 
     fun signUp(

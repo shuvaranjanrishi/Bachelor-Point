@@ -17,7 +17,7 @@ class AuthViewModel @Inject constructor(private val authRepo: AuthRepo) : ViewMo
 
     private val TAG = "AuthViewModel"
 
-    val singInResponseLiveData : LiveData<NetworkResult<User>>
+    val singInResponseLiveData : LiveData<NetworkResult<String>>
         get() = authRepo.singInResponseLiveData
     val singUpResponseLiveData : LiveData<NetworkResult<User>>
         get() = authRepo.singUpResponseLiveData
@@ -25,11 +25,10 @@ class AuthViewModel @Inject constructor(private val authRepo: AuthRepo) : ViewMo
     fun signIn(
         email: String,
         password: String,
-        auth: FirebaseAuth,
-        database: DatabaseReference
+        auth: FirebaseAuth
     ) {
         viewModelScope.launch {
-            authRepo.signIn(email, password, auth, database)
+            authRepo.signIn(email, password, auth)
         }
     }
 
