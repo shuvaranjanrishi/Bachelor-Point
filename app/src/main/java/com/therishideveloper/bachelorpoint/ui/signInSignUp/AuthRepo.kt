@@ -15,6 +15,7 @@ import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.User
+import org.json.JSONObject
 import javax.inject.Inject
 
 /**

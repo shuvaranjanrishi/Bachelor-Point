@@ -1,47 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/dimen_10dp"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:hint="@string/name_en"
-        android:id="@+id/nameTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:background="@drawable/bg_et"
-        android:padding="@dimen/dimen_10dp" />
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/MyLoaderStyle"
+        android:layout_centerInParent="true" />
 
-    <TextView
-        android:hint="@string/email"
-        android:id="@+id/emailTv"
+    <LinearLayout
+        android:id="@+id/mainLl"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:background="@drawable/bg_et"
-        android:padding="@dimen/dimen_10dp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:hint="@string/phone"
-        android:id="@+id/phoneTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:background="@drawable/bg_et"
-        android:padding="@dimen/dimen_10dp" />
+        <TextView
+            android:id="@+id/nameTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:background="@drawable/bg_et"
+            android:hint="@string/name_en"
+            android:padding="@dimen/dimen_10dp" />
 
-    <TextView
-        android:hint="@string/address"
-        android:id="@+id/addressTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:background="@drawable/bg_et"
-        android:padding="@dimen/dimen_10dp" />
+        <TextView
+            android:id="@+id/emailTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:background="@drawable/bg_et"
+            android:hint="@string/email"
+            android:padding="@dimen/dimen_10dp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/phoneTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:background="@drawable/bg_et"
+            android:hint="@string/phone"
+            android:padding="@dimen/dimen_10dp" />
+
+        <TextView
+            android:id="@+id/addressTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:background="@drawable/bg_et"
+            android:hint="@string/address"
+            android:padding="@dimen/dimen_10dp" />
+    </LinearLayout>
+
+</RelativeLayout>

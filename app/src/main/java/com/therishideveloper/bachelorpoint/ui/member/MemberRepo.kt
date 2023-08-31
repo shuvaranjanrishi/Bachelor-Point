@@ -18,13 +18,16 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
 
     private val TAG = "MemberRepo"
 
-    private val _memberLiveData = MutableLiveData<NetworkResult<List<User>>>()
-    val memberLiveData : LiveData<NetworkResult<List<User>>>
+    private val _membersLiveData = MutableLiveData<NetworkResult<List<User>>>()
+    val membersLiveData : LiveData<NetworkResult<List<User>>>
+        get() = _membersLiveData
+
+    private val _memberLiveData = MutableLiveData<NetworkResult<User>>()
+    val memberLiveData : LiveData<NetworkResult<User>>
         get() = _memberLiveData
 
     suspend fun getMembers(accountId: String) {
-        Log.d(TAG, "accountId $accountId")
-        _memberLiveData.postValue(NetworkResult.Loading())
+        _membersLiveData.postValue(NetworkResult.Loading())
         val response = apiService.getMembers(accountId)
 
         if(response.isSuccessful && response.body()!=null){
@@ -52,14 +55,25 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
                         )
                     )
                 }
-                _memberLiveData.postValue(NetworkResult.Success(memberList.sortedBy { it.name }))
+                _membersLiveData.postValue(NetworkResult.Success(memberList.sortedBy { it.name }))
 
                 Log.d(TAG, "MemberList $memberList")
             } catch (e: Exception) {
                 Log.e(TAG, "Exception: $e")
             }
         }else if(response.errorBody()!=null){
-            _memberLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _membersLiveData.postValue(NetworkResult.Error("Something went wrong"))
+        }else{
+            _membersLiveData.postValue(NetworkResult.Error("Something went wrong"))
+        }
+    }
+
+    suspend fun getMember(uid:String){
+        _memberLiveData.postValue(NetworkResult.Loading())
+        val response = apiService.getMember(uid)
+        if(response.isSuccessful && response.body()!=null){
+            val user: User = response.body()!!
+            _memberLiveData.postValue(NetworkResult.Success(user))
         }else{
             _memberLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }

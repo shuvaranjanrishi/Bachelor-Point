@@ -75,13 +75,11 @@ class MealFragment : Fragment(), MealListener {
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
-        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
-            binding.mainLl.isVisible = false
+        memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
                     this@MealFragment.memberList = it.data!!
-                    binding.mainLl.isVisible = true
                 }
 
                 is NetworkResult.Error -> {

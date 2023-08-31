@@ -109,7 +109,7 @@ class AddRentFragment : Fragment() , AddRentListener{
         val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
-        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+        memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.mainLl.isVisible = false
             binding.progressBar.isVisible = false
             when (it) {

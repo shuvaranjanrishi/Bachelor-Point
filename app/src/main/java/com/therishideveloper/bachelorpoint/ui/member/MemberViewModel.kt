@@ -3,11 +3,6 @@ package com.therishideveloper.bachelorpoint.ui.member
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,12 +14,21 @@ class MemberViewModel @Inject constructor(private val memberRepo: MemberRepo) : 
 
     private val TAG = "MemberViewModel"
 
-    val memberLiveData : LiveData<NetworkResult<List<User>>>
+    val membersLiveData : LiveData<NetworkResult<List<User>>>
+        get() = memberRepo.membersLiveData
+
+    val memberLiveData : LiveData<NetworkResult<User>>
         get() = memberRepo.memberLiveData
 
     fun getMembers(accountId: String) {
         viewModelScope.launch {
             memberRepo.getMembers(accountId)
+        }
+    }
+
+    fun getMember(uid: String) {
+        viewModelScope.launch {
+            memberRepo.getMember(uid)
         }
     }
 }

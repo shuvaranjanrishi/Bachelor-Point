@@ -55,10 +55,10 @@ class ExpenseFragment : Fragment(),ExpenseListener {
 
         setupDatePicker()
 
-        getSignInResponse()
+        getExpenseResponse()
     }
 
-    private fun getSignInResponse() {
+    private fun getExpenseResponse() {
         val listener = this
         expenseViewModel.expenseResponseLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
@@ -102,7 +102,6 @@ class ExpenseFragment : Fragment(),ExpenseListener {
     }
 
     override fun onChangeExpense(expenseList: List<Expense>) {
-        Log.d("TAG", "mealList.size: " + expenseList.size.toString())
         if (expenseList.isNotEmpty()) {
             var totalCost = 0
             for (expenditure in expenseList) {

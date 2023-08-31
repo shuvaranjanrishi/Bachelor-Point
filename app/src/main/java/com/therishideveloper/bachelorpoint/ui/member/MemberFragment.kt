@@ -48,7 +48,7 @@ class MemberFragment : Fragment() {
     }
 
     private fun getMembers() {
-        memberViewModel.memberLiveData.observe(viewLifecycleOwner) {
+        memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
