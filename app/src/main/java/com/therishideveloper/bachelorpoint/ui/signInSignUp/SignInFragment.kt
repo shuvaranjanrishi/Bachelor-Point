@@ -92,6 +92,8 @@ class SignInFragment : Fragment() {
 
     private fun saveUserInfo(user: User) {
         editor.putString("USER_ID", "" + user.uid);
+        editor.putString("NAME", "" + user.name);
+        editor.putString("EMAIL", "" + user.email);
         editor.putString("USER_TYPE", "" + user.usertype)
         editor.putString("ACCOUNT_ID", "" + user.accountId)
         editor.putString("MEMBER_ID", "" + user.id)
