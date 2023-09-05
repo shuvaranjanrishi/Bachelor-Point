@@ -152,8 +152,6 @@ class MealFragment : Fragment(), MealListener {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.monthTv.text = monthAndYear
                     if (monthAndYear != null) {
-//                        mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
-
                         getMealListOfThisMonth(monthAndYear)
                         binding.dateTv.text = getString(R.string.day_dd_mm_yyyy)
                     }
@@ -168,7 +166,6 @@ class MealFragment : Fragment(), MealListener {
     }
 
     private fun getMealListOfThisMonth(monthAndYear: String) {
-//        val mealList: MutableList<Meal> = mutableListOf()
         val listener = this
         mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
@@ -194,32 +191,6 @@ class MealFragment : Fragment(), MealListener {
                 }
             }
         }
-
-
-//        database.child(accountId).child("Meal")
-//            .child(monthAndYear)
-//            .addListenerForSingleValueEvent(
-//                object : ValueEventListener {
-//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                        for (dateValue in dataSnapshot.children) {
-//                            for (mealValue in dateValue.children) {
-//                                val meal: Meal? = mealValue.getValue(Meal::class.java)
-//                                mealList.add(meal!!)
-//                            }
-//                        }
-//                        if (mealList.size > 0) {
-//                            sumIndividualMeals(mealList)
-//                        }else{
-//                            val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
-//                            binding.recyclerView.adapter = adapter
-//                        }
-//                    }
-//
-//                    override fun onCancelled(error: DatabaseError) {
-//                        Log.e(TAG, "DatabaseError", error.toException())
-//                    }
-//                }
-//            )
     }
 
     private fun sumIndividualMeals(mealList: List<Meal>) {
