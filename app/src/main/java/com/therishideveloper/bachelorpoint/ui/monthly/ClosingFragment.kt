@@ -25,6 +25,7 @@ import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentClosingBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenseClosingListener
 import com.therishideveloper.bachelorpoint.listener.MealClosingListener
+import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
@@ -70,6 +71,28 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
         getMealListOfThisMonth(MyCalender.currentMonthYear)
 
+        setupMonthPicker()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupMonthPicker() {
+        binding.monthTv.setOnClickListener {
+            MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
+                override fun onPickMonthAndYear(monthAndYear: String?) {
+                    binding.monthTv.text = monthAndYear
+                    if (monthAndYear != null) {
+                        getMealListOfThisMonth(monthAndYear)
+                        binding.monthTv.text = monthAndYear
+                    }
+                    Log.d(TAG, "monthAndYear: $monthAndYear")
+                }
+
+                override fun onPickDate(date: String?) {
+                    Log.d(TAG, "date: $date")
+                }
+            })
+        }
     }
 
     private fun getMembers() {
