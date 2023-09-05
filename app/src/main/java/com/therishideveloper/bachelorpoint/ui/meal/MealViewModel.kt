@@ -17,6 +17,8 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
 
     var mealList: List<Meal>
 
+    val monthlyMealsLiveData : LiveData<NetworkResult<List<Meal>>>
+        get() = mealRepo.monthlyMealsLiveData
     val mealsLiveData : LiveData<NetworkResult<List<Meal>>>
         get() = mealRepo.mealsLiveData
 

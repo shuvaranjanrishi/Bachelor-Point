@@ -1,7 +1,6 @@
 package com.therishideveloper.bachelorpoint.api
 
 import com.google.gson.JsonObject
-import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
 import retrofit2.Response
 import retrofit2.http.GET

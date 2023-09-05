@@ -12,10 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
@@ -155,6 +152,8 @@ class MealFragment : Fragment(), MealListener {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.monthTv.text = monthAndYear
                     if (monthAndYear != null) {
+//                        mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
+
                         getMealListOfThisMonth(monthAndYear)
                         binding.dateTv.text = getString(R.string.day_dd_mm_yyyy)
                     }
@@ -169,35 +168,61 @@ class MealFragment : Fragment(), MealListener {
     }
 
     private fun getMealListOfThisMonth(monthAndYear: String) {
-        val mealList: MutableList<Meal> = mutableListOf()
+//        val mealList: MutableList<Meal> = mutableListOf()
         val listener = this
-        database.child(accountId).child("Meal")
-            .child(monthAndYear)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (dateValue in dataSnapshot.children) {
-                            for (mealValue in dateValue.children) {
-                                val meal: Meal? = mealValue.getValue(Meal::class.java)
-                                mealList.add(meal!!)
-                            }
-                        }
-                        if (mealList.size > 0) {
-                            sumIndividualMeals(mealList)
-                        }else{
-                            val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
-                            binding.recyclerView.adapter = adapter
-                        }
-                    }
+        mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
+        mealViewModel.monthlyMealsLiveData.observe(viewLifecycleOwner) { it ->
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val mealList = it.data!!
+                    if (mealList.isNotEmpty()) {
+                        sumIndividualMeals(mealList)
+                    } else {
+                        val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
+                        binding.recyclerView.adapter = adapter
                     }
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
+
+
+//        database.child(accountId).child("Meal")
+//            .child(monthAndYear)
+//            .addListenerForSingleValueEvent(
+//                object : ValueEventListener {
+//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                        for (dateValue in dataSnapshot.children) {
+//                            for (mealValue in dateValue.children) {
+//                                val meal: Meal? = mealValue.getValue(Meal::class.java)
+//                                mealList.add(meal!!)
+//                            }
+//                        }
+//                        if (mealList.size > 0) {
+//                            sumIndividualMeals(mealList)
+//                        }else{
+//                            val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
+//                            binding.recyclerView.adapter = adapter
+//                        }
+//                    }
+//
+//                    override fun onCancelled(error: DatabaseError) {
+//                        Log.e(TAG, "DatabaseError", error.toException())
+//                    }
+//                }
+//            )
     }
 
-    private fun sumIndividualMeals(mealList: MutableList<Meal>) {
+    private fun sumIndividualMeals(mealList: List<Meal>) {
 
         val listener = this
         val newList: MutableList<Meal> = ArrayList()
