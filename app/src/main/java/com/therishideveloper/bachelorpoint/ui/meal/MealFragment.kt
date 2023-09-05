@@ -46,7 +46,9 @@ class MealFragment : Fragment(), MealListener {
     private lateinit var dayName: String
     private lateinit var monthAndYear: String
     private lateinit var date: String
+    private lateinit var accountId: String
     private val memberViewModel: MemberViewModel by viewModels()
+    private val mealViewModel: MealViewModel by viewModels()
     private var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
@@ -55,8 +57,10 @@ class MealFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
+        database =
+            Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        accountId = session.getString("ACCOUNT_ID", "").toString()
         return binding.root
     }
 
@@ -72,9 +76,7 @@ class MealFragment : Fragment(), MealListener {
     }
 
     private fun getMembers() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
-
         memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
@@ -116,36 +118,34 @@ class MealFragment : Fragment(), MealListener {
                         }
                         binding.dateTv.text = dayName + " " + date
                     }
-                    Log.d(TAG, "monthAndYear: $monthAndYear")
-
                 }
             })
         }
     }
 
     private fun getMealListOfADay(monthAndYear: String, date: String) {
-
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
-
         val listener = this
-        database.child(accountId).child("Meal").child(monthAndYear).child(date)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val mealList: MutableList<Meal> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val meal: Meal? = ds.getValue(Meal::class.java)
-                            mealList.add(meal!!)
-                        }
-                        val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
-                        binding.recyclerView.adapter = adapter
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        mealViewModel.getMealListOfADay(accountId, monthAndYear, date)
+
+        mealViewModel.mealsLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val adapter = MealAdapter(listener, it.data!!)
+                    binding.recyclerView.adapter = adapter
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -170,7 +170,6 @@ class MealFragment : Fragment(), MealListener {
 
     private fun getMealListOfThisMonth(monthAndYear: String) {
         val mealList: MutableList<Meal> = mutableListOf()
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         val listener = this
         database.child(accountId).child("Meal")
             .child(monthAndYear)
