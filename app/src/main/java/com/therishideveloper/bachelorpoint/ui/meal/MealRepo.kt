@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.model.User
 import org.json.JSONObject
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 /**
@@ -24,6 +27,14 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
     private val _monthlyMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
     val monthlyMealsLiveData: LiveData<NetworkResult<List<Meal>>>
         get() = _monthlyMealsLiveData
+
+    private val _sumMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
+    val sumMealsLiveData: LiveData<NetworkResult<List<Meal>>>
+        get() = _sumMealsLiveData
+
+    private val _totalMealsLiveData = MutableLiveData<NetworkResult<Meal>>()
+    val totalMealsLiveData: LiveData<NetworkResult<Meal>>
+        get() = _totalMealsLiveData
 
     var mealList: MutableList<Meal> = mutableListOf()
 
@@ -102,5 +113,83 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
             _monthlyMealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
         }
     }
+
+    fun sumIndividualMeals(memberList: List<User>, mealList: List<Meal>) {
+
+        val newList: MutableList<Meal> = ArrayList()
+        for (i in memberList.indices) {
+            var id = ""
+            var name = ""
+            var createdAt = ""
+            var date = ""
+            var updatedAt = ""
+            var firstMeal = 0.0
+            var secondMeal = 0.0
+            var thirdMeal = 0.0
+            var subTotalMeal = 0.0
+            for (j in mealList.indices) {
+                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
+                    id = mealList[j].memberId.toString()
+                    name = mealList[j].name.toString()
+                    date = mealList[j].date.toString()
+                    createdAt = mealList[j].createdAt.toString()
+                    updatedAt = mealList[j].updatedAt.toString()
+                    firstMeal += mealList[j].firstMeal!!.toDouble()
+                    secondMeal += mealList[j].secondMeal!!.toDouble()
+                    thirdMeal += mealList[j].thirdMeal!!.toDouble()
+                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
+                }
+            }
+            newList.add(
+                Meal(
+                    "" + id,
+                    "" + id,
+                    "" + name,
+                    "" + firstMeal,
+                    "" + secondMeal,
+                    "" + thirdMeal,
+                    "" + subTotalMeal,
+                    "" + date,
+                    "" + createdAt,
+                    "" + updatedAt
+                )
+            )
+        }
+
+        _sumMealsLiveData.postValue(NetworkResult.Success(newList.sortedBy { it.name }))
+
+    }
+
+    fun totalMeals(mealList: List<Meal>) {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.UP
+        if (mealList.isNotEmpty()) {
+            var totalMeal = 0.0
+            var totalFirstMeal = 0.0
+            var totalSecondMeal = 0.0
+            var totalThirdMeal = 0.0
+            for (meal in mealList) {
+                totalFirstMeal += meal.firstMeal!!.toDouble()
+                totalSecondMeal += meal.secondMeal!!.toDouble()
+                totalThirdMeal += meal.thirdMeal!!.toDouble()
+                totalMeal += meal.subTotalMeal!!.toDouble()
+            }
+            val newMeal = Meal(
+                "",
+                "",
+                "",
+                "" + df.format(totalFirstMeal).toString(),
+                "" + df.format(totalSecondMeal).toString(),
+                "" + df.format(totalThirdMeal).toString(),
+                "" + df.format(totalMeal).toString(),
+                "",
+                "",
+                "",
+                "",
+            )
+            _totalMealsLiveData.postValue(NetworkResult.Success(newMeal))
+        }
+    }
+
 }
 //120

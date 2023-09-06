@@ -27,8 +27,6 @@ import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 @AndroidEntryPoint
 class MealFragment : Fragment(), MealListener {
@@ -195,70 +193,48 @@ class MealFragment : Fragment(), MealListener {
 
     private fun sumIndividualMeals(mealList: List<Meal>) {
 
+        mealViewModel.sumIndividualMeals(memberList, mealList)
+
         val listener = this
-        val newList: MutableList<Meal> = ArrayList()
-        for (i in memberList.indices) {
-            var id = ""
-            var name = ""
-            var createdAt = ""
-            var date = ""
-            var updatedAt = ""
-            var firstMeal = 0.0
-            var secondMeal = 0.0
-            var thirdMeal = 0.0
-            var subTotalMeal = 0.0
-            for (j in mealList.indices) {
-                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
-                    id = mealList[j].memberId.toString()
-                    name = mealList[j].name.toString()
-                    date = mealList[j].date.toString()
-                    createdAt = mealList[j].createdAt.toString()
-                    updatedAt = mealList[j].updatedAt.toString()
-                    firstMeal += mealList[j].firstMeal!!.toDouble()
-                    secondMeal += mealList[j].secondMeal!!.toDouble()
-                    thirdMeal += mealList[j].thirdMeal!!.toDouble()
-                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
+        mealViewModel.sumMealsLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val adapter = MealAdapter(listener, it.data!!)
+                    binding.recyclerView.adapter = adapter
+                }
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
                 }
             }
-            newList.add(
-                Meal(
-                    "" + id,
-                    "" + id,
-                    "" + name,
-                    "" + firstMeal,
-                    "" + secondMeal,
-                    "" + thirdMeal,
-                    "" + subTotalMeal,
-                    "" + date,
-                    ""+createdAt,
-                    ""+updatedAt
-                )
-            )
         }
-
-        val adapter = MealAdapter(listener, newList.sortedBy { it.name })
-        binding.recyclerView.adapter = adapter
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.UP
+        mealViewModel.totalMeals(mealList)
+        mealViewModel.totalMealsLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val meal = it.data!!
+                    binding.totalFirstMealTv.text = meal.firstMeal.toString()
+                    binding.totalSecondMealTv.text = meal.secondMeal.toString()
+                    binding.totalThirdMealTv.text = meal.thirdMeal.toString()
+                    binding.totalMealTv.text = meal.subTotalMeal.toString()
+                }
 
-        if (mealList.isNotEmpty()) {
-            var totalMeal = 0.0
-            var totalFirstMeal = 0.0
-            var totalSecondMeal = 0.0
-            var totalThirdMeal = 0.0
-            for (meal in mealList) {
-                totalFirstMeal += meal.firstMeal!!.toDouble()
-                totalSecondMeal += meal.secondMeal!!.toDouble()
-                totalThirdMeal += meal.thirdMeal!!.toDouble()
-                totalMeal += meal.subTotalMeal!!.toDouble()
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
 
-                binding.totalFirstMealTv.text = df.format(totalFirstMeal).toString()
-                binding.totalSecondMealTv.text = df.format(totalSecondMeal).toString()
-                binding.totalThirdMealTv.text = df.format(totalThirdMeal).toString()
-                binding.totalMealTv.text = df.format(totalMeal).toString()
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
             }
         }
     }
@@ -268,3 +244,4 @@ class MealFragment : Fragment(), MealListener {
         _binding = null
     }
 }
+//247

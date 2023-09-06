@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
-import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +20,10 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
         get() = mealRepo.monthlyMealsLiveData
     val mealsLiveData : LiveData<NetworkResult<List<Meal>>>
         get() = mealRepo.mealsLiveData
+    val sumMealsLiveData : LiveData<NetworkResult<List<Meal>>>
+        get() = mealRepo.sumMealsLiveData
+    val totalMealsLiveData : LiveData<NetworkResult<Meal>>
+        get() = mealRepo.totalMealsLiveData
 
     private val _data = MutableLiveData<List<Meal>>().apply {
 
@@ -108,6 +111,19 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
     fun getMealListOfAMonth(accountId: String,monthAndYear: String) {
         viewModelScope.launch {
             mealRepo.getMealListOfAMonth(accountId,monthAndYear)
+            mealRepo.getMealListOfAMonth(accountId,monthAndYear)
+        }
+    }
+
+    fun sumIndividualMeals(memberList: List<User>, mealList: List<Meal>) {
+        viewModelScope.launch {
+            mealRepo.sumIndividualMeals(memberList,mealList)
+        }
+    }
+
+    fun totalMeals(mealList: List<Meal>) {
+        viewModelScope.launch {
+            mealRepo.totalMeals(mealList)
         }
     }
 }
