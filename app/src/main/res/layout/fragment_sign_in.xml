@@ -62,13 +62,13 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/purple_200"
         android:drawablePadding="@dimen/dimen_5dp"
-        android:hint="@string/password"
         android:inputType="textPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEt"
             android:layout_width="match_parent"
             android:text="123456"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_et"
