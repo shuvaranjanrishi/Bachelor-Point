@@ -31,6 +31,7 @@ import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,9 +47,11 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private val binding get() = _binding!!
 
     private val memberViewModel: MemberViewModel by viewModels()
+    private val mealViewModel: MealViewModel by viewModels()
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
     private var memberList: List<User> = mutableListOf()
+    private lateinit var accountId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +60,9 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     ): View {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        database =
+            Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        accountId = session.getString("ACCOUNT_ID", "").toString()
         return binding.root
     }
 
@@ -119,9 +124,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         }
     }
 
-    private fun getExpenseList(monthAndYear: String, mealList: MutableList<Meal>) {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
-        Log.d(TAG, "onDataChange: accountId: $accountId")
+    private fun getExpenseList(monthAndYear: String, mealList: List<Meal>) {
         database.child(accountId).child("Expense")
             .orderByChild("monthAndYear")
             .equalTo(monthAndYear)
@@ -133,7 +136,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                             val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
                         }
-                        sumIndividualMeals(mealList,dataList)
+                        sumIndividualClosingMeals(mealList,dataList)
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -144,132 +147,98 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     private fun getMealListOfThisMonth(monthAndYear: String) {
-        val mealList: MutableList<Meal> = mutableListOf()
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
-        database.child(accountId).child("Meal").child(monthAndYear)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (dateValue in dataSnapshot.children) {
-                            for (mealValue in dateValue.children) {
-                                val meal: Meal? = mealValue.getValue(Meal::class.java)
-                                mealList.add(meal!!)
-                            }
-                        }
-
+        mealViewModel.monthlyMealsLiveData.observe(viewLifecycleOwner) { it ->
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val mealList = it.data!!
+                    if (mealList.isNotEmpty()) {
                         getExpenseList(monthAndYear, mealList)
                     }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
     }
 
-    private fun sumIndividualMeals(mealList: MutableList<Meal>, expenseList: MutableList<Expense>) {
+    private fun sumIndividualClosingMeals(mealList: List<Meal>, expenseList: MutableList<Expense>) {
+
+        mealViewModel.sumIndividualClosingMeals(mealList, memberList, expenseList)
 
         val listener = this
-        val newList: MutableList<MealClosing> = ArrayList()
-        for (i in memberList.indices) {
-            var id = ""
-            var name = ""
-            var createdAt = ""
-            var date = ""
-            var updatedAt = ""
-            var subTotalMeal = 0.0
-            var totalExpense = 0.0
+        mealViewModel.sumMealsClosingLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val adapter = MealClosingAdapter(listener, it.data!!)
+                    binding.recyclerView1.adapter = adapter
+                }
 
-            for (j in mealList.indices) {
-                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
-                    id = mealList[j].memberId.toString()
-                    name = mealList[j].name.toString()
-                    date = mealList[j].date.toString()
-                    createdAt = mealList[j].createdAt.toString()
-                    updatedAt = mealList[j].updatedAt.toString()
-                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
                 }
             }
-
-            //sum expense
-            if (expenseList.isNotEmpty()) {
-                for (expenditure in expenseList) {
-                    if (expenditure.memberId == memberList.toTypedArray()[i].id) {
-                        totalExpense += expenditure.totalCost!!.toDouble();
-                    }
-                }
-            }
-            newList.add(
-                MealClosing(
-                    "" + id,
-                    "" + id,
-                    "" + name,
-                    "" + subTotalMeal,
-                    "" + totalExpense,
-                    "" + date,
-                    "" + createdAt,
-                    "" + updatedAt
-                )
-            )
-        }
-        if (mealList.size > 0) {
-            val adapter = MealClosingAdapter(listener, newList)
-            binding.recyclerView1.adapter = adapter
         }
     }
 
     override fun onChangeMeal(mealList: List<MealClosing>) {
-        val newList: MutableList<ExpenseClosing> = ArrayList()
+        mealViewModel.totalExpenseClosingMeals(mealList)
+
         val listener = this
-
-        try {
-            if (mealList.isNotEmpty()) {
-                var id: String
-                var memberId: String
-                var name: String
-                var totalMeal = 0.0
-                var totalExpense = 0.0
-                for (meal in mealList) {
-                    id = meal.id.toString()
-                    memberId = meal.memberId.toString()
-                    name = meal.name.toString()
-                    totalMeal += meal.totalMeal!!.toDouble()
-                    totalExpense += meal.totalExpense!!.toDouble()
-
-                    newList.add(
-                        ExpenseClosing(
-                            "" + id,
-                            "" + memberId,
-                            "" + name,
-                            "" + totalMeal,
-                            "" + totalExpense,
-                            "" + id,
-                            "" + id
-                        )
-                    )
+        mealViewModel.totalExpenseLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val expenseList = it.data!!
+                    getMealRate(expenseList)
                 }
 
-                val mealRate: Double
-                if (totalMeal > 0) {
-                    mealRate = (totalExpense / totalMeal)
-                    val df = DecimalFormat("#.##")
-                    df.roundingMode = RoundingMode.UP
-                    binding.totalMealTv.text = df.format(totalMeal).toString()
-                    binding.totalExpenseTv.text = df.format(totalExpense).toString()
-                    binding.mealRateTv.text = df.format(mealRate).toString()
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
 
-                    val adapter =
-                        ExpenseClosingAdapter(
-                            listener,
-                            mealRate.toString(),
-                            mealList
-                        )
-                    binding.recyclerView2.adapter = adapter
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
                 }
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception: ${e.message}")
+        }
+    }
+
+    private fun getMealRate(expenseList: List<MealClosing>) {
+                val listener = this
+        mealViewModel.mealRateLiveData.observe(viewLifecycleOwner){
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val data = it.data!!
+                    binding.totalMealTv.text = data.split("-")[0]
+                    binding.totalExpenseTv.text = data.split("-")[1]
+                    binding.mealRateTv.text = data.split("-")[2]
+                    val adapter = ExpenseClosingAdapter(listener, data.split("-")[2], expenseList)
+                    binding.recyclerView2.adapter = adapter
+                }
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
         }
     }
 
@@ -282,5 +251,5 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         super.onDestroyView()
         _binding = null
     }
-
 }
+//320

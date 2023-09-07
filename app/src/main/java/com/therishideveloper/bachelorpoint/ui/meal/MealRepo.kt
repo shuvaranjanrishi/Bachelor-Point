@@ -1,10 +1,14 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
+import com.therishideveloper.bachelorpoint.model.Expense
+import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
+import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
 import org.json.JSONObject
 import java.math.RoundingMode
@@ -35,6 +39,18 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
     private val _totalMealsLiveData = MutableLiveData<NetworkResult<Meal>>()
     val totalMealsLiveData: LiveData<NetworkResult<Meal>>
         get() = _totalMealsLiveData
+
+    private val _sumMealsClosingLiveData = MutableLiveData<NetworkResult<List<MealClosing>>>()
+    val sumMealsClosingLiveData: LiveData<NetworkResult<List<MealClosing>>>
+        get() = _sumMealsClosingLiveData
+
+    private val _totalExpenseLiveData = MutableLiveData<NetworkResult<List<MealClosing>>>()
+    val totalExpenseLiveData: LiveData<NetworkResult<List<MealClosing>>>
+        get() = _totalExpenseLiveData
+
+    private val _mealRateLiveData = MutableLiveData<NetworkResult<String>>()
+    val mealRateLiveData: LiveData<NetworkResult<String>>
+        get() = _mealRateLiveData
 
     var mealList: MutableList<Meal> = mutableListOf()
 
@@ -191,5 +207,102 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
         }
     }
 
-}
+    fun sumIndividualClosingMeals(
+        mealList: List<Meal>,
+        memberList: List<User>,
+        expenseList: MutableList<Expense>
+    ) {
+
+        val newList: MutableList<MealClosing> = ArrayList()
+        for (i in memberList.indices) {
+            var id = ""
+            var name = ""
+            var createdAt = ""
+            var date = ""
+            var updatedAt = ""
+            var subTotalMeal = 0.0
+            var totalExpense = 0.0
+
+            for (j in mealList.indices) {
+                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
+                    id = mealList[j].memberId.toString()
+                    name = mealList[j].name.toString()
+                    date = mealList[j].date.toString()
+                    createdAt = mealList[j].createdAt.toString()
+                    updatedAt = mealList[j].updatedAt.toString()
+                    subTotalMeal += mealList[j].subTotalMeal!!.toDouble()
+                }
+            }
+
+            //sum expense
+            if (expenseList.isNotEmpty()) {
+                for (expenditure in expenseList) {
+                    if (expenditure.memberId == memberList.toTypedArray()[i].id) {
+                        totalExpense += expenditure.totalCost!!.toDouble();
+                    }
+                }
+            }
+            newList.add(
+                MealClosing(
+                    "" + id,
+                    "" + id,
+                    "" + name,
+                    "" + subTotalMeal,
+                    "" + totalExpense,
+                    "" + date,
+                    "" + createdAt,
+                    "" + updatedAt
+                )
+            )
+        }
+
+        _sumMealsClosingLiveData.postValue(NetworkResult.Success(newList.sortedBy { it.name }))
+
+    }
+
+    fun totalExpenseClosingMeals(mealList: List<MealClosing>) {
+
+        val newList: MutableList<ExpenseClosing> = ArrayList()
+        try {
+            if (mealList.isNotEmpty()) {
+                var id: String
+                var memberId: String
+                var name: String
+                var totalMeal = 0.0
+                var totalExpense = 0.0
+                for (meal in mealList) {
+                    id = meal.id.toString()
+                    memberId = meal.memberId.toString()
+                    name = meal.name.toString()
+                    totalMeal += meal.totalMeal!!.toDouble()
+                    totalExpense += meal.totalExpense!!.toDouble()
+
+                    newList.add(
+                        ExpenseClosing(
+                            "" + id,
+                            "" + memberId,
+                            "" + name,
+                            "" + totalMeal,
+                            "" + totalExpense,
+                            "" + id,
+                            "" + id
+                        )
+                    )
+                }
+                val mealRate: Double
+                if (totalMeal > 0) {
+                    mealRate = (totalExpense / totalMeal)
+                    val df = DecimalFormat("#.##")
+                    df.roundingMode = RoundingMode.UP
+                    val rate:String = df.format(totalMeal) +"-"+df.format(totalExpense)+"-"+df.format(mealRate)
+                    _mealRateLiveData.postValue(NetworkResult.Success(rate))
+                }
+            }
+                _totalExpenseLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception: ${e.message}")
+            }
+        }
+    }
 //120
