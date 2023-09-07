@@ -1,11 +1,8 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Expense
-import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
@@ -17,16 +14,11 @@ import javax.inject.Inject
 class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewModel() {
 
     val mealsLiveData get() = mealRepo.mealsLiveData
-    val sumMealsLiveData: LiveData<NetworkResult<List<Meal>>>
-        get() = mealRepo.sumMealsLiveData
-    val sumMealsClosingLiveData: LiveData<NetworkResult<List<MealClosing>>>
-        get() = mealRepo.sumMealsClosingLiveData
-    val totalMealsLiveData: LiveData<NetworkResult<Meal>>
-        get() = mealRepo.totalMealsLiveData
-    val totalExpenseLiveData: LiveData<NetworkResult<List<MealClosing>>>
-        get() = mealRepo.totalExpenseLiveData
-    val mealRateLiveData: LiveData<NetworkResult<String>>
-        get() = mealRepo.mealRateLiveData
+    val sumMealsLiveData get() = mealRepo.sumMealsLiveData
+    val sumMealsClosingLiveData get() = mealRepo.sumMealsClosingLiveData
+    val totalMealsLiveData get() = mealRepo.totalMealsLiveData
+    val totalExpenseLiveData get() = mealRepo.totalExpenseLiveData
+    val mealRateLiveData get() = mealRepo.mealRateLiveData
 
     fun getMealListOfADay(accountId: String, monthAndYear: String, date: String) {
         viewModelScope.launch {
@@ -36,7 +28,6 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
 
     fun getMealListOfAMonth(accountId: String, monthAndYear: String) {
         viewModelScope.launch {
-            mealRepo.getMealListOfAMonth(accountId, monthAndYear)
             mealRepo.getMealListOfAMonth(accountId, monthAndYear)
         }
     }

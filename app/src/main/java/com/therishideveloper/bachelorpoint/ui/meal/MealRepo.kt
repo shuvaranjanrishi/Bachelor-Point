@@ -1,7 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
@@ -25,32 +24,22 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
     private val TAG = "MemberRepo"
 
     private val _mealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
-    val mealsLiveData: LiveData<NetworkResult<List<Meal>>>
-        get() = _mealsLiveData
-
-//    private val _monthlyMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
-//    val monthlyMealsLiveData: LiveData<NetworkResult<List<Meal>>>
-//        get() = _monthlyMealsLiveData
+    val mealsLiveData get() = _mealsLiveData
 
     private val _sumMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
-    val sumMealsLiveData: LiveData<NetworkResult<List<Meal>>>
-        get() = _sumMealsLiveData
+    val sumMealsLiveData get() = _sumMealsLiveData
 
     private val _totalMealsLiveData = MutableLiveData<NetworkResult<Meal>>()
-    val totalMealsLiveData: LiveData<NetworkResult<Meal>>
-        get() = _totalMealsLiveData
+    val totalMealsLiveData get() = _totalMealsLiveData
 
     private val _sumMealsClosingLiveData = MutableLiveData<NetworkResult<List<MealClosing>>>()
-    val sumMealsClosingLiveData: LiveData<NetworkResult<List<MealClosing>>>
-        get() = _sumMealsClosingLiveData
+    val sumMealsClosingLiveData get() = _sumMealsClosingLiveData
 
     private val _totalExpenseLiveData = MutableLiveData<NetworkResult<List<MealClosing>>>()
-    val totalExpenseLiveData: LiveData<NetworkResult<List<MealClosing>>>
-        get() = _totalExpenseLiveData
+    val totalExpenseLiveData get() = _totalExpenseLiveData
 
     private val _mealRateLiveData = MutableLiveData<NetworkResult<String>>()
-    val mealRateLiveData: LiveData<NetworkResult<String>>
-        get() = _mealRateLiveData
+    val mealRateLiveData get() = _mealRateLiveData
 
     var mealList: MutableList<Meal> = mutableListOf()
 
@@ -306,4 +295,4 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
             }
         }
     }
-//120
+//309
