@@ -3,10 +3,12 @@ package com.therishideveloper.bachelorpoint.utils
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
 import androidx.annotation.RequiresApi
+import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.listener.MyDate
 import com.therishideveloper.bachelorpoint.listener.MyDateAndDay
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
@@ -29,7 +31,7 @@ object MyCalender {
         get() = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US).format(Date())
     val currentHourMinSec: String
         get() = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
-    val dayToday: String
+    private val dayToday: String
         get() = android.text.format.DateFormat.format("EEEE", Date()).toString()
     val currentDate: String
         get() = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(myCalendar.time)
@@ -64,7 +66,7 @@ object MyCalender {
         }
 
     fun formatDate(date: String?, dateFormat: String?): String? {
-        val sdf = SimpleDateFormat("dd-MM-yyyy")
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         var d: Date? = null
         try {
             d = date?.let { sdf.parse(it) }
@@ -76,7 +78,7 @@ object MyCalender {
     }
 
     fun getDateFromSting(date: String?): Date? {
-        val sdf = SimpleDateFormat("dd-MM-yyyy")
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         var d: Date? = null
         try {
             d = date?.let { sdf.parse(it) }
@@ -88,7 +90,7 @@ object MyCalender {
 
     fun getFormattedDate(date: String?): String {
         Log.e("dates", date!!)
-        val sdf = SimpleDateFormat("dd-MM-yyyy")
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.US)
         var d: Date? = null
         try {
             d = sdf.parse(date)
@@ -96,15 +98,17 @@ object MyCalender {
             e.printStackTrace()
         }
         val cal = Calendar.getInstance()
-        cal.time = d
+        if (d != null) {
+            cal.time = d
+        }
         val dayNumberSuffix = getDayNumberSuffix(cal[Calendar.DAY_OF_MONTH])
-        val dateFormat: DateFormat = SimpleDateFormat(" d'$dayNumberSuffix' MMMM yyyy")
+        val dateFormat: DateFormat = SimpleDateFormat(" d'$dayNumberSuffix' MMMM yyyy", Locale.US)
         return dateFormat.format(cal.time)
     }
 
     fun getMsgDate(date: String?): String {
         Log.e("dates", date!!)
-        val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+        val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
         var d: Date? = null
         try {
             d = sdf.parse(date)
@@ -112,9 +116,12 @@ object MyCalender {
             e.printStackTrace()
         }
         val cal = Calendar.getInstance()
-        cal.time = d
+        if (d != null) {
+            cal.time = d
+        }
         val dayNumberSuffix = getDayNumberSuffix(cal[Calendar.DAY_OF_MONTH])
-        val dateFormat: DateFormat = SimpleDateFormat("d'$dayNumberSuffix' MMMM yyyy KK:mm a")
+        val dateFormat: DateFormat =
+            SimpleDateFormat("d'$dayNumberSuffix' MMMM yyyy KK:mm a", Locale.US)
         return dateFormat.format(cal.time)
     }
 
@@ -133,7 +140,7 @@ object MyCalender {
         }
 
     private fun getDayNumberSuffix(day: Int): String {
-        return if (day >= 11 && day <= 13) {
+        return if (day in 11..13) {
             "th"
         } else when (day % 10) {
             1 -> "st"
@@ -151,13 +158,17 @@ object MyCalender {
                 myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                 dateListener.onPickDate(simpleDateFormat.format(myCalendar.time))
             }
-        DatePickerDialog(
+        val dialog = DatePickerDialog(
             activity!!,
             endDateListener,
             myCalendar[Calendar.YEAR],
             myCalendar[Calendar.MONTH],
             myCalendar[Calendar.DAY_OF_MONTH]
-        ).show()
+        )
+        dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.GREEN)
+        dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setBackgroundColor(Color.MAGENTA)
+        dialog.show()
+
     }
 
     fun pickMonthAndYear(activity: Activity?, dateListener: MyMonthAndYear) {
@@ -170,13 +181,15 @@ object MyCalender {
                 dateListener.onPickMonthAndYear(currentMonthYear)
                 dateListener.onPickDate(simpleDateFormat.format(myCalendar.time))
             }
-        DatePickerDialog(
+        val dialog :DatePickerDialog = DatePickerDialog(
             activity!!,
+            R.style.DatePickerTheme,
             endDateListener,
             myCalendar[Calendar.YEAR],
             myCalendar[Calendar.MONTH],
             myCalendar[Calendar.DAY_OF_MONTH]
-        ).show()
+        )
+        dialog.show()
     }
 
     fun pickDayMonthYear(activity: Activity?, dateListener: MyDayMonthYear) {
@@ -188,13 +201,15 @@ object MyCalender {
                 myCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
                 dateListener.onPickDayMonthYear(dayToday, currentMonthYear,simpleDateFormat.format(myCalendar.time))
             }
-        DatePickerDialog(
+        val dialog = DatePickerDialog(
             activity!!,
+            R.style.DatePickerTheme,
             endDateListener,
             myCalendar[Calendar.YEAR],
             myCalendar[Calendar.MONTH],
             myCalendar[Calendar.DAY_OF_MONTH]
-        ).show()
+        )
+        dialog.show()
     }
 
     fun pickDateAndDay(activity: Activity?, dateListener: MyDateAndDay) {
@@ -207,6 +222,7 @@ object MyCalender {
             }
         DatePickerDialog(
             activity!!,
+            R.style.DatePickerTheme,
             endDateListener,
             myCalendar[Calendar.YEAR],
             myCalendar[Calendar.MONTH],

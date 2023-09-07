@@ -16,12 +16,17 @@
         <item name="android:dropDownSelector">@color/purple_200</item>
     </style>
 
-    <style name="MyDialogTheme" parent="android:Theme.Material.Dialog">
-        <item name="android:datePickerStyle">@style/MyDatePicker</item>
+    <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorAccent">@color/purple_200</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
-    <style name="MyDatePicker" parent="android:Widget.Material.DatePicker">
-        <item name="android:datePickerMode">spinner</item>
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/purple_200</item>
+    </style>
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/purple_200</item>
     </style>
 
     <style name="MyLoaderStyle" parent="@style/SpinKitView.Large.ThreeBounce">

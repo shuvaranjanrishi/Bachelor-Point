@@ -16,10 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewModel() {
 
-//    val monthlyMealsLiveData: LiveData<NetworkResult<List<Meal>>>
-//        get() = mealRepo.monthlyMealsLiveData
-    val mealsLiveData: LiveData<NetworkResult<List<Meal>>>
-        get() = mealRepo.mealsLiveData
+    val mealsLiveData get() = mealRepo.mealsLiveData
     val sumMealsLiveData: LiveData<NetworkResult<List<Meal>>>
         get() = mealRepo.sumMealsLiveData
     val sumMealsClosingLiveData: LiveData<NetworkResult<List<MealClosing>>>
@@ -72,3 +69,4 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
         }
     }
 }
+//75

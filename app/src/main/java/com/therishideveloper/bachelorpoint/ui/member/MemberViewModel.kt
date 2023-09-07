@@ -14,8 +14,7 @@ class MemberViewModel @Inject constructor(private val memberRepo: MemberRepo) : 
 
     private val TAG = "MemberViewModel"
 
-    val membersLiveData : LiveData<NetworkResult<List<User>>>
-        get() = memberRepo.membersLiveData
+    val membersLiveData get() = memberRepo.membersLiveData
 
     val memberLiveData : LiveData<NetworkResult<User>>
         get() = memberRepo.memberLiveData
