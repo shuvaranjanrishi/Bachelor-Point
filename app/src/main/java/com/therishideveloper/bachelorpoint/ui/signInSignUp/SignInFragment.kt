@@ -24,7 +24,6 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Member
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -123,9 +122,9 @@ class SignInFragment : Fragment() {
     }
 
     private fun saveUserInfo(user: User) {
-        editor.putString("USER_ID", "" + user.uid);
-        editor.putString("NAME", "" + user.name);
-        editor.putString("EMAIL", "" + user.email);
+        editor.putString("USER_ID", "" + user.uid)
+        editor.putString("NAME", "" + user.name)
+        editor.putString("EMAIL", "" + user.email)
         editor.putString("USER_TYPE", "" + user.usertype)
         editor.putString("ACCOUNT_ID", "" + user.accountId)
         editor.putString("MEMBER_ID", "" + user.id)
