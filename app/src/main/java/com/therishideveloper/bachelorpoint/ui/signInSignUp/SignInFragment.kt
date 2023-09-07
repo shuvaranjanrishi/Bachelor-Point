@@ -60,8 +60,16 @@ class SignInFragment : Fragment() {
             val email: String = binding.emailEt.text.toString().trim()
             val password: String = binding.passwordEt.text.toString().trim()
 
-            binding.signInBtn.isVisible = false
-            authViewModel.signIn(email, password, auth)
+            if(email.isEmpty()){
+                binding.emailEt.error = "Plz Enter Your Email"
+                binding.emailEt.requestFocus()
+            }else if (password.isEmpty()){
+                binding.passwordEt.error = "Plz Enter Your Password"
+                binding.passwordEt.requestFocus()
+            }else{
+                binding.signInBtn.isVisible = false
+                authViewModel.signIn(email, password, auth)
+            }
         }
 
         binding.createNewTv.setOnClickListener {
