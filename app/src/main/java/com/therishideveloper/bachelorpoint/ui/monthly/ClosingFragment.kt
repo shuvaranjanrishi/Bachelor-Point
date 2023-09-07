@@ -149,7 +149,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private fun getMealListOfThisMonth(monthAndYear: String) {
         mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
-        mealViewModel.monthlyMealsLiveData.observe(viewLifecycleOwner) { it ->
+        mealViewModel.mealsLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {

@@ -32,10 +32,10 @@ object MyCalender {
     val dayToday: String
         get() = android.text.format.DateFormat.format("EEEE", Date()).toString()
     val currentDate: String
-        get() = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
+        get() = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(myCalendar.time)
     val currentDayAndDate: String
         get() = android.text.format.DateFormat.format("EEEE", Date())
-            .toString() + " " + SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
+            .toString() + " " + SimpleDateFormat("dd-MM-yyyy", Locale.US).format(myCalendar.time)
     val currentMonth: String
         get() = SimpleDateFormat("MMMM", Locale.US).format(myCalendar.time);
     val currentYear: String

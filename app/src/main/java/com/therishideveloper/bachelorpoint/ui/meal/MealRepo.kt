@@ -28,9 +28,9 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
     val mealsLiveData: LiveData<NetworkResult<List<Meal>>>
         get() = _mealsLiveData
 
-    private val _monthlyMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
-    val monthlyMealsLiveData: LiveData<NetworkResult<List<Meal>>>
-        get() = _monthlyMealsLiveData
+//    private val _monthlyMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
+//    val monthlyMealsLiveData: LiveData<NetworkResult<List<Meal>>>
+//        get() = _monthlyMealsLiveData
 
     private val _sumMealsLiveData = MutableLiveData<NetworkResult<List<Meal>>>()
     val sumMealsLiveData: LiveData<NetworkResult<List<Meal>>>
@@ -98,7 +98,7 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getMealListOfAMonth(accountId: String, monthAndYear: String) {
         mealList.clear()
-        _monthlyMealsLiveData.postValue(NetworkResult.Loading())
+        _mealsLiveData.postValue(NetworkResult.Loading())
         try {
             val response = apiService.getMealListOfAMonth(accountId, monthAndYear)
 
@@ -118,15 +118,15 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
                     }
                 }
 
-                _monthlyMealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
+                _mealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
 
             } else if (response.errorBody() != null) {
-                _monthlyMealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
+                _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
             } else {
-                _monthlyMealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
+                _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
             }
         } catch (e: Exception) {
-            _monthlyMealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
+            _mealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
         }
     }
 

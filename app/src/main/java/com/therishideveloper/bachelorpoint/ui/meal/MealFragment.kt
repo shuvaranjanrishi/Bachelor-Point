@@ -167,7 +167,7 @@ class MealFragment : Fragment(), MealListener {
         val listener = this
         mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
-        mealViewModel.monthlyMealsLiveData.observe(viewLifecycleOwner) { it ->
+        mealViewModel.mealsLiveData.observe(viewLifecycleOwner) { it ->
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
