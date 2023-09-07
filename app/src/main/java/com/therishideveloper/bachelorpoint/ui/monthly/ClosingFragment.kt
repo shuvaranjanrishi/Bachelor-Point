@@ -27,7 +27,6 @@ import com.therishideveloper.bachelorpoint.listener.ExpenseClosingListener
 import com.therishideveloper.bachelorpoint.listener.MealClosingListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Expense
-import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
@@ -35,8 +34,6 @@ import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 @AndroidEntryPoint
 class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
@@ -196,8 +193,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
     override fun onChangeMeal(mealList: List<MealClosing>) {
         mealViewModel.totalExpenseClosingMeals(mealList)
-
-        val listener = this
         mealViewModel.totalExpenseLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
@@ -218,7 +213,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     private fun getMealRate(expenseList: List<MealClosing>) {
-                val listener = this
+        val listener = this
         mealViewModel.mealRateLiveData.observe(viewLifecycleOwner){
             binding.progressBar.isVisible = false
             when (it) {

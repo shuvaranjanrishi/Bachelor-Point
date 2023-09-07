@@ -62,7 +62,8 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
                 Log.e(TAG, "Exception: $e")
             }
         }else if(response.errorBody()!=null){
-            _membersLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            val jsonObject = JSONObject(response.errorBody()!!.charStream().readText())
+            _membersLiveData.postValue(NetworkResult.Error(jsonObject.getString("message")))
         }else{
             _membersLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
@@ -71,10 +72,13 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
     suspend fun getMember(uid:String){
         _memberLiveData.postValue(NetworkResult.Loading())
         val response = apiService.getMember(uid)
-        if(response.isSuccessful && response.body()!=null){
+        if (response.isSuccessful && response.body() != null) {
             val user: User = response.body()!!
             _memberLiveData.postValue(NetworkResult.Success(user))
-        }else{
+        } else if (response.errorBody() != null) {
+            val jsonObject = JSONObject(response.errorBody()!!.charStream().readText())
+            _memberLiveData.postValue(NetworkResult.Error(jsonObject.getString("message")))
+        } else {
             _memberLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
     }

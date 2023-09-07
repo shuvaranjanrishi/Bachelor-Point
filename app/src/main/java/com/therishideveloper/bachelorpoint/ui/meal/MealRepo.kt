@@ -120,9 +120,10 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
 
                 _mealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
 
-            } else if (response.errorBody() != null) {
-                _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
-            } else {
+            } else if(response.errorBody()!=null){
+                val jsonObject = JSONObject(response.errorBody()!!.charStream().readText())
+                _mealsLiveData.postValue(NetworkResult.Error(jsonObject.getString("message")))
+            }else {
                 _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
             }
         } catch (e: Exception) {

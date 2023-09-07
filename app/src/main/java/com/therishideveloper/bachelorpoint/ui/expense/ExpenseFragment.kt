@@ -37,6 +37,8 @@ class ExpenseFragment : Fragment(),ExpenseListener {
 
     private lateinit var session: SharedPreferences
     private lateinit var database: DatabaseReference
+    private lateinit var accountId: String
+
     private val expenseViewModel: ExpenseViewModel by viewModels()
 
     override fun onCreateView(
@@ -47,6 +49,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
         session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        accountId = session.getString("ACCOUNT_ID", "").toString()
         return binding.root
     }
 
@@ -81,8 +84,6 @@ class ExpenseFragment : Fragment(),ExpenseListener {
     }
 
     private fun setupDatePicker() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
-        binding.dateTv.text = MyCalender.currentMonthYear
         expenseViewModel.getExpenses(MyCalender.currentMonthYear, accountId, database)
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
