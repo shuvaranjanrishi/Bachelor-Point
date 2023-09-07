@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -20,8 +18,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.databinding.ActivityMainBinding
-import com.therishideveloper.bachelorpoint.session.SessionManager
+import com.therishideveloper.bachelorpoint.session.UserSession
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -29,7 +28,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
-    private lateinit var session: SharedPreferences
+
+    @Inject
+    lateinit var session: UserSession
     private lateinit var auth: FirebaseAuth
     private lateinit var navController: NavController
 
@@ -39,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        session = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         auth = Firebase.auth
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         val nameTv = view.findViewById<TextView>(R.id.nameTv)
         val emailTv = view.findViewById<TextView>(R.id.emailTv)
-        nameTv.text = session.getString("NAME","").toString() + " (" + session.getString("USER_TYPE","").toString() + ")"
-        emailTv.text = session.getString("EMAIL","").toString()
+        nameTv.text = session.getUserName() + " (" + session.getUserType() + ")"
+        emailTv.text = session.getEmail()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

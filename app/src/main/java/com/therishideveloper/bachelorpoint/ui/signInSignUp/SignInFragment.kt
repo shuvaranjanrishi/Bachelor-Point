@@ -1,8 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.signInSignUp
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +20,10 @@ import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -35,10 +35,10 @@ class SignInFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
     private val authViewModel: AuthViewModel by viewModels()
     private val memberViewModel: MemberViewModel by viewModels()
+    @Inject
+    lateinit var session: UserSession
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +47,6 @@ class SignInFragment : Fragment() {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         auth = Firebase.auth
         database = Firebase.database.reference.child(getString(R.string.database_name))
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        editor = session.edit()
         return binding.root
     }
 
@@ -122,13 +120,12 @@ class SignInFragment : Fragment() {
     }
 
     private fun saveUserInfo(user: User) {
-        editor.putString("USER_ID", "" + user.uid)
-        editor.putString("NAME", "" + user.name)
-        editor.putString("EMAIL", "" + user.email)
-        editor.putString("USER_TYPE", "" + user.usertype)
-        editor.putString("ACCOUNT_ID", "" + user.accountId)
-        editor.putString("MEMBER_ID", "" + user.id)
-        editor.apply()
+        session.setUid(user.uid!!)
+        session.setUserName(user.name!!)
+        session.setEmail(user.email!!)
+        session.setUserType(user.usertype!!)
+        session.setAccountId(user.accountId!!)
+        session.setId(user.id!!)
 
         Toast.makeText(
             context,

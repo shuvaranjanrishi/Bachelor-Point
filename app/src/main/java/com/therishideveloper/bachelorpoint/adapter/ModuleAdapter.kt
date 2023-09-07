@@ -14,8 +14,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.model.Module
-import com.therishideveloper.bachelorpoint.session.SessionManager
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.signInSignUp.AuthActivity
+import javax.inject.Inject
 
 class ModuleAdapter(
     private val context: Context,
@@ -24,12 +25,13 @@ class ModuleAdapter(
 ) :
     RecyclerView.Adapter<ModuleAdapter.ViewHolder>() {
 
-    private lateinit var session: SessionManager
+    @Inject
+    lateinit var session: UserSession
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        session = SessionManager(parent.context)
+        session = UserSession(parent.context)
         auth = Firebase.auth
 
         return ViewHolder(
