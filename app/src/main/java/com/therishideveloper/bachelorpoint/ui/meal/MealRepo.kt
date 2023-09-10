@@ -2,6 +2,7 @@ package com.therishideveloper.bachelorpoint.ui.meal
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
@@ -10,6 +11,7 @@ import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.expense.ExpenseRepo
 import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +27,11 @@ import javax.inject.Inject
  * BABL, Bangladesh,
  */
 
-class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private val apiService: ApiService) {
+class MealRepo @Inject constructor(
+    private val expenseRepo: ExpenseRepo,
+    private val memberRepo: MemberRepo,
+    private val apiService: ApiService
+) {
 
     private val TAG = "MemberRepo"
 
@@ -58,10 +64,28 @@ class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private v
         }
     }
 
-    fun getMealListOfMonth(accountId: String,monthAndYear:String, result: (mealList: List<Meal>) -> Unit){
+    fun getMealListResult(
+        accountId: String,
+        monthAndYear: String,
+        result: (mealList: List<Meal>) -> Unit
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val response = withContext(Dispatchers.Default) {
-                getMealListOfAMonth(accountId,monthAndYear)
+                getMealListOfAMonth(accountId, monthAndYear)
+            }
+            result(response)
+        }
+    }
+
+    fun getExpenseListResult(
+        accountId: String,
+        monthAndYear: String,
+        database:DatabaseReference,
+        result: (expenseList: List<Expense>) -> Unit
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = withContext(Dispatchers.Default) {
+                expenseRepo.getExpenses(accountId, monthAndYear, database)
             }
             result(response)
         }
@@ -95,9 +119,9 @@ class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private v
         }
     }
 
-    suspend fun getMealListOfAMonth(accountId: String, monthAndYear: String) :List<Meal>{
+    private suspend fun getMealListOfAMonth(accountId: String, monthAndYear: String): List<Meal> {
         mealList.clear()
-        _mealsLiveData.postValue(NetworkResult.Loading())
+//        _mealsLiveData.postValue(NetworkResult.Loading())
         try {
             val response = apiService.getMealListOfAMonth(accountId, monthAndYear)
 
@@ -105,7 +129,7 @@ class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private v
 
                 val jsonObject = JSONObject(response.body()!!.asJsonObject.toString())
                 val keys: Iterator<Any> = jsonObject.keys()
-                while (keys.hasNext()){
+                while (keys.hasNext()) {
                     val jsonObject1  = jsonObject.getJSONObject(keys.next().toString())
                     val keys1:Iterator<Any> = jsonObject1.keys()
                     while (keys1.hasNext()) {
@@ -119,16 +143,16 @@ class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private v
                     }
                 }
 
-                _mealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
+//                _mealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
 
             } else if(response.errorBody()!=null){
                 val jsonObject = JSONObject(response.errorBody()!!.charStream().readText())
-                _mealsLiveData.postValue(NetworkResult.Error(jsonObject.getString("message")))
+//                _mealsLiveData.postValue(NetworkResult.Error(jsonObject.getString("message")))
             }else {
-                _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
+//                _mealsLiveData.postValue(NetworkResult.Error("Something went wrong"))
             }
         } catch (e: Exception) {
-            _mealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
+//            _mealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
         }
         return mealList
     }
@@ -213,7 +237,7 @@ class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private v
     fun sumIndividualClosingMeals(
         mealList: List<Meal>,
         memberList: List<User>,
-        expenseList: MutableList<Expense>
+        expenseList: List<Expense>
     ) {
 
         val newList: MutableList<MealClosing> = ArrayList()

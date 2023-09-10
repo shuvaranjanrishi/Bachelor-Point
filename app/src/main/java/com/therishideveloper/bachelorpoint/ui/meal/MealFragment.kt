@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +21,7 @@ import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Meal
-import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
 import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
@@ -40,12 +38,13 @@ class MealFragment : Fragment(), MealListener {
 
     @Inject
     lateinit var session: UserSession
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
     private lateinit var dayName: String
     private lateinit var monthAndYear: String
     private lateinit var date: String
     private lateinit var accountId: String
-    private val memberViewModel: MemberViewModel by viewModels()
     private val mealViewModel: MealViewModel by viewModels()
 
     override fun onCreateView(
@@ -54,8 +53,7 @@ class MealFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
-        database =
-            Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         return binding.root
     }
@@ -63,7 +61,7 @@ class MealFragment : Fragment(), MealListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupDatePicker()
 
         setupMonthPicker()
@@ -130,7 +128,7 @@ class MealFragment : Fragment(), MealListener {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.monthTv.text = monthAndYear
                     if (monthAndYear != null) {
-                        getMealListOfThisMonth(monthAndYear)
+                        getMealListOfAMonth(monthAndYear)
                         binding.dateTv.text = getString(R.string.day_dd_mm_yyyy)
                     }
                     Log.d(TAG, "monthAndYear: $monthAndYear")
@@ -143,38 +141,8 @@ class MealFragment : Fragment(), MealListener {
         }
     }
 
-    private fun getMealListOfThisMonth(monthAndYear: String) {
-        val listener = this
+    private fun getMealListOfAMonth(monthAndYear: String) {
         mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
-
-        mealViewModel.mealsLiveData.observe(viewLifecycleOwner) { it ->
-            binding.progressBar.isVisible = false
-            when (it) {
-                is NetworkResult.Success -> {
-                    val mealList = it.data!!
-                    if (mealList.isNotEmpty()) {
-                        sumIndividualMeals(mealList)
-                    } else {
-                        val adapter = MealAdapter(listener, mealList.sortedBy { it.name })
-                        binding.recyclerView.adapter = adapter
-                    }
-                }
-
-                is NetworkResult.Error -> {
-                    Log.e(TAG, "Error: ${it.message}")
-                }
-
-                is NetworkResult.Loading -> {
-                    binding.progressBar.isVisible = true
-                }
-            }
-        }
-    }
-
-    private fun sumIndividualMeals(mealList: List<Meal>) {
-
-        mealViewModel.sumIndividualMeals(accountId, mealList)
-
         val listener = this
         mealViewModel.sumMealsLiveData.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false

@@ -1,21 +1,18 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.DatabaseReference
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
-import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MealViewModel @Inject constructor(private val memberRepo: MemberRepo, private val mealRepo: MealRepo) : ViewModel() {
+class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewModel() {
 
     val mealsLiveData get() = mealRepo.mealsLiveData
     val sumMealsLiveData get() = mealRepo.sumMealsLiveData
@@ -32,14 +29,10 @@ class MealViewModel @Inject constructor(private val memberRepo: MemberRepo, priv
 
     fun getMealListOfAMonth(accountId: String, monthAndYear: String) {
         viewModelScope.launch {
-            mealRepo.getMealListOfAMonth(accountId, monthAndYear)
-        }
-    }
-
-    fun sumIndividualMeals(accountId: String, mealList: List<Meal>) {
-        viewModelScope.launch {
-            mealRepo.getMembers(accountId){members ->
-                mealRepo.sumIndividualMeals(members, mealList)
+            mealRepo.getMealListResult(accountId, monthAndYear){ mealList ->
+                mealRepo.getMembers(accountId){members ->
+                    mealRepo.sumIndividualMeals(members, mealList)
+                }
             }
         }
     }
@@ -51,12 +44,18 @@ class MealViewModel @Inject constructor(private val memberRepo: MemberRepo, priv
     }
 
     fun sumIndividualClosingMeals(
-        mealList: List<Meal>,
-        memberList: List<User>,
-        expenseList: MutableList<Expense>
+        accountId: String,
+        monthAndYear:String,
+        database:DatabaseReference
     ) {
         viewModelScope.launch {
-            mealRepo.sumIndividualClosingMeals(mealList, memberList, expenseList)
+            mealRepo.getExpenseListResult(accountId,monthAndYear, database){expenseList->
+                mealRepo.getMealListResult(accountId, monthAndYear){ mealList ->
+                    mealRepo.getMembers(accountId){members ->
+                        mealRepo.sumIndividualClosingMeals(mealList, members, expenseList)
+                    }
+                }
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.expense
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -9,6 +8,11 @@ import com.google.firebase.database.ValueEventListener
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Expense
+import com.therishideveloper.bachelorpoint.model.Meal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -24,11 +28,12 @@ class ExpenseRepo @Inject constructor(private val apiService: ApiService) {
     val expenseResponseLiveData get() = _expenseResponseLiveData
 
     fun getExpenses(
-        monthAndYear: String,
         accountId: String,
+        monthAndYear: String,
         database: DatabaseReference
-    ) {
+    ): List<Expense> {
         _expenseResponseLiveData.postValue(NetworkResult.Loading())
+        val dataList: MutableList<Expense> = mutableListOf()
 
         database.child(accountId).child("Expense")
             .orderByChild("monthAndYear")
@@ -36,7 +41,6 @@ class ExpenseRepo @Inject constructor(private val apiService: ApiService) {
             .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataList: MutableList<Expense> = mutableListOf()
                         for (ds in dataSnapshot.children) {
                             val expenditure: Expense? = ds.getValue(Expense::class.java)
                             dataList.add(expenditure!!)
@@ -49,6 +53,7 @@ class ExpenseRepo @Inject constructor(private val apiService: ApiService) {
                     }
                 }
             )
+        return dataList
     }
 
 }

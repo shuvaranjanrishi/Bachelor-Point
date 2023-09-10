@@ -1,6 +1,10 @@
 package com.therishideveloper.bachelorpoint.session
 
 import android.content.Context
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.utils.Keys
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
