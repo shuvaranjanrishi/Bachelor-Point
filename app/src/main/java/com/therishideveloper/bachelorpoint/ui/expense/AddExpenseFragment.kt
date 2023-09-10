@@ -24,9 +24,12 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentAddExpenseBinding
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddExpenseFragment : Fragment() {
@@ -38,8 +41,12 @@ class AddExpenseFragment : Fragment() {
 
     private val memberViewModel: MemberViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var session: UserSession
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
+    private lateinit var accountId: String
     private lateinit var selectedUid: String
     private lateinit var selectedId: String
     private lateinit var selectedName: String
@@ -55,11 +62,9 @@ class AddExpenseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
-
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-
+        database = dbRef.getAccountRef()
+        accountId = session.getAccountId().toString()
         return binding.root
     }
 
@@ -116,7 +121,6 @@ class AddExpenseFragment : Fragment() {
         amount: String,
         description: String,
     ) {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val expenditure =
             Expense(
@@ -171,9 +175,7 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun getMembers() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
-
         memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.mainLl.isVisible = false
             binding.progressBar.isVisible = false

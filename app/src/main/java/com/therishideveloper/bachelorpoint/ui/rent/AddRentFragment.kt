@@ -67,13 +67,11 @@ class AddRentFragment : Fragment() , AddRentListener{
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddRentBinding.inflate(inflater, container, false)
-
         auth = Firebase.auth
         database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
-
         return binding.root
     }
 
@@ -231,7 +229,7 @@ class AddRentFragment : Fragment() , AddRentListener{
                             val selectedItem: Rent = parent?.getItemAtPosition(position) as Rent
                             selectedId = selectedItem.id.toString()
                             selectedName = selectedItem.name.toString()
-                            if(selectedId=="8"){
+                            if(selectedId=="9"){
                                 binding.descriptionEt.visibility = View.VISIBLE
                             }else{
                                 binding.descriptionEt.visibility = View.GONE

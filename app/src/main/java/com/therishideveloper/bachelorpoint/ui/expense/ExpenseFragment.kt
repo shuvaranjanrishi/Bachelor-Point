@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.expense
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,19 +9,14 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.ExpenseAdapter
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentExpenseBinding
 import com.therishideveloper.bachelorpoint.listener.ExpenseListener
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Expense
+import com.therishideveloper.bachelorpoint.reference.DBRef
 import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +32,9 @@ class ExpenseFragment : Fragment(),ExpenseListener {
 
     @Inject
     lateinit var session: UserSession
+
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
     private lateinit var accountId: String
 
@@ -50,7 +46,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
+        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         return binding.root
     }
@@ -86,6 +82,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
     }
 
     private fun setupDatePicker() {
+        binding.dateTv.text = MyCalender.currentMonthYear
         expenseViewModel.getExpenses(MyCalender.currentMonthYear, accountId, database)
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {

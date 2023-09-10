@@ -81,6 +81,14 @@ class RentViewModel @Inject constructor(private val rentRepo: RentRepo) : ViewMo
             ),
             Rent(
                 "8",
+                "Garbage Cleaning Bill",
+                "",
+                "",
+                timestamp,
+                timestamp
+            ),
+            Rent(
+                "9",
                 "Others",
                 "",
                 "",
