@@ -24,9 +24,11 @@ import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MealFragment : Fragment(), MealListener {
@@ -36,7 +38,8 @@ class MealFragment : Fragment(), MealListener {
     private var _binding: FragmentMealBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var session: SharedPreferences
+    @Inject
+    lateinit var session: UserSession
     private lateinit var database: DatabaseReference
     private lateinit var dayName: String
     private lateinit var monthAndYear: String
@@ -54,8 +57,7 @@ class MealFragment : Fragment(), MealListener {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
         database =
             Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        accountId = session.getString("ACCOUNT_ID", "").toString()
+        accountId = session.getAccountId().toString()
         return binding.root
     }
 

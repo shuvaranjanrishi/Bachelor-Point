@@ -26,8 +26,7 @@ class ExpenseViewModel @Inject constructor(private val expenseRepo: ExpenseRepo)
 
     private val TAG = "ExpenditureViewModel"
 
-    val expenseResponseLiveData : LiveData<NetworkResult<List<Expense>>>
-        get() = expenseRepo.expenseResponseLiveData
+    val expenseResponseLiveData get() = expenseRepo.expenseResponseLiveData
 
     fun getExpenses(
         monthAndYear: String,

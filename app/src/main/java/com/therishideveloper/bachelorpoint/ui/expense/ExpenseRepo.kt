@@ -21,8 +21,7 @@ class ExpenseRepo @Inject constructor(private val apiService: ApiService) {
     private val TAG = "AuthRepo"
 
     private val _expenseResponseLiveData = MutableLiveData<NetworkResult<List<Expense>>>()
-    val expenseResponseLiveData: LiveData<NetworkResult<List<Expense>>>
-        get() = _expenseResponseLiveData
+    val expenseResponseLiveData get() = _expenseResponseLiveData
 
     fun getExpenses(
         monthAndYear: String,

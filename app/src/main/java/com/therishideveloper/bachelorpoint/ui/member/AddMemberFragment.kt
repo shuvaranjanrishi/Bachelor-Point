@@ -17,6 +17,8 @@ import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMemberBinding
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.session.UserSession
+import javax.inject.Inject
 
 class AddMemberFragment : Fragment() {
 
@@ -26,8 +28,10 @@ class AddMemberFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var session: UserSession
     private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
+    private lateinit var accountId: String
 
     private lateinit var name: String
     private lateinit var email: String
@@ -41,15 +45,14 @@ class AddMemberFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddMemberBinding.inflate(inflater, container, false)
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        auth = Firebase.auth
+        database = Firebase.database.reference.child(getString(R.string.database_name))
+        accountId = session.getAccountId().toString()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name))
 
         binding.createMemberBtn.setOnClickListener {
 
@@ -84,7 +87,6 @@ class AddMemberFragment : Fragment() {
     }
 
     private fun createMemberAccount(uid: String) {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val user =
             User(

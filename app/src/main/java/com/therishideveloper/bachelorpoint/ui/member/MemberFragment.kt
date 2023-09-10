@@ -14,7 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.therishideveloper.bachelorpoint.adapter.MemberAdapter
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentMemberBinding
+import com.therishideveloper.bachelorpoint.session.UserSession
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MemberFragment : Fragment() {
@@ -25,7 +27,9 @@ class MemberFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val memberViewModel: MemberViewModel by viewModels()
-    private lateinit var session: SharedPreferences
+    @Inject
+    lateinit var session: UserSession
+    private lateinit var accountId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +37,7 @@ class MemberFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMemberBinding.inflate(inflater, container, false)
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        accountId = session.getAccountId().toString()
 
         return binding.root
     }
@@ -41,7 +45,6 @@ class MemberFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
         getMembers()

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
+import com.therishideveloper.bachelorpoint.adapter.ExpenseAdapter
 import com.therishideveloper.bachelorpoint.adapter.ExpenseClosingAdapter
 import com.therishideveloper.bachelorpoint.adapter.MealClosingAdapter
 import com.therishideveloper.bachelorpoint.api.NetworkResult
@@ -30,10 +32,13 @@ import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.session.UserSession
+import com.therishideveloper.bachelorpoint.ui.expense.ExpenseViewModel
 import com.therishideveloper.bachelorpoint.ui.meal.MealViewModel
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
@@ -45,7 +50,10 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
     private val memberViewModel: MemberViewModel by viewModels()
     private val mealViewModel: MealViewModel by viewModels()
-    private lateinit var session: SharedPreferences
+    private val expenseViewModel: ExpenseViewModel by viewModels()
+
+    @Inject
+    lateinit var session: UserSession
     private lateinit var database: DatabaseReference
     private var memberList: List<User> = mutableListOf()
     private lateinit var accountId: String
@@ -56,10 +64,9 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         database =
             Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        accountId = session.getString("ACCOUNT_ID", "").toString()
+        accountId = session.getAccountId().toString()
         return binding.root
     }
 
@@ -98,7 +105,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     private fun getMembers() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
         memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
@@ -121,28 +127,6 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         }
     }
 
-    private fun getExpenseList(monthAndYear: String, mealList: List<Meal>) {
-        database.child(accountId).child("Expense")
-            .orderByChild("monthAndYear")
-            .equalTo(monthAndYear)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataList: MutableList<Expense> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val expenditure: Expense? = ds.getValue(Expense::class.java)
-                            dataList.add(expenditure!!)
-                        }
-                        sumIndividualClosingMeals(mealList,dataList)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
-                }
-            )
-    }
-
     private fun getMealListOfThisMonth(monthAndYear: String) {
         mealViewModel.getMealListOfAMonth(accountId, monthAndYear)
 
@@ -152,6 +136,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 is NetworkResult.Success -> {
                     val mealList = it.data!!
                     if (mealList.isNotEmpty()) {
+                        expenseViewModel.getExpenses(monthAndYear,accountId,database)
                         getExpenseList(monthAndYear, mealList)
                     }
                 }
@@ -165,6 +150,27 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 }
             }
         }
+    }
+
+    private fun getExpenseList(monthAndYear: String, mealList: List<Meal>) {
+        val listener = this
+        expenseViewModel.expenseResponseLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    sumIndividualClosingMeals(mealList, it.data!! as MutableList<Expense>)
+                }
+
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+            }
+        }
+
     }
 
     private fun sumIndividualClosingMeals(mealList: List<Meal>, expenseList: MutableList<Expense>) {
