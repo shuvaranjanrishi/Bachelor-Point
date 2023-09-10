@@ -35,7 +35,6 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
 
     @Inject
     lateinit var session: UserSession
-
     @Inject
     lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference

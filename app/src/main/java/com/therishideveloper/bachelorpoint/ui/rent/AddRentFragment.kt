@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.rent
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,9 +14,7 @@ import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddSeparateRentAdapter
 import com.therishideveloper.bachelorpoint.adapter.spinner.RentTypeSpAdapter
 import com.therishideveloper.bachelorpoint.api.NetworkResult
@@ -28,11 +24,14 @@ import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.model.Rent
 import com.therishideveloper.bachelorpoint.model.SeparateRent
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddRentFragment : Fragment() , AddRentListener{
@@ -47,8 +46,12 @@ class AddRentFragment : Fragment() , AddRentListener{
     private var memberList: List<User> = mutableListOf()
 
     private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var session: UserSession
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
+    private lateinit var accountId: String
     private lateinit var selectedId: String
     private lateinit var selectedName: String
     private lateinit var amount: String
@@ -66,8 +69,8 @@ class AddRentFragment : Fragment() , AddRentListener{
         _binding = FragmentAddRentBinding.inflate(inflater, container, false)
 
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        database = dbRef.getAccountRef()
+        accountId = session.getAccountId().toString()
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
 
@@ -106,9 +109,7 @@ class AddRentFragment : Fragment() , AddRentListener{
     }
 
     private fun getMembers() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
-
         memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
             binding.mainLl.isVisible = false
             binding.progressBar.isVisible = false
@@ -155,7 +156,6 @@ class AddRentFragment : Fragment() , AddRentListener{
     }
 
     private fun addRentAndBill(amount: String, description: String) {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val rent =
             Rent(
@@ -273,8 +273,6 @@ class AddRentFragment : Fragment() , AddRentListener{
 
     private fun setupSeparateRentInputAdapter() {
         val listener = this
-//        memberViewModel.data.observe(viewLifecycleOwner) {
-//            Log.d("TAG", "mealList.size: " + it.size.toString())
             val rentList: MutableList<SeparateRent> = mutableListOf()
             for (user in memberList) {
                 val rent = SeparateRent(
@@ -289,7 +287,6 @@ class AddRentFragment : Fragment() , AddRentListener{
             }
             val adapter = AddSeparateRentAdapter(listener,rentList)
             binding.recyclerView.adapter = adapter
-//        }
     }
 
     override fun onChangeRent(rentList: List<SeparateRent>) {
