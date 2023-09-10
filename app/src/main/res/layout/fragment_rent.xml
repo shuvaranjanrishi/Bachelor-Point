@@ -85,6 +85,11 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_rent" />
 
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/progressBar1"
+            style="@style/MyLoaderStyle"
+            android:layout_centerInParent="true" />
+
         <LinearLayout
             android:id="@+id/bottomLl1"
             android:layout_width="match_parent"
@@ -168,61 +173,6 @@
                     android:textSize="@dimen/dimen_15sp"
                     android:textStyle="bold" />
             </TableRow>
-
-            <!--        <TableRow-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:background="@color/table_header">-->
-
-            <!--            <TextView-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="3"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="মোট সদস্য"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/totalMemberTv"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="2"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="@string/zero"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-            <!--        </TableRow>-->
-
-            <!--        <TableRow-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:background="@color/table_header"-->
-            <!--            android:paddingBottom="@dimen/dimen_10dp">-->
-
-            <!--            <TextView-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="3"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="জনপ্রতি খরচ"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/costPerHeadTv"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="2"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="@string/zero"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-            <!--        </TableRow>-->
         </LinearLayout>
     </RelativeLayout>
 
@@ -302,6 +252,11 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_rent" />
 
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/progressBar2"
+            style="@style/MyLoaderStyle"
+            android:layout_centerInParent="true" />
+
         <LinearLayout
             android:id="@+id/bottomLl2"
             android:layout_width="match_parent"
@@ -364,61 +319,6 @@
                     android:textSize="@dimen/dimen_15sp"
                     android:textStyle="bold" />
             </TableRow>
-
-            <!--        <TableRow-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:background="@color/table_header">-->
-
-            <!--            <TextView-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="3"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="মোট সদস্য"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/totalMemberTv"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="2"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="@string/zero"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-            <!--        </TableRow>-->
-
-            <!--        <TableRow-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:background="@color/table_header"-->
-            <!--            android:paddingBottom="@dimen/dimen_10dp">-->
-
-            <!--            <TextView-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="3"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="জনপ্রতি খরচ"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/costPerHeadTv"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_weight="2"-->
-            <!--                android:gravity="center"-->
-            <!--                android:padding="@dimen/dimen_3dp"-->
-            <!--                android:text="@string/zero"-->
-            <!--                android:textSize="@dimen/dimen_15sp"-->
-            <!--                android:textStyle="bold" />-->
-            <!--        </TableRow>-->
         </LinearLayout>
     </RelativeLayout>
 

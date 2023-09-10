@@ -1,33 +1,31 @@
 package com.therishideveloper.bachelorpoint.ui.rent
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import androidx.fragment.app.viewModels
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.RentAdapter
 import com.therishideveloper.bachelorpoint.adapter.SeparateRentAdapter
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentRentBinding
 import com.therishideveloper.bachelorpoint.listener.MyMonthAndYear
 import com.therishideveloper.bachelorpoint.listener.RentListener
 import com.therishideveloper.bachelorpoint.listener.SeparateRentListener
 import com.therishideveloper.bachelorpoint.model.Rent
-import com.therishideveloper.bachelorpoint.model.SeparateRent
+import com.therishideveloper.bachelorpoint.reference.DBRef
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.utils.MyCalender
+import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class RentFragment : Fragment(), RentListener, SeparateRentListener {
 
     private val TAG = "RentFragment"
@@ -35,10 +33,16 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
     private var _binding: FragmentRentBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var session: UserSession
+
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
+    private lateinit var accountId: String
     private lateinit var monthAndYear: String
     private lateinit var decimalFormat: DecimalFormat
+    private val rentViewModel: RentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,12 +50,10 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRentBinding.inflate(inflater, container, false)
-
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        database = dbRef.getAccountRef()
+        accountId = session.getAccountId().toString()
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
-
         return binding.root
     }
 
@@ -84,60 +86,27 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
         }
     }
 
-    private fun getRentAndBill(monthAndYear: String?) {
+    private fun getRentAndBill(monthAndYear: String) {
 
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
+        rentViewModel.getRentAndBill(accountId, monthAndYear, database)
         val listener = this
-
-        if (monthAndYear != null) {
-            database.child(accountId).child("RentAndBill").child("Bill").child(monthAndYear)
-                .addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val rentList: MutableList<Rent> = mutableListOf()
-                            for (ds in dataSnapshot.children) {
-                                val rent: Rent? = ds.getValue(Rent::class.java)
-                                    rentList.add(rent!!)
-                                }
-                            val adapter =
-                                RentAdapter(listener, rentList.sortedBy { it.amount!!.toInt() })
-                            binding.recyclerView1.adapter = adapter
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            Log.e(TAG, "DatabaseError", error.toException())
-                        }
-                    }
-                )
-        }
-    }
-
-    private fun getSeparateRentList(accountId: String, perHeadCost: Double) {
-        val listener = this
-        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val separateRentList: MutableList<SeparateRent> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val separateRent: SeparateRent? = ds.getValue(SeparateRent::class.java)
-                            separateRentList.add(separateRent!!)
-                        }
-                        if (separateRentList.isNotEmpty()) {
-                            val adapter =
-                                SeparateRentAdapter(
-                                    listener,
-                                    perHeadCost,
-                                    separateRentList.sortedBy { it.name })
-                            binding.recyclerView2.adapter = adapter
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(TAG, "DatabaseError", error.toException())
-                    }
+        rentViewModel.rentLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar1.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val adapter = RentAdapter(listener, it.data!!)
+                    binding.recyclerView1.adapter = adapter
                 }
-            )
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar1.isVisible = true
+                }
+            }
+        }
     }
 
     override fun onChangeRent(rentList: List<Rent>) {
@@ -153,10 +122,32 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
             binding.totalMemberTv.text = totalMember.toString()
             binding.costPerHeadTv.text = decimalFormat.format(perHeadCost).toString()
         }
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
-
         getSeparateRentList(accountId, perHeadCost)
+    }
 
+    private fun getSeparateRentList(accountId: String, perHeadCost: Double) {
+        rentViewModel.getSeparateRentList(accountId, monthAndYear, database)
+        val listener = this
+        rentViewModel.separateRentLiveData.observe(viewLifecycleOwner) {
+            binding.progressBar2.isVisible = false
+            when (it) {
+                is NetworkResult.Success -> {
+                    val separateRentList = it.data!!
+                    if (separateRentList.isNotEmpty()) {
+                        val adapter = SeparateRentAdapter(listener, perHeadCost, separateRentList)
+                        binding.recyclerView2.adapter = adapter
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    Log.e(TAG, "Error: ${it.message}")
+                }
+
+                is NetworkResult.Loading -> {
+                    binding.progressBar2.isVisible = true
+                }
+            }
+        }
     }
 
     override fun onChangeSeparateRent(total1: String, total2: String, total3: String) {
@@ -169,5 +160,5 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
         super.onDestroyView()
         _binding = null
     }
-
 }
+//209

@@ -3,9 +3,18 @@ package com.therishideveloper.bachelorpoint.ui.rent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.DatabaseReference
 import com.therishideveloper.bachelorpoint.model.Rent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RentViewModel : ViewModel() {
+@HiltViewModel
+class RentViewModel @Inject constructor(private val rentRepo: RentRepo) : ViewModel() {
+
+    val rentLiveData get() = rentRepo.rentLiveData
+    val separateRentLiveData get() = rentRepo.separateRentLiveData
 
     var rentList: List<Rent>
 
@@ -83,4 +92,17 @@ class RentViewModel : ViewModel() {
         value = rentList
     }
     val data: LiveData<List<Rent>> = _data
+
+    fun getRentAndBill(accountId: String, monthAndYear: String, database: DatabaseReference) {
+        viewModelScope.launch {
+            rentRepo.getRentAndBill(accountId, monthAndYear, database)
+        }
+    }
+
+    fun getSeparateRentList(accountId: String, monthAndYear: String, database: DatabaseReference) {
+        viewModelScope.launch {
+            rentRepo.getSeparateRentList(accountId, monthAndYear, database)
+        }
+    }
+
 }

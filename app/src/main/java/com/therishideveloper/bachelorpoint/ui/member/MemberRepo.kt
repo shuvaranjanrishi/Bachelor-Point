@@ -21,12 +21,10 @@ class MemberRepo @Inject constructor(private val apiService: ApiService) {
     private val TAG = "MemberRepo"
 
     private val _membersLiveData = MutableLiveData<NetworkResult<List<User>>>()
-    val membersLiveData : LiveData<NetworkResult<List<User>>>
-        get() = _membersLiveData
+    val membersLiveData get() = _membersLiveData
 
     private val _memberLiveData = MutableLiveData<NetworkResult<User>>()
-    val memberLiveData : LiveData<NetworkResult<User>>
-        get() = _memberLiveData
+    val memberLiveData  get() = _memberLiveData
 
     suspend fun getMembers(accountId: String): List<User> {
         _membersLiveData.postValue(NetworkResult.Loading())
