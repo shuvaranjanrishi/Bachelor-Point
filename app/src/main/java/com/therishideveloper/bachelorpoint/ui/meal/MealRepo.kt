@@ -2,6 +2,7 @@ package com.therishideveloper.bachelorpoint.ui.meal
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Expense
@@ -9,6 +10,11 @@ import com.therishideveloper.bachelorpoint.model.ExpenseClosing
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -19,7 +25,7 @@ import javax.inject.Inject
  * BABL, Bangladesh,
  */
 
-class MealRepo @Inject constructor(private val apiService: ApiService) {
+class MealRepo @Inject constructor(private val memberRepo: MemberRepo, private val apiService: ApiService) {
 
     private val TAG = "MemberRepo"
 
@@ -43,6 +49,24 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
 
     var mealList: MutableList<Meal> = mutableListOf()
 
+    fun getMembers(accountId: String, result: (members: List<User>) -> Unit){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = withContext(Dispatchers.Default) {
+                memberRepo.getMembers(accountId)
+            }
+            result(response)
+        }
+    }
+
+    fun getMealListOfMonth(accountId: String,monthAndYear:String, result: (mealList: List<Meal>) -> Unit){
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = withContext(Dispatchers.Default) {
+                getMealListOfAMonth(accountId,monthAndYear)
+            }
+            result(response)
+        }
+    }
+
     suspend fun getMealListOfADay(accountId: String, monthAndYear: String, date: String) {
         mealList.clear()
         _mealsLiveData.postValue(NetworkResult.Loading())
@@ -55,7 +79,9 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
                     val key = keys.next().toString()
                     val childObj: JSONObject = jsonObject.getJSONObject(key)
 
-                    val meal = parseObjectToMeal(childObj)
+                    val meal = Gson().fromJson(
+                        childObj.toString(), Meal::class.java
+                    ) as Meal
                     mealList.add(meal)
                 }
                 _mealsLiveData.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
@@ -69,23 +95,7 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
         }
     }
 
-    private fun parseObjectToMeal(childObj: JSONObject): Meal {
-        return Meal(
-            "" + childObj.getString("id"),
-            "" + childObj.getString("memberId"),
-            "" + childObj.getString("name"),
-            "" + childObj.getString("firstMeal"),
-            "" + childObj.getString("secondMeal"),
-            "" + childObj.getString("thirdMeal"),
-            "" + childObj.getString("subTotalMeal"),
-            "" + childObj.getString("monthAndYear"),
-            "" + childObj.getString("date"),
-            "" + childObj.getString("createdAt"),
-            "" + childObj.getString("updatedAt")
-        )
-    }
-
-    suspend fun getMealListOfAMonth(accountId: String, monthAndYear: String) {
+    suspend fun getMealListOfAMonth(accountId: String, monthAndYear: String) :List<Meal>{
         mealList.clear()
         _mealsLiveData.postValue(NetworkResult.Loading())
         try {
@@ -102,7 +112,9 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
                         val key1 = keys1.next().toString()
                         val childObj: JSONObject = jsonObject1.getJSONObject(key1)
 
-                        val meal = parseObjectToMeal(childObj)
+                        val meal = Gson().fromJson(
+                            childObj.toString(), Meal::class.java
+                        ) as Meal
                         mealList.add(meal)
                     }
                 }
@@ -118,6 +130,7 @@ class MealRepo @Inject constructor(private val apiService: ApiService) {
         } catch (e: Exception) {
             _mealsLiveData.postValue(NetworkResult.Error(e.localizedMessage))
         }
+        return mealList
     }
 
     fun sumIndividualMeals(memberList: List<User>, mealList: List<Meal>) {

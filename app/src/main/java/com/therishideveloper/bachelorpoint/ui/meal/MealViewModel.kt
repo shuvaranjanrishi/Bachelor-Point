@@ -1,17 +1,21 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewModel() {
+class MealViewModel @Inject constructor(private val memberRepo: MemberRepo, private val mealRepo: MealRepo) : ViewModel() {
 
     val mealsLiveData get() = mealRepo.mealsLiveData
     val sumMealsLiveData get() = mealRepo.sumMealsLiveData
@@ -32,9 +36,11 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
         }
     }
 
-    fun sumIndividualMeals(memberList: List<User>, mealList: List<Meal>) {
+    fun sumIndividualMeals(accountId: String, mealList: List<Meal>) {
         viewModelScope.launch {
-            mealRepo.sumIndividualMeals(memberList, mealList)
+            mealRepo.getMembers(accountId){members ->
+                mealRepo.sumIndividualMeals(members, mealList)
+            }
         }
     }
 

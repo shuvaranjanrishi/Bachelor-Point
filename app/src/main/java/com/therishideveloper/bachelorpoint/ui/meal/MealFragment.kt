@@ -47,7 +47,6 @@ class MealFragment : Fragment(), MealListener {
     private lateinit var accountId: String
     private val memberViewModel: MemberViewModel by viewModels()
     private val mealViewModel: MealViewModel by viewModels()
-    private var memberList: List<User> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,33 +63,12 @@ class MealFragment : Fragment(), MealListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        getMembers()
-
+        
         setupDatePicker()
 
         setupMonthPicker()
     }
 
-    private fun getMembers() {
-        memberViewModel.getMembers(accountId)
-        memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = false
-            when (it) {
-                is NetworkResult.Success -> {
-                    this@MealFragment.memberList = it.data!!
-                }
-
-                is NetworkResult.Error -> {
-                    Log.e(TAG, "Error: ${it.message}")
-                }
-
-                is NetworkResult.Loading -> {
-                    binding.progressBar.isVisible = true
-                }
-            }
-        }
-    }
 
     private fun setupDatePicker() {
         binding.monthTv.text = MyCalender.currentMonthYear
@@ -195,7 +173,7 @@ class MealFragment : Fragment(), MealListener {
 
     private fun sumIndividualMeals(mealList: List<Meal>) {
 
-        mealViewModel.sumIndividualMeals(memberList, mealList)
+        mealViewModel.sumIndividualMeals(accountId, mealList)
 
         val listener = this
         mealViewModel.sumMealsLiveData.observe(viewLifecycleOwner) {
