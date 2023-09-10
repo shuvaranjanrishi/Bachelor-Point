@@ -90,7 +90,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
 
         val listener = this
         mealViewModel.sumMealsClosingLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = false
+            binding.progressBar1.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
                     val adapter = MealClosingAdapter(listener, it.data!!)
@@ -102,7 +102,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 }
 
                 is NetworkResult.Loading -> {
-                    binding.progressBar.isVisible = true
+                    binding.progressBar1.isVisible = true
                 }
             }
         }
@@ -111,7 +111,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     override fun onChangeMeal(mealList: List<MealClosing>) {
         mealViewModel.totalExpenseClosingMeals(mealList)
         mealViewModel.totalExpenseLiveData.observe(viewLifecycleOwner) {
-            binding.progressBar.isVisible = false
+            binding.progressBar1.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
                     val expenseList = it.data!!
@@ -123,7 +123,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 }
 
                 is NetworkResult.Loading -> {
-                    binding.progressBar.isVisible = true
+                    binding.progressBar1.isVisible = true
                 }
             }
         }
@@ -132,7 +132,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     private fun getMealRate(expenseList: List<MealClosing>) {
         val listener = this
         mealViewModel.mealRateLiveData.observe(viewLifecycleOwner){
-            binding.progressBar.isVisible = false
+            binding.progressBar2.isVisible = false
             when (it) {
                 is NetworkResult.Success -> {
                     val data = it.data!!
@@ -148,7 +148,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
                 }
 
                 is NetworkResult.Loading -> {
-                    binding.progressBar.isVisible = true
+                    binding.progressBar2.isVisible = true
                 }
             }
         }
