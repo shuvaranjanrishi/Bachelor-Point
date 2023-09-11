@@ -50,7 +50,6 @@ class AddRentFragment : Fragment() , AddRentListener{
     lateinit var session: UserSession
     @Inject
     lateinit var dbRef: DBRef
-    private lateinit var database: DatabaseReference
     private lateinit var accountId: String
     private lateinit var selectedId: String
     private lateinit var selectedName: String
@@ -68,7 +67,6 @@ class AddRentFragment : Fragment() , AddRentListener{
     ): View {
         _binding = FragmentAddRentBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
@@ -168,7 +166,7 @@ class AddRentFragment : Fragment() , AddRentListener{
             )
 
         if (selectedId != "1") {
-            database.child(accountId).child("RentAndBill").child("Bill").child(monthAndYear)
+           dbRef.getBillRef(accountId).child(monthAndYear)
                 .child(selectedId)
                 .setValue(rent)
         } else {
@@ -176,7 +174,7 @@ class AddRentFragment : Fragment() , AddRentListener{
                 if (rentList.isNotEmpty()) {
                     Log.d(TAG, "rentList: $rentList")
                     for (separateRent in rentList) {
-                        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
+                        dbRef.getRentRef(accountId).child(monthAndYear)
                             .child(separateRent.id.toString())
                             .setValue(separateRent)
                     }
@@ -193,7 +191,7 @@ class AddRentFragment : Fragment() , AddRentListener{
                             "" + timestamp,
                             "" + timestamp,
                         )
-                        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
+                        dbRef.getRentRef(accountId).child(monthAndYear)
                             .child(rent1.id.toString())
                             .setValue(rent1)
                     }
@@ -281,7 +279,6 @@ class AddRentFragment : Fragment() , AddRentListener{
                     "" + System.currentTimeMillis()
                 )
                 rentList.add(rent)
-                Log.d(TAG, "onDataChange: mealList: $rentList")
             }
             val adapter = AddSeparateRentAdapter(listener,rentList)
             binding.recyclerView.adapter = adapter

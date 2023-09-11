@@ -101,15 +101,15 @@ class RentViewModel @Inject constructor(private val rentRepo: RentRepo) : ViewMo
     }
     val data: LiveData<List<Rent>> = _data
 
-    fun getRentAndBill(accountId: String, monthAndYear: String, database: DatabaseReference) {
+    fun getBills(billRef: DatabaseReference) {
         viewModelScope.launch {
-            rentRepo.getRentAndBill(accountId, monthAndYear, database)
+            rentRepo.getBills(billRef)
         }
     }
 
-    fun getSeparateRentList(accountId: String, monthAndYear: String, database: DatabaseReference) {
+    fun getSeparateRentList(rentRef: DatabaseReference) {
         viewModelScope.launch {
-            rentRepo.getSeparateRentList(accountId, monthAndYear, database)
+            rentRepo.getSeparateRentList(rentRef)
         }
     }
 

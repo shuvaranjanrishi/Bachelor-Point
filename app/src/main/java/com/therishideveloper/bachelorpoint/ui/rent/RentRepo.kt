@@ -6,7 +6,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.therishideveloper.bachelorpoint.adapter.SeparateRentAdapter
 import com.therishideveloper.bachelorpoint.api.ApiService
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Rent
@@ -28,23 +27,18 @@ class RentRepo @Inject constructor(private val apiService: ApiService) {
     private val _separateRentLiveData = MutableLiveData<NetworkResult<List<SeparateRent>>>()
     val separateRentLiveData get() = _separateRentLiveData
 
-    fun getRentAndBill(
-        accountId: String,
-        monthAndYear: String,
-        database: DatabaseReference,
-    ) {
+    fun getBills(billRef: DatabaseReference) {
         _rentLiveData.postValue(NetworkResult.Loading())
-        database.child(accountId).child("RentAndBill").child("Bill").child(monthAndYear)
-            .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val rentList: MutableList<Rent> = mutableListOf()
-                        for (ds in dataSnapshot.children) {
-                            val rent: Rent? = ds.getValue(Rent::class.java)
-                            rentList.add(rent!!)
-                        }
-                        _rentLiveData.postValue(NetworkResult.Success(rentList.sortedBy { it.amount!!.toInt() }))
+        billRef.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val rentList: MutableList<Rent> = mutableListOf()
+                    for (ds in dataSnapshot.children) {
+                        val rent: Rent? = ds.getValue(Rent::class.java)
+                        rentList.add(rent!!)
                     }
+                    _rentLiveData.postValue(NetworkResult.Success(rentList.sortedBy { it.amount!!.toInt() }))
+                }
 
                     override fun onCancelled(error: DatabaseError) {
                         Log.e(TAG, "DatabaseError", error.toException())
@@ -54,15 +48,9 @@ class RentRepo @Inject constructor(private val apiService: ApiService) {
             )
     }
 
-    fun getSeparateRentList(
-        accountId: String,
-        monthAndYear: String,
-        database: DatabaseReference
-    ) {
+    fun getSeparateRentList(rentRef: DatabaseReference) {
         _separateRentLiveData.postValue(NetworkResult.Loading())
-
-        database.child(accountId).child("RentAndBill").child("Rent").child(monthAndYear)
-            .addListenerForSingleValueEvent(
+        rentRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val separateRentList: MutableList<SeparateRent> = mutableListOf()

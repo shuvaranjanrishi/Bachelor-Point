@@ -37,7 +37,8 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
     lateinit var session: UserSession
     @Inject
     lateinit var dbRef: DBRef
-    private lateinit var database: DatabaseReference
+    private lateinit var billRef: DatabaseReference
+    private lateinit var rentRef: DatabaseReference
     private lateinit var accountId: String
     private lateinit var monthAndYear: String
     private lateinit var decimalFormat: DecimalFormat
@@ -49,8 +50,9 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRentBinding.inflate(inflater, container, false)
-        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
+        billRef = dbRef.getBillRef(accountId)
+        rentRef = dbRef.getRentRef(accountId)
         decimalFormat = DecimalFormat("#.##")
         decimalFormat.roundingMode = RoundingMode.UP
         return binding.root
@@ -86,8 +88,7 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
     }
 
     private fun getRentAndBill(monthAndYear: String) {
-
-        rentViewModel.getRentAndBill(accountId, monthAndYear, database)
+        rentViewModel.getBills(billRef.child(monthAndYear))
         val listener = this
         rentViewModel.rentLiveData.observe(viewLifecycleOwner) {
             binding.progressBar1.isVisible = false
@@ -121,11 +122,11 @@ class RentFragment : Fragment(), RentListener, SeparateRentListener {
             binding.totalMemberTv.text = totalMember.toString()
             binding.costPerHeadTv.text = decimalFormat.format(perHeadCost).toString()
         }
-        getSeparateRentList(accountId, perHeadCost)
+        getSeparateRentList(perHeadCost)
     }
 
-    private fun getSeparateRentList(accountId: String, perHeadCost: Double) {
-        rentViewModel.getSeparateRentList(accountId, monthAndYear, database)
+    private fun getSeparateRentList(perHeadCost: Double) {
+        rentViewModel.getSeparateRentList(rentRef.child(monthAndYear))
         val listener = this
         rentViewModel.separateRentLiveData.observe(viewLifecycleOwner) {
             binding.progressBar2.isVisible = false
