@@ -36,6 +36,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
     @Inject
     lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
+    private lateinit var expenseRef: DatabaseReference
     private lateinit var accountId: String
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
@@ -48,6 +49,7 @@ class ExpenseFragment : Fragment(),ExpenseListener {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
         database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
+        expenseRef = dbRef.getExpenseRef(accountId)
         return binding.root
     }
 
@@ -83,13 +85,13 @@ class ExpenseFragment : Fragment(),ExpenseListener {
 
     private fun setupDatePicker() {
         binding.dateTv.text = MyCalender.currentMonthYear
-        expenseViewModel.getExpenses(MyCalender.currentMonthYear, accountId, database)
+        expenseViewModel.getExpenses(expenseRef.child(MyCalender.currentMonthYear))
         binding.dateTv.setOnClickListener {
             MyCalender.pickMonthAndYear(activity, object : MyMonthAndYear {
                 override fun onPickMonthAndYear(monthAndYear: String?) {
                     binding.dateTv.text = monthAndYear
                     if (monthAndYear != null) {
-                        expenseViewModel.getExpenses(monthAndYear, accountId, database)
+                        expenseViewModel.getExpenses(expenseRef.child(monthAndYear))
                     }
                     Log.d(TAG, "monthAndYear: $monthAndYear")
                 }

@@ -45,6 +45,7 @@ class AddExpenseFragment : Fragment() {
     lateinit var session: UserSession
     @Inject
     lateinit var dbRef: DBRef
+    private lateinit var expenseRef: DatabaseReference
     private lateinit var database: DatabaseReference
     private lateinit var accountId: String
     private lateinit var selectedUid: String
@@ -65,6 +66,7 @@ class AddExpenseFragment : Fragment() {
         auth = Firebase.auth
         database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
+        expenseRef = dbRef.getExpenseRef(accountId)
         return binding.root
     }
 
@@ -135,7 +137,7 @@ class AddExpenseFragment : Fragment() {
                 timestamp,
                 timestamp
             )
-        database.child(accountId).child("Expense").child(timestamp)
+        expenseRef.child(monthAndYear).child(timestamp)
             .setValue(expenditure)
         Toast.makeText(
             context,

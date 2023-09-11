@@ -78,14 +78,12 @@ class MealRepo @Inject constructor(
     }
 
     fun getExpenseListResult(
-        accountId: String,
-        monthAndYear: String,
-        database:DatabaseReference,
+        expenseRef: DatabaseReference,
         result: (expenseList: List<Expense>) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val response = withContext(Dispatchers.Default) {
-                expenseRepo.getExpenses(accountId, monthAndYear, database)
+                expenseRepo.getExpenses(expenseRef)
             }
             result(response)
         }

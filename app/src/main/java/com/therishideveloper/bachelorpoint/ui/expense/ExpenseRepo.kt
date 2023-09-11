@@ -27,18 +27,11 @@ class ExpenseRepo @Inject constructor(private val apiService: ApiService) {
     private val _expenseResponseLiveData = MutableLiveData<NetworkResult<List<Expense>>>()
     val expenseResponseLiveData get() = _expenseResponseLiveData
 
-    fun getExpenses(
-        accountId: String,
-        monthAndYear: String,
-        database: DatabaseReference
-    ): List<Expense> {
+    fun getExpenses(expenseRef: DatabaseReference): List<Expense> {
         _expenseResponseLiveData.postValue(NetworkResult.Loading())
         val dataList: MutableList<Expense> = mutableListOf()
 
-        database.child(accountId).child("Expense")
-            .orderByChild("monthAndYear")
-            .equalTo(monthAndYear)
-            .addListenerForSingleValueEvent(
+        expenseRef.addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         for (ds in dataSnapshot.children) {

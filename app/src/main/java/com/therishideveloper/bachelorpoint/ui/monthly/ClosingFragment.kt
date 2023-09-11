@@ -39,7 +39,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     lateinit var session: UserSession
     @Inject
     lateinit var dbRef: DBRef
-    private lateinit var database: DatabaseReference
+    private lateinit var expenseRef: DatabaseReference
     private lateinit var accountId: String
 
     override fun onCreateView(
@@ -48,8 +48,8 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentClosingBinding.inflate(inflater, container, false)
-        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
+        expenseRef = dbRef.getExpenseRef(accountId)
         return binding.root
     }
 
@@ -86,7 +86,7 @@ class ClosingFragment : Fragment(), MealClosingListener,ExpenseClosingListener {
     }
 
     private fun getMonthlyClosing(monthAndYear: String) {
-        mealViewModel.sumIndividualClosingMeals(accountId, monthAndYear,database)
+        mealViewModel.sumIndividualClosingMeals(expenseRef, accountId, monthAndYear)
 
         val listener = this
         mealViewModel.sumMealsClosingLiveData.observe(viewLifecycleOwner) {

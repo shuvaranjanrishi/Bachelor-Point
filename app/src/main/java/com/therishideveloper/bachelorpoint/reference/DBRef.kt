@@ -33,4 +33,8 @@ class DBRef @Inject constructor(@ApplicationContext context: Context) {
     fun getBillRef(accountId: String): DatabaseReference {
         return accountRef.child(accountId).child("RentAndBill").child("Bill")
     }
+
+    fun getExpenseRef(accountId: String): DatabaseReference {
+        return accountRef.child(accountId).child("Expense")
+    }
 }

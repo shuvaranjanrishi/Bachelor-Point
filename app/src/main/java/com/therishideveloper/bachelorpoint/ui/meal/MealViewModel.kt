@@ -3,10 +3,8 @@ package com.therishideveloper.bachelorpoint.ui.meal
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DatabaseReference
-import com.therishideveloper.bachelorpoint.model.Expense
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
-import com.therishideveloper.bachelorpoint.ui.member.MemberRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,14 +42,14 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
     }
 
     fun sumIndividualClosingMeals(
+        expenseRef: DatabaseReference,
         accountId: String,
-        monthAndYear:String,
-        database:DatabaseReference
+        monthAndYear: String
     ) {
         viewModelScope.launch {
-            mealRepo.getExpenseListResult(accountId,monthAndYear, database){expenseList->
-                mealRepo.getMealListResult(accountId, monthAndYear){ mealList ->
-                    mealRepo.getMembers(accountId){members ->
+            mealRepo.getExpenseListResult(expenseRef.child(monthAndYear)) { expenseList ->
+                mealRepo.getMealListResult(accountId, monthAndYear) { mealList ->
+                    mealRepo.getMembers(accountId) { members ->
                         mealRepo.sumIndividualClosingMeals(mealList, members, expenseList)
                     }
                 }

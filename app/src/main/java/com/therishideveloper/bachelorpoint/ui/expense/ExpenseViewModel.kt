@@ -14,13 +14,9 @@ class ExpenseViewModel @Inject constructor(private val expenseRepo: ExpenseRepo)
 
     val expenseResponseLiveData get() = expenseRepo.expenseResponseLiveData
 
-    fun getExpenses(
-        monthAndYear: String,
-        accountId: String,
-        database: DatabaseReference
-    ) {
+    fun getExpenses(expenseRef: DatabaseReference) {
         viewModelScope.launch {
-            expenseRepo.getExpenses(accountId, monthAndYear, database)
+            expenseRepo.getExpenses(expenseRef)
         }
     }
 }
