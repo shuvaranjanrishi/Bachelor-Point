@@ -62,7 +62,7 @@
         android:background="@drawable/bg_et"
         android:padding="@dimen/dimen_10dp"
         android:id="@+id/emailEt"
-        android:text="shuvo@gmail.com"
+        android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email" />
@@ -73,7 +73,7 @@
         android:layout_marginTop="@dimen/dimen_5dp"
         android:background="@drawable/bg_et"
         android:inputType="textPassword"
-        android:text="123456"
+        android:text=""
         android:padding="@dimen/dimen_10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
