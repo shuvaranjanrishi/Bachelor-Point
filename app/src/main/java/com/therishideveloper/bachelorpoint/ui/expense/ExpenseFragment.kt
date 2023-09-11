@@ -32,10 +32,8 @@ class ExpenseFragment : Fragment(),ExpenseListener {
 
     @Inject
     lateinit var session: UserSession
-
     @Inject
     lateinit var dbRef: DBRef
-    private lateinit var database: DatabaseReference
     private lateinit var expenseRef: DatabaseReference
     private lateinit var accountId: String
 
@@ -47,7 +45,6 @@ class ExpenseFragment : Fragment(),ExpenseListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
-        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         expenseRef = dbRef.getExpenseRef(accountId)
         return binding.root

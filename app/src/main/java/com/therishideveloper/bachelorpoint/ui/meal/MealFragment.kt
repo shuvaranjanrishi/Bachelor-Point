@@ -38,9 +38,6 @@ class MealFragment : Fragment(), MealListener {
 
     @Inject
     lateinit var session: UserSession
-    @Inject
-    lateinit var dbRef: DBRef
-    private lateinit var database: DatabaseReference
     private lateinit var dayName: String
     private lateinit var monthAndYear: String
     private lateinit var date: String
@@ -53,7 +50,6 @@ class MealFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMealBinding.inflate(inflater, container, false)
-        database = dbRef.getAccountRef()
         accountId = session.getAccountId().toString()
         return binding.root
     }

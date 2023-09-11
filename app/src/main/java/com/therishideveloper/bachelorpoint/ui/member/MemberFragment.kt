@@ -38,7 +38,6 @@ class MemberFragment : Fragment() {
     ): View {
         _binding = FragmentMemberBinding.inflate(inflater, container, false)
         accountId = session.getAccountId().toString()
-
         return binding.root
     }
 

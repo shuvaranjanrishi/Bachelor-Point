@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,9 +12,7 @@ import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.AddMealAdapter
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMealBinding
@@ -24,11 +20,14 @@ import com.therishideveloper.bachelorpoint.listener.MealListener
 import com.therishideveloper.bachelorpoint.listener.MyDayMonthYear
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
+import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import com.therishideveloper.bachelorpoint.utils.MyCalender
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddMealFragment : Fragment(), MealListener {
@@ -40,8 +39,12 @@ class AddMealFragment : Fragment(), MealListener {
 
     private val memberViewModel: MemberViewModel by viewModels()
     private lateinit var mealList: List<Meal>
-    private lateinit var database: DatabaseReference
-    private lateinit var session: SharedPreferences
+    @Inject
+    lateinit var session: UserSession
+    @Inject
+    lateinit var dbRef: DBRef
+    private lateinit var mealRef: DatabaseReference
+    private lateinit var accountId: String
     private lateinit var auth: FirebaseAuth
     private lateinit var dayName: String
     private lateinit var monthAndYear: String
@@ -53,11 +56,9 @@ class AddMealFragment : Fragment(), MealListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddMealBinding.inflate(inflater, container, false)
-
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name)).child("Accounts")
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-
+        accountId = session.getAccountId().toString()
+        mealRef = dbRef.getMealRef(accountId)
         return binding.root
     }
 
@@ -138,7 +139,6 @@ class AddMealFragment : Fragment(), MealListener {
         memberId: String,
         name: String,
     ) {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         val timestamp = "" + System.currentTimeMillis()
         val meal =
             Meal(
@@ -154,8 +154,7 @@ class AddMealFragment : Fragment(), MealListener {
                 ""+timestamp,
                 ""+timestamp
             )
-        database.child(accountId).child("Meal").child(monthAndYear).child(date).child(memberId)
-            .setValue(meal)
+        mealRef.child(monthAndYear).child(date).child(memberId).setValue(meal)
     }
 
     override fun onChangeMeal(mealList: List<Meal>) {
@@ -182,7 +181,6 @@ class AddMealFragment : Fragment(), MealListener {
     }
 
     private fun getMembers() {
-        val accountId = session.getString("ACCOUNT_ID", "").toString()
         memberViewModel.getMembers(accountId)
 
         memberViewModel.membersLiveData.observe(viewLifecycleOwner) {
@@ -221,7 +219,6 @@ class AddMealFragment : Fragment(), MealListener {
                     "" + System.currentTimeMillis()
                 )
                 mealList.add(meal)
-                Log.d(TAG, "onDataChange: mealList: $mealList")
             }
             this.mealList = mealList
             val adapter = AddMealAdapter(listener,mealList)

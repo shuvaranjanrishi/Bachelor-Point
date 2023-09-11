@@ -1,7 +1,5 @@
 package com.therishideveloper.bachelorpoint.ui.member
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +15,7 @@ import com.google.firebase.ktx.Firebase
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.databinding.FragmentAddMemberBinding
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
 import com.therishideveloper.bachelorpoint.session.UserSession
 import javax.inject.Inject
 
@@ -28,9 +27,14 @@ class AddMemberFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+
     @Inject
     lateinit var session: UserSession
-    private lateinit var database: DatabaseReference
+
+    @Inject
+    lateinit var dbRef: DBRef
+    private lateinit var userRef: DatabaseReference
+    private lateinit var memberRef: DatabaseReference
     private lateinit var accountId: String
 
     private lateinit var name: String
@@ -46,8 +50,9 @@ class AddMemberFragment : Fragment() {
     ): View {
         _binding = FragmentAddMemberBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name))
         accountId = session.getAccountId().toString()
+        userRef = dbRef.getUserRef()
+        memberRef = dbRef.getMemberRef(accountId)
         return binding.root
     }
 
@@ -103,8 +108,8 @@ class AddMemberFragment : Fragment() {
                 timestamp,
                 timestamp
             )
-        database.child("Users").child(uid).setValue(user)
-        database.child("Accounts").child(accountId).child("Members").child(uid).setValue(user)
+        userRef.child(uid).setValue(user)
+        memberRef.child(uid).setValue(user)
         Toast.makeText(
             context,
             "Member Created Successful",

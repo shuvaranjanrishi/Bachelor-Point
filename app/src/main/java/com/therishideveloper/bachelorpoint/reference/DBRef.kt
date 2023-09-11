@@ -17,6 +17,7 @@ class DBRef @Inject constructor(@ApplicationContext context: Context) {
 
     private var dbRef = Firebase.database.reference.child(context.getString(R.string.database_name))
     private var accountRef = dbRef.child("Accounts")
+    private var userRef = dbRef.child("Users")
 
     fun getDbRef(): DatabaseReference {
         return dbRef
@@ -24,6 +25,10 @@ class DBRef @Inject constructor(@ApplicationContext context: Context) {
 
     fun getAccountRef(): DatabaseReference {
         return accountRef
+    }
+
+    fun getUserRef(): DatabaseReference {
+        return userRef
     }
 
     fun getRentRef(accountId: String): DatabaseReference {
@@ -36,5 +41,13 @@ class DBRef @Inject constructor(@ApplicationContext context: Context) {
 
     fun getExpenseRef(accountId: String): DatabaseReference {
         return accountRef.child(accountId).child("Expense")
+    }
+
+    fun getMealRef(accountId: String): DatabaseReference {
+        return accountRef.child(accountId).child("Meal")
+    }
+
+    fun getMemberRef(accountId: String): DatabaseReference {
+        return accountRef.child(accountId).child("Members")
     }
 }
