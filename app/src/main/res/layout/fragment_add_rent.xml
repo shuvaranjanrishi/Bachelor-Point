@@ -181,6 +181,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_above="@id/saveBtn"
             android:id="@+id/separateRentLl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
