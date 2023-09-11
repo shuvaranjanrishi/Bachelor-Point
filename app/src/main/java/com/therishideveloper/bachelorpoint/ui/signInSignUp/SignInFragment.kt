@@ -20,6 +20,7 @@ import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.databinding.FragmentSignInBinding
 import com.therishideveloper.bachelorpoint.model.User
+import com.therishideveloper.bachelorpoint.reference.DBRef
 import com.therishideveloper.bachelorpoint.session.UserSession
 import com.therishideveloper.bachelorpoint.ui.member.MemberViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,8 @@ class SignInFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var dbRef: DBRef
     private lateinit var database: DatabaseReference
     private val authViewModel: AuthViewModel by viewModels()
     private val memberViewModel: MemberViewModel by viewModels()
@@ -46,7 +49,7 @@ class SignInFragment : Fragment() {
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         auth = Firebase.auth
-        database = Firebase.database.reference.child(getString(R.string.database_name))
+        database = dbRef.getDbRef()
         return binding.root
     }
 

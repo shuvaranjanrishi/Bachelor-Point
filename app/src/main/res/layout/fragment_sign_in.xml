@@ -46,7 +46,7 @@
             android:layout_margin="@dimen/dimen_10dp"
             android:background="@drawable/bg_et"
             android:drawablePadding="5dp"
-            android:text="shuvo@gmail.com"
+            android:text=""
             android:hint="@string/email"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress" />
@@ -67,7 +67,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEt"
             android:layout_width="match_parent"
-            android:text="123456"
+            android:text=""
             android:hint="@string/password"
             android:inputType="textPassword"
             android:layout_height="wrap_content"

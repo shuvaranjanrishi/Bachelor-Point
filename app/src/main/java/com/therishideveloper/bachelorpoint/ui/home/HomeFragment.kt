@@ -1,9 +1,6 @@
 package com.therishideveloper.bachelorpoint.ui.home
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +9,14 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.database.DatabaseReference
 import com.therishideveloper.bachelorpoint.R
 import com.therishideveloper.bachelorpoint.adapter.ModuleAdapter
 import com.therishideveloper.bachelorpoint.databinding.FragmentHomeBinding
+import com.therishideveloper.bachelorpoint.reference.DBRef
+import com.therishideveloper.bachelorpoint.session.UserSession
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -26,10 +27,14 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var session: SharedPreferences
+    @Inject
+    lateinit var session: UserSession
+    @Inject
+    lateinit var dbRef: DBRef
+    private lateinit var database: DatabaseReference
+    private lateinit var accountId: String
     private lateinit var userType: String
     private lateinit var userId: String
-    private lateinit var accountId: String
 
     private val rotateOpen: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -76,12 +81,10 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        session = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        userId = session.getString("USER_ID", "").toString()
-        userType = session.getString("USER_TYPE", "").toString()
-        accountId = session.getString("ACCOUNT_ID", "").toString()
-
+        database = dbRef.getAccountRef()
+        accountId = session.getAccountId().toString()
+        userId = session.getUid().toString()
+        userType = session.getUserType().toString()
         return binding.root
     }
 
@@ -134,9 +137,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setVisibility(clicked: Boolean) {
-        Log.e(TAG, "USER_TYPE: $userType")
-        Log.e(TAG, "ACCOUNT_ID: $accountId")
-
         if (!clicked) {
             binding.addMemberBtn.visibility = View.VISIBLE
             binding.addMealBtn.visibility = View.VISIBLE
