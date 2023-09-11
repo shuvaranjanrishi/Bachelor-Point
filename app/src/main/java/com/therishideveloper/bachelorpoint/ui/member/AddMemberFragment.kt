@@ -17,8 +17,10 @@ import com.therishideveloper.bachelorpoint.databinding.FragmentAddMemberBinding
 import com.therishideveloper.bachelorpoint.model.User
 import com.therishideveloper.bachelorpoint.reference.DBRef
 import com.therishideveloper.bachelorpoint.session.UserSession
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddMemberFragment : Fragment() {
 
     private val TAG = "AddMemberFragment"
