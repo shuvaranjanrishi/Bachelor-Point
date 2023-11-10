@@ -52,6 +52,8 @@ class MealRepo @Inject constructor(
 
     private val _mealRateLiveData = MutableLiveData<NetworkResult<String>>()
     val mealRateLiveData get() = _mealRateLiveData
+    private val _monthView = MutableLiveData<NetworkResult<List<Meal>>>()
+    val monthView get() = _monthView
 
     var mealList: MutableList<Meal> = mutableListOf()
 
@@ -196,9 +198,53 @@ class MealRepo @Inject constructor(
                 )
             )
         }
-
         _sumMealsLiveData.postValue(NetworkResult.Success(newList.sortedBy { it.name }))
 
+    }
+
+    fun getMonthView(memberList: List<User>, mealList: List<Meal>) {
+
+        val newList: MutableList<Meal> = ArrayList()
+        for (i in memberList.indices) {
+            var id = ""
+            var name = ""
+            var createdAt = ""
+            var date = ""
+            var updatedAt = ""
+            var firstMeal = 0.0
+            var secondMeal = 0.0
+            var thirdMeal = 0.0
+            var subTotalMeal = 0.0
+            for (j in mealList.indices) {
+                if (mealList[j].memberId.toString() == memberList.toTypedArray()[i].id) {
+                    id = mealList[j].memberId.toString()
+                    name = mealList[j].name.toString()
+                    date = mealList[j].date.toString()
+                    createdAt = mealList[j].createdAt.toString()
+                    updatedAt = mealList[j].updatedAt.toString()
+                    firstMeal += mealList[j].firstMeal!!.toDouble()
+                    secondMeal += mealList[j].secondMeal!!.toDouble()
+                    thirdMeal += mealList[j].thirdMeal!!.toDouble()
+                    subTotalMeal = mealList[j].subTotalMeal!!.toDouble()
+                    newList.add(
+                        Meal(
+                            "" + id,
+                            "" + id,
+                            "" + name,
+                            "" + firstMeal,
+                            "" + secondMeal,
+                            "" + thirdMeal,
+                            "" + subTotalMeal,
+                            "" + date,
+                            "" + createdAt,
+                            "" + updatedAt
+                        )
+                    )
+                }
+            }
+        }
+        Log.d(TAG, "onChangeMealnewList: $newList")
+        _monthView.postValue(NetworkResult.Success(mealList.sortedBy { it.name }))
     }
 
     fun totalMeals(mealList: List<Meal>) {

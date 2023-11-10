@@ -1,8 +1,10 @@
 package com.therishideveloper.bachelorpoint.ui.meal
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DatabaseReference
+import com.therishideveloper.bachelorpoint.api.NetworkResult
 import com.therishideveloper.bachelorpoint.model.Meal
 import com.therishideveloper.bachelorpoint.model.MealClosing
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
     val totalMealsLiveData get() = mealRepo.totalMealsLiveData
     val totalExpenseLiveData get() = mealRepo.totalExpenseLiveData
     val mealRateLiveData get() = mealRepo.mealRateLiveData
+    val monthView get() = mealRepo.monthView
 
     fun getMealListOfADay(accountId: String, monthAndYear: String, date: String) {
         viewModelScope.launch {
@@ -30,6 +33,16 @@ class MealViewModel @Inject constructor(private val mealRepo: MealRepo) : ViewMo
             mealRepo.getMealListResult(accountId, monthAndYear){ mealList ->
                 mealRepo.getMembers(accountId){members ->
                     mealRepo.sumIndividualMeals(members, mealList)
+                }
+            }
+        }
+    }
+
+    fun getMonthView(accountId: String, monthAndYear: String) {
+        viewModelScope.launch {
+            mealRepo.getMealListResult(accountId, monthAndYear){ mealList ->
+                mealRepo.getMembers(accountId){members ->
+                    mealRepo.getMonthView(members, mealList)
                 }
             }
         }
